@@ -16,3 +16,11 @@
 - [ ] Adicionar botão de "Enviar Cobrança" na lista de mensalidades/taxas
 - [ ] Criar modal de confirmação de envio (selecionar contato autorizado)
 - [ ] Simular envio via API (feedback visual de sucesso)
+
+## Fase 11: Conciliação Bancária
+- [ ] Criar parser para arquivos OFX
+- [ ] Implementar página de Conciliação Bancária
+- [ ] Adicionar funcionalidade de upload de arquivo OFX
+- [ ] Implementar matching automático entre transações OFX e cobranças
+- [ ] Criar interface para revisar e confirmar baixas
+- [ ] Adicionar histórico de conciliações

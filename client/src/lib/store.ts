@@ -374,3 +374,36 @@ export const billingStore = {
     return null;
   }
 };
+
+import { BankReconciliation, ReconciliationMatch } from "./types";
+
+export const reconciliationStore = {
+  getReconciliations: (): BankReconciliation[] => {
+    const stored = localStorage.getItem('bank_reconciliations');
+    return stored ? JSON.parse(stored) : [];
+  },
+  addReconciliation: (reconciliation: Omit<BankReconciliation, 'id'>) => {
+    const reconciliations = reconciliationStore.getReconciliations();
+    const newReconciliation = { ...reconciliation, id: generateId() };
+    reconciliations.push(newReconciliation);
+    localStorage.setItem('bank_reconciliations', JSON.stringify(reconciliations));
+    return newReconciliation;
+  },
+  updateReconciliation: (id: string, data: Partial<BankReconciliation>) => {
+    const reconciliations = reconciliationStore.getReconciliations();
+    const index = reconciliations.findIndex(r => r.id === id);
+    if (index !== -1) {
+      reconciliations[index] = { ...reconciliations[index], ...data };
+      localStorage.setItem('bank_reconciliations', JSON.stringify(reconciliations));
+      return reconciliations[index];
+    }
+    return null;
+  },
+  getMatches: (): ReconciliationMatch[] => {
+    const stored = localStorage.getItem('reconciliation_matches');
+    return stored ? JSON.parse(stored) : [];
+  },
+  saveMatches: (matches: ReconciliationMatch[]) => {
+    localStorage.setItem('reconciliation_matches', JSON.stringify(matches));
+  }
+};

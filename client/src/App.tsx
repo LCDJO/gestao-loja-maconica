@@ -10,6 +10,7 @@ import Chancelaria from "./pages/Chancelaria";
 import Tesouraria from "./pages/Tesouraria";
 import Relatorios from "./pages/Relatorios";
 import Configuracoes from "./pages/Configuracoes";
+import Conciliacao from "./pages/Conciliacao";
 
 
 function Router() {
@@ -21,6 +22,7 @@ function Router() {
       <Route path={"/tesouraria"} component={Tesouraria} />
       <Route path={"/relatorios"} component={Relatorios} />
       <Route path={"/configuracoes"} component={Configuracoes} />
+      <Route path={"/conciliacao"} component={Conciliacao} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

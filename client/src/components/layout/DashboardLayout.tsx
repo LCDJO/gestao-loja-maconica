@@ -9,7 +9,8 @@ import {
   Menu, 
   X,
   LogOut,
-  Settings
+  Settings,
+  Banknote
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -52,6 +53,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       label: "Configurações", 
       icon: Settings, 
       href: "/configuracoes" 
+    },
+    { 
+      label: "Conciliação", 
+      icon: Banknote, 
+      href: "/conciliacao" 
     },
   ];
 

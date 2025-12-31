@@ -134,3 +134,30 @@ export interface Bill {
   sentViaWhatsapp: boolean;
   whatsappSentAt?: string;
 }
+
+export interface OFXTransaction {
+  id: string;
+  date: string;
+  amount: number;
+  description: string;
+  type: 'debit' | 'credit';
+  memo?: string;
+}
+
+export interface BankReconciliation {
+  id: string;
+  fileName: string;
+  uploadDate: string;
+  bankName: string;
+  accountNumber: string;
+  transactions: OFXTransaction[];
+  status: 'pending' | 'completed' | 'partial';
+  matchedBills: string[]; // IDs das cobranças que foram baixadas
+}
+
+export interface ReconciliationMatch {
+  ofxTransactionId: string;
+  billId: string;
+  confidence: number; // 0-100, percentual de confiança do match automático
+  matchType: 'exact' | 'fuzzy' | 'manual';
+}

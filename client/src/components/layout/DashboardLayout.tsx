@@ -16,7 +16,8 @@ import {
   FileText,
   Clock,
   TrendingUp,
-  ChevronDown
+  ChevronDown,
+  Calendar
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -47,6 +48,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       label: "Módulos",
       items: [
         { label: "Painel Geral", icon: LayoutDashboard, href: "/" },
+        { label: "Dashboard Executivo", icon: BarChart3, href: "/dashboard-executivo" },
         { label: "Secretaria", icon: ScrollText, href: "/secretaria" },
         { label: "Chancelaria", icon: Users, href: "/chancelaria" },
         { label: "Tesouraria", icon: Landmark, href: "/tesouraria" },
@@ -56,10 +58,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       id: "communication",
       label: "Comunicação",
       items: [
+        { label: "Comunicados", icon: Mail, href: "/comunicados" },
         { label: "Notificações", icon: Mail, href: "/notificacoes" },
         { label: "Templates", icon: FileText, href: "/editor-templates" },
         { label: "Campanhas", icon: Clock, href: "/agendamento-campanhas" },
         { label: "Analytics", icon: BarChart3, href: "/analytics-notificacoes" },
+        { label: "Google Calendar", icon: Calendar, href: "/google-calendar" },
       ]
     },
     {

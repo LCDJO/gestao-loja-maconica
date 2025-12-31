@@ -68,7 +68,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       items: [
         { label: "Relatórios", icon: PieChart, href: "/relatorios" },
         { label: "ROI", icon: TrendingUp, href: "/relatorio-roi" },
-        { label: "Conciliação", icon: Banknote, href: "/conciliacao" },
+        { label: "Conciliacao", icon: Banknote, href: "/conciliacao" },
+        { label: "Churn", icon: TrendingUp, href: "/relatorio-churn" },
+      ]
+    },
+    {
+      id: "automation",
+      label: "Automacao & Integracoes",
+      items: [
+        { label: "Automacao", icon: Clock, href: "/automacao-campanhas" },
+        { label: "Pagamentos", icon: Banknote, href: "/integracao-pagamentos" },
       ]
     },
   ];

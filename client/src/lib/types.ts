@@ -168,3 +168,36 @@ export interface AuthUser {
   password?: string; // Apenas para armazenamento local simulado
   isAuthenticated: boolean;
 }
+
+export interface EmailNotification {
+  id: string;
+  billId: string;
+  memberId: string;
+  email: string;
+  type: 'reminder_3days' | 'reminder_1day' | 'overdue_7days' | 'overdue_15days';
+  subject: string;
+  status: 'pending' | 'sent' | 'failed';
+  sentAt?: string;
+  failureReason?: string;
+  createdAt: string;
+}
+
+export interface NotificationSettings {
+  enabled: boolean;
+  sendReminder3Days: boolean;
+  sendReminder1Day: boolean;
+  sendOverdue7Days: boolean;
+  sendOverdue15Days: boolean;
+  emailProvider: 'smtp' | 'sendgrid' | 'mailgun';
+  smtpConfig?: {
+    host?: string;
+    port?: number;
+    user?: string;
+    password?: string;
+    fromEmail?: string;
+    fromName?: string;
+  };
+  sendgridKey?: string;
+  mailgunKey?: string;
+  mailgunDomain?: string;
+}

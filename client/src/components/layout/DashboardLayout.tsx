@@ -10,7 +10,8 @@ import {
   X,
   LogOut,
   Settings,
-  Banknote
+  Banknote,
+  Mail
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -58,6 +59,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       label: "Conciliação", 
       icon: Banknote, 
       href: "/conciliacao" 
+    },
+    { 
+      label: "Notificações", 
+      icon: Mail, 
+      href: "/notificacoes" 
     },
   ];
 

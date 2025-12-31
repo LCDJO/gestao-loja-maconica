@@ -407,3 +407,67 @@ export const reconciliationStore = {
     localStorage.setItem('reconciliation_matches', JSON.stringify(matches));
   }
 };
+
+import { EmailNotification, NotificationSettings } from "./types";
+
+export const emailNotificationStore = {
+  getNotifications: (): EmailNotification[] => {
+    const stored = localStorage.getItem('email_notifications');
+    return stored ? JSON.parse(stored) : [];
+  },
+  addNotification: (notification: Omit<EmailNotification, 'id'>) => {
+    const notifications = emailNotificationStore.getNotifications();
+    const newNotification = { ...notification, id: generateId() };
+    notifications.push(newNotification);
+    localStorage.setItem('email_notifications', JSON.stringify(notifications));
+    return newNotification;
+  },
+  updateNotification: (id: string, data: Partial<EmailNotification>) => {
+    const notifications = emailNotificationStore.getNotifications();
+    const index = notifications.findIndex(n => n.id === id);
+    if (index !== -1) {
+      notifications[index] = { ...notifications[index], ...data };
+      localStorage.setItem('email_notifications', JSON.stringify(notifications));
+      return notifications[index];
+    }
+    return null;
+  },
+  getNotificationsByBill: (billId: string): EmailNotification[] => {
+    const notifications = emailNotificationStore.getNotifications();
+    return notifications.filter(n => n.billId === billId);
+  },
+  getNotificationsByMember: (memberId: string): EmailNotification[] => {
+    const notifications = emailNotificationStore.getNotifications();
+    return notifications.filter(n => n.memberId === memberId);
+  },
+};
+
+export const notificationSettingsStore = {
+  getSettings: (): NotificationSettings => {
+    const stored = localStorage.getItem('notification_settings');
+    if (stored) {
+      return JSON.parse(stored);
+    }
+    // Configurações padrão
+    return {
+      enabled: true,
+      sendReminder3Days: true,
+      sendReminder1Day: true,
+      sendOverdue7Days: true,
+      sendOverdue15Days: true,
+      emailProvider: 'smtp',
+      smtpConfig: {
+        host: 'smtp.gmail.com',
+        port: 587,
+        user: '',
+        password: '',
+        fromEmail: 'noreply@loja-maconica.com.br',
+        fromName: 'Loja Maçônica',
+      },
+    };
+  },
+  updateSettings: (settings: NotificationSettings) => {
+    localStorage.setItem('notification_settings', JSON.stringify(settings));
+    return settings;
+  },
+};

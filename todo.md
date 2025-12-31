@@ -38,3 +38,13 @@
 - [ ] Criar função de geração de segunda via de boleto
 - [ ] Adicionar opção de download/compartilhamento
 - [ ] Implementar simulação de envio por email/WhatsApp
+
+
+## Fase 16: Notificações por Email
+- [ ] Criar tipos para notificações de email
+- [ ] Implementar store para histórico de notificações
+- [ ] Criar página de configuração de notificações
+- [ ] Implementar agendador de notificações automáticas
+- [ ] Criar templates de email para diferentes cenários
+- [ ] Implementar visualização de histórico de envios
+- [ ] Adicionar testes de envio de email

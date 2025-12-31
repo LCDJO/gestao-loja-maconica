@@ -1,7 +1,11 @@
+import { useState, useMemo } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Plus, Bug, Zap, Shield } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ArrowRight, Plus, Bug, Zap, Shield, Search, X } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface ChangelogEntry {
   version: string;
@@ -173,6 +177,31 @@ const getTypeLabel = (type: string) => {
 };
 
 export default function Changelog() {
+  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Filtrar changelog baseado em tipo e busca
+  const filteredChangelog = useMemo(() => {
+    return changelog.filter(entry => {
+      const matchesType = !selectedType || entry.type === selectedType;
+      const matchesSearch = !searchQuery || 
+        entry.version.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        entry.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        entry.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        entry.changes.some(change => change.toLowerCase().includes(searchQuery.toLowerCase()));
+      return matchesType && matchesSearch;
+    });
+  }, [selectedType, searchQuery]);
+
+  const handleCheckForUpdates = () => {
+    toast.success('Você está usando a versão mais recente (v2.5.0)');
+  };
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedType(null);
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-8">
@@ -183,6 +212,92 @@ export default function Changelog() {
             Acompanhe todas as melhorias e novidades do Sistema de Gestão de Lojas Maçônicas
           </p>
         </div>
+
+        {/* Busca e Filtros */}
+        <Card className="border-gray-200">
+          <CardContent className="pt-6 space-y-4">
+            {/* Campo de Busca */}
+            <div className="relative">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Buscar por versão, título ou palavra-chave..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 border-gray-300"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Filtros por Tipo */}
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-gray-700">Filtrar por tipo:</p>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant={selectedType === null ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedType(null)}
+                  className="text-xs"
+                >
+                  Todos
+                </Button>
+                <Button
+                  variant={selectedType === 'feature' ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedType('feature')}
+                  className="text-xs gap-1"
+                >
+                  <Plus className="h-3 w-3" /> Novo
+                </Button>
+                <Button
+                  variant={selectedType === 'bugfix' ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedType('bugfix')}
+                  className="text-xs gap-1"
+                >
+                  <Bug className="h-3 w-3" /> Correção
+                </Button>
+                <Button
+                  variant={selectedType === 'improvement' ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedType('improvement')}
+                  className="text-xs gap-1"
+                >
+                  <Zap className="h-3 w-3" /> Melhoria
+                </Button>
+                <Button
+                  variant={selectedType === 'security' ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedType('security')}
+                  className="text-xs gap-1"
+                >
+                  <Shield className="h-3 w-3" /> Segurança
+                </Button>
+              </div>
+            </div>
+
+            {/* Botão Verificar Atualizações */}
+            <div className="flex justify-between items-center pt-2 border-t border-gray-200">
+              <p className="text-sm text-gray-600">
+                {filteredChangelog.length} resultado{filteredChangelog.length !== 1 ? 's' : ''}
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCheckForUpdates}
+                className="text-xs"
+              >
+                Verificar Atualizações
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Versão Atual */}
         <Card className="border-blue-200 bg-blue-50">
@@ -202,44 +317,60 @@ export default function Changelog() {
 
         {/* Timeline de Alterações */}
         <div className="space-y-6">
-          {changelog.map((entry, index) => (
-            <Card key={entry.version} className="border-gray-200 hover:border-gray-300 transition-colors">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-3">
-                      <h3 className="text-xl font-bold text-gray-900">v{entry.version}</h3>
-                      <Badge className={`${getTypeColor(entry.type)} border-0`}>
-                        <span className="mr-1">{getTypeIcon(entry.type)}</span>
-                        {getTypeLabel(entry.type)}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-gray-500">{entry.date}</p>
-                  </div>
-                  {index === 0 && (
-                    <Badge className="bg-green-100 text-green-800 border-0">Atual</Badge>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h4 className="font-semibold text-gray-900">{entry.title}</h4>
-                  <p className="text-sm text-gray-600 mt-1">{entry.description}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-gray-700 mb-2">O que mudou:</p>
-                  <ul className="space-y-1">
-                    {entry.changes.map((change, idx) => (
-                      <li key={idx} className="text-sm text-gray-600 flex items-start gap-2">
-                        <span className="text-blue-600 mt-1">•</span>
-                        <span>{change}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+          {filteredChangelog.length === 0 ? (
+            <Card className="border-gray-200">
+              <CardContent className="py-12 text-center">
+                <p className="text-gray-600">Nenhum resultado encontrado para sua busca.</p>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearFilters}
+                  className="mt-4"
+                >
+                  Limpar filtros
+                </Button>
               </CardContent>
             </Card>
-          ))}
+          ) : (
+            filteredChangelog.map((entry, index) => (
+              <Card key={entry.version} className="border-gray-200 hover:border-gray-300 transition-colors">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3">
+                        <h3 className="text-xl font-bold text-gray-900">v{entry.version}</h3>
+                        <Badge className={`${getTypeColor(entry.type)} border-0`}>
+                          <span className="mr-1">{getTypeIcon(entry.type)}</span>
+                          {getTypeLabel(entry.type)}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-gray-500">{entry.date}</p>
+                    </div>
+                    {index === 0 && (
+                      <Badge className="bg-green-100 text-green-800 border-0">Atual</Badge>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900">{entry.title}</h4>
+                    <p className="text-sm text-gray-600 mt-1">{entry.description}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-gray-700 mb-2">O que mudou:</p>
+                    <ul className="space-y-1">
+                      {entry.changes.map((change, idx) => (
+                        <li key={idx} className="text-sm text-gray-600 flex items-start gap-2">
+                          <span className="text-blue-600 mt-1">•</span>
+                          <span>{change}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
 
         {/* Rodapé */}

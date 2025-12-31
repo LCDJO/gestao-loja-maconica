@@ -585,3 +585,90 @@ export interface SystemMetrics {
   averageUsagePerLoja: number;
   topFeatures: string[];
 }
+
+
+// ============ AUDITORIA E LOGS ============
+export interface AuditLog {
+  id: string;
+  lodgeId: string;
+  userId: string;
+  action: 'CREATE' | 'UPDATE' | 'DELETE' | 'VIEW' | 'EXPORT' | 'LOGIN' | 'LOGOUT';
+  entityType: 'MEMBER' | 'BILL' | 'MEETING' | 'SETTINGS' | 'TEMPLATE' | 'USER';
+  entityId?: string;
+  description: string;
+  changes?: Record<string, any>;
+  ipAddress?: string;
+  userAgent?: string;
+  timestamp: Date;
+  status: 'SUCCESS' | 'FAILED';
+}
+
+// ============ BACKUP ============
+export interface BackupRecord {
+  id: string;
+  lodgeId: string;
+  fileName: string;
+  fileSize: number;
+  createdAt: Date;
+  completedAt?: Date;
+  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
+  backupType: 'AUTOMATIC' | 'MANUAL';
+  minioPath?: string;
+  errorMessage?: string;
+  dataCount: {
+    members: number;
+    bills: number;
+    meetings: number;
+    transactions: number;
+  };
+}
+
+// ============ PERMISSOES E ROLES ============
+export type UserRole = 'ADMIN' | 'TREASURER' | 'SECRETARY' | 'VIEWER';
+
+export interface Permission {
+  id: string;
+  name: string;
+  description: string;
+  resource: string;
+  action: 'CREATE' | 'READ' | 'UPDATE' | 'DELETE' | 'EXPORT';
+}
+
+export interface RolePermission {
+  role: UserRole;
+  permissions: Permission[];
+}
+
+export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
+  ADMIN: [
+    'members:create', 'members:read', 'members:update', 'members:delete',
+    'bills:create', 'bills:read', 'bills:update', 'bills:delete',
+    'meetings:create', 'meetings:read', 'meetings:update', 'meetings:delete',
+    'settings:read', 'settings:update',
+    'templates:create', 'templates:read', 'templates:update', 'templates:delete',
+    'users:create', 'users:read', 'users:update', 'users:delete',
+    'audit:read',
+    'backup:create', 'backup:read', 'backup:restore',
+  ],
+  TREASURER: [
+    'members:read',
+    'bills:create', 'bills:read', 'bills:update',
+    'meetings:read',
+    'settings:read',
+    'templates:read',
+    'audit:read',
+  ],
+  SECRETARY: [
+    'members:create', 'members:read', 'members:update',
+    'meetings:create', 'meetings:read', 'meetings:update',
+    'settings:read',
+    'templates:read',
+    'audit:read',
+  ],
+  VIEWER: [
+    'members:read',
+    'bills:read',
+    'meetings:read',
+    'audit:read',
+  ],
+};

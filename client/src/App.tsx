@@ -28,6 +28,9 @@ import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import AutomacaoCampanhas from "./pages/AutomacaoCampanhas";
 import IntegracaoPagamentos from "./pages/IntegracaoPagamentos";
 import RelatorioChurn from "./pages/RelatorioChurn";
+import Auditoria from "./pages/Auditoria";
+import Backup from "./pages/Backup";
+import Permissoes from "./pages/Permissoes";
 import { MemberAuthProvider } from "./contexts/MemberAuthContext";
 
 
@@ -58,6 +61,9 @@ function Router() {
       <Route path="/automacao-campanhas" component={AutomacaoCampanhas} />
       <Route path="/integracao-pagamentos" component={IntegracaoPagamentos} />
       <Route path="/relatorio-churn" component={RelatorioChurn} />
+      <Route path="/auditoria" component={Auditoria} />
+      <Route path="/backup" component={Backup} />
+      <Route path="/permissoes" component={Permissoes} />
       <Route path="/404" component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

@@ -1142,3 +1142,69 @@ export const superAdminUserStore = {
     return null;
   },
 };
+
+
+// ===== REAL-TIME NOTIFICATIONS STORE =====
+export interface RealtimeNotification {
+  id: string;
+  type: 'comunicado' | 'reuniao' | 'sistema';
+  title: string;
+  message: string;
+  timestamp: string;
+  read: boolean;
+  icon?: string;
+  actionUrl?: string;
+}
+
+export const realtimeNotificationStore = {
+  getAll: (): RealtimeNotification[] => {
+    const stored = localStorage.getItem('realtime_notifications');
+    if (!stored) {
+      return [];
+    }
+    return JSON.parse(stored);
+  },
+  add: (notification: Omit<RealtimeNotification, 'id' | 'timestamp' | 'read'>) => {
+    const notifications = realtimeNotificationStore.getAll();
+    const newNotification: RealtimeNotification = {
+      ...notification,
+      id: generateId(),
+      timestamp: new Date().toISOString(),
+      read: false,
+    };
+    notifications.unshift(newNotification);
+    // Manter apenas as últimas 100 notificações
+    if (notifications.length > 100) {
+      notifications.pop();
+    }
+    localStorage.setItem('realtime_notifications', JSON.stringify(notifications));
+    return newNotification;
+  },
+  markAsRead: (id: string) => {
+    const notifications = realtimeNotificationStore.getAll();
+    const index = notifications.findIndex(n => n.id === id);
+    if (index !== -1) {
+      notifications[index].read = true;
+      localStorage.setItem('realtime_notifications', JSON.stringify(notifications));
+      return notifications[index];
+    }
+    return null;
+  },
+  markAllAsRead: () => {
+    const notifications = realtimeNotificationStore.getAll();
+    notifications.forEach(n => n.read = true);
+    localStorage.setItem('realtime_notifications', JSON.stringify(notifications));
+  },
+  delete: (id: string) => {
+    const notifications = realtimeNotificationStore.getAll();
+    const filtered = notifications.filter(n => n.id !== id);
+    localStorage.setItem('realtime_notifications', JSON.stringify(filtered));
+  },
+  deleteAll: () => {
+    localStorage.setItem('realtime_notifications', JSON.stringify([]));
+  },
+  getUnreadCount: (): number => {
+    const notifications = realtimeNotificationStore.getAll();
+    return notifications.filter(n => !n.read).length;
+  },
+};

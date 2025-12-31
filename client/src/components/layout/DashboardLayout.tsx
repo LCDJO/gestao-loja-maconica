@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import NotificationCenter from "@/components/NotificationCenter";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -205,10 +206,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </Button>
             <span className="font-bold text-gray-900">Gestão Maçônica</span>
           </div>
+          <NotificationCenter />
+        </header>
+
+        {/* Desktop Header with Notifications */}
+        <header className="hidden lg:flex h-16 bg-white border-b border-gray-200 items-center px-8 justify-end shadow-sm z-40">
+          <NotificationCenter />
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-8 relative">
+        <main className="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-8 relative lg:mt-0">
           {/* Background Texture Overlay */}
           <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-multiply"></div>
           

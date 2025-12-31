@@ -9,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { MessageSquare, Send, Users, Eye } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { realtimeNotificationStore } from "@/lib/store";
+import { exportComunicadosReport, exportToCSV } from "@/lib/exportUtils";
+import { Download } from "lucide-react";
 
 export default function Comunicados() {
   const [comunicados, setComunicados] = useState<any[]>([
@@ -53,6 +56,15 @@ export default function Comunicados() {
       total: newComunicado.audience === 'todos' ? 42 : 15
     };
 
+    // Enviar notificacao em tempo real
+    const audienceLabel = getAudienceLabel(newComunicado.audience);
+    realtimeNotificationStore.add({
+      type: 'comunicado',
+      title: `Novo Comunicado: ${newComunicado.title}`,
+      message: `Enviado para ${audienceLabel}. ${newComunicado.content.substring(0, 50)}...`,
+      actionUrl: '/comunicados'
+    });
+
     setComunicados([comunicado, ...comunicados]);
     setNewComunicado({ title: '', content: '', audience: 'todos' });
     setIsOpen(false);
@@ -76,6 +88,32 @@ export default function Comunicados() {
           <div>
             <h1 className="font-display text-3xl font-bold text-primary">Comunicados Internos</h1>
             <p className="text-muted-foreground font-serif italic">Envie mensagens para grupos específicos de membros.</p>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => exportComunicadosReport(comunicados, 'relatorio-comunicados')}
+              className="gap-2"
+            >
+              <Download className="h-4 w-4" /> Exportar PDF
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                const data = comunicados.map(c => ({
+                  data: c.date,
+                  titulo: c.title,
+                  publico: c.audience,
+                  destinatarios: c.total,
+                  leituras: c.read,
+                  taxa_leitura: `${((c.read / c.total) * 100).toFixed(1)}%`
+                }));
+                exportToCSV(data, 'relatorio-comunicados');
+              }}
+              className="gap-2"
+            >
+              <Download className="h-4 w-4" /> Exportar Excel
+            </Button>
           </div>
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>

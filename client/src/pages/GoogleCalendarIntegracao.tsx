@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Calendar, CheckCircle, AlertCircle, Loader } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { realtimeNotificationStore } from "@/lib/store";
 
 export default function GoogleCalendarIntegracao() {
   const [isConnected, setIsConnected] = useState(false);
@@ -17,10 +18,17 @@ export default function GoogleCalendarIntegracao() {
 
   const handleConnect = async () => {
     setIsLoading(true);
-    // Simular conexão com Google Calendar
+    // Simular conexao com Google Calendar
     setTimeout(() => {
       setIsConnected(true);
       setLastSync(new Date().toLocaleString('pt-BR'));
+      // Enviar notificacao em tempo real
+      realtimeNotificationStore.add({
+        type: 'sistema',
+        title: 'Google Calendar Conectado',
+        message: 'Sua conta do Google Calendar foi conectada com sucesso',
+        actionUrl: '/google-calendar'
+      });
       toast.success("Conectado ao Google Calendar com sucesso!");
       setIsLoading(false);
     }, 2000);
@@ -35,10 +43,17 @@ export default function GoogleCalendarIntegracao() {
 
   const handleSync = async () => {
     setIsLoading(true);
-    // Simular sincronização
+    // Simular sincronizacao
     setTimeout(() => {
       setLastSync(new Date().toLocaleString('pt-BR'));
-      toast.success("Sincronização concluída! 3 reuniões foram adicionadas ao seu calendário.");
+      // Enviar notificacao em tempo real
+      realtimeNotificationStore.add({
+        type: 'reuniao',
+        title: 'Reunioes Sincronizadas',
+        message: '3 reunioes foram sincronizadas com sucesso ao Google Calendar',
+        actionUrl: '/google-calendar'
+      });
+      toast.success("Sincronizacao concluida! 3 reunioes foram adicionadas ao seu calendario.");
       setIsLoading(false);
     }, 2000);
   };

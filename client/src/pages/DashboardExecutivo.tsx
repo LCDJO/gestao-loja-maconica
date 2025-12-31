@@ -6,6 +6,8 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, L
 import { Users, DollarSign, TrendingUp, Calendar, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { memberStore, billingStore, meetingStore } from "@/lib/store";
+import { exportDashboardReport, exportToCSV } from "@/lib/exportUtils";
+import { Download } from "lucide-react";
 
 export default function DashboardExecutivo() {
   const [members, setMembers] = useState<any[]>([]);
@@ -58,9 +60,35 @@ export default function DashboardExecutivo() {
   return (
     <DashboardLayout>
       <div className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Dashboard Executivo</h1>
-          <p className="text-slate-600 mt-2">Visão geral dos indicadores-chave da loja</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900">Dashboard Executivo</h1>
+            <p className="text-slate-600 mt-2">Visão geral dos indicadores-chave da loja</p>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => exportDashboardReport(stats, 'dashboard-executivo')}
+              className="gap-2"
+            >
+              <Download className="h-4 w-4" /> Exportar PDF
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                const data = [
+                  { metrica: 'Total de Membros', valor: stats.totalMembers },
+                  { metrica: 'Membros Ativos', valor: stats.activeMembers },
+                  { metrica: 'Receita Mensal', valor: `R$ ${stats.monthlyRevenue.toLocaleString('pt-BR')}` },
+                  { metrica: 'Taxa de Conformidade', valor: `${stats.complianceRate.toFixed(1)}%` }
+                ];
+                exportToCSV(data, 'dashboard-executivo');
+              }}
+              className="gap-2"
+            >
+              <Download className="h-4 w-4" /> Exportar Excel
+            </Button>
+          </div>
         </div>
 
         {/* KPIs */}

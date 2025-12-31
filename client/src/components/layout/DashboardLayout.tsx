@@ -112,6 +112,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             { label: "Email (SendGrid/Mailgun)", icon: Mail, href: "/configuracao-email" },
             { label: "Google Calendar", icon: Calendar, href: "/google-calendar" },
             { label: "OneSignal", icon: Mail, href: "/configuracoes-push" },
+            { label: "Histórico de Testes", icon: Clock, href: "/historico-testes-evolution" },
           ]
         },
         { 

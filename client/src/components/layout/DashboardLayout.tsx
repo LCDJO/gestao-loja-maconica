@@ -61,6 +61,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     },
   ];
 
+  const memberPortalItems = [
+    { label: "Portal do Membro", href: "/membro/login" },
+  ];
+
   return (
     <div className="min-h-screen bg-background flex overflow-hidden font-sans">
       {/* Sidebar */}
@@ -135,6 +139,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <LogOut className="h-3 w-3 mr-2" /> Sair
               </Button>
             </div>
+          </div>
+          <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-sidebar-border bg-sidebar-accent/5">
+            <a href="/membro/login" className="text-sm text-primary hover:underline font-medium">
+              → Portal do Membro
+            </a>
           </div>
         </div>
       </aside>

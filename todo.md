@@ -24,3 +24,17 @@
 - [ ] Implementar matching automático entre transações OFX e cobranças
 - [ ] Criar interface para revisar e confirmar baixas
 - [ ] Adicionar histórico de conciliações
+
+
+## Fase 13: Portal do Membro
+- [ ] Criar contexto de autenticação (AuthContext)
+- [ ] Implementar página de login com validação
+- [ ] Criar página inicial do portal do membro
+- [ ] Implementar visualização de pendências individuais
+- [ ] Criar interface de histórico de pagamentos
+
+## Fase 14: Geração de Segunda Via
+- [ ] Implementar gerador de QR Code PIX
+- [ ] Criar função de geração de segunda via de boleto
+- [ ] Adicionar opção de download/compartilhamento
+- [ ] Implementar simulação de envio por email/WhatsApp

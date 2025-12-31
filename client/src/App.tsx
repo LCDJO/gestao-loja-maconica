@@ -11,6 +11,11 @@ import Tesouraria from "./pages/Tesouraria";
 import Relatorios from "./pages/Relatorios";
 import Configuracoes from "./pages/Configuracoes";
 import Conciliacao from "./pages/Conciliacao";
+import MemberLogin from "./pages/MemberLogin";
+import MemberDashboard from "./pages/MemberDashboard";
+import MemberPendencias from "./pages/MemberPendencias";
+import MemberHistorico from "./pages/MemberHistorico";
+import { MemberAuthProvider } from "./contexts/MemberAuthContext";
 
 
 function Router() {
@@ -23,6 +28,10 @@ function Router() {
       <Route path={"/relatorios"} component={Relatorios} />
       <Route path={"/configuracoes"} component={Configuracoes} />
       <Route path={"/conciliacao"} component={Conciliacao} />
+      <Route path={"/membro/login"} component={MemberLogin} />
+      <Route path={"/membro/dashboard"} component={MemberDashboard} />
+      <Route path={"/membro/pendencias"} component={MemberPendencias} />
+      <Route path={"/membro/historico"} component={MemberHistorico} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
@@ -43,8 +52,10 @@ function App() {
         // switchable
       >
         <TooltipProvider>
-          <Toaster />
-          <Router />
+          <MemberAuthProvider>
+            <Toaster />
+            <Router />
+          </MemberAuthProvider>
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

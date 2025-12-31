@@ -161,3 +161,10 @@ export interface ReconciliationMatch {
   confidence: number; // 0-100, percentual de confiança do match automático
   matchType: 'exact' | 'fuzzy' | 'manual';
 }
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  password?: string; // Apenas para armazenamento local simulado
+  isAuthenticated: boolean;
+}

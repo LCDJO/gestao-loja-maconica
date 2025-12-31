@@ -726,3 +726,145 @@ export const notificationTemplateStore = {
     return templates.filter(t => t.billType === billType);
   },
 };
+
+import { NotificationCampaign, WebhookEvent, NotificationROI, ChannelROI } from "./types";
+
+export const campaignStore = {
+  getCampaigns: (): NotificationCampaign[] => {
+    const stored = localStorage.getItem('notification_campaigns');
+    return stored ? JSON.parse(stored) : [];
+  },
+  addCampaign: (campaign: Omit<NotificationCampaign, 'id' | 'createdAt'>) => {
+    const campaigns = campaignStore.getCampaigns();
+    const newCampaign = {
+      ...campaign,
+      id: generateId(),
+      createdAt: new Date().toISOString(),
+    };
+    campaigns.push(newCampaign);
+    localStorage.setItem('notification_campaigns', JSON.stringify(campaigns));
+    return newCampaign;
+  },
+  updateCampaign: (id: string, data: Partial<NotificationCampaign>) => {
+    const campaigns = campaignStore.getCampaigns();
+    const index = campaigns.findIndex(c => c.id === id);
+    if (index !== -1) {
+      campaigns[index] = { ...campaigns[index], ...data };
+      localStorage.setItem('notification_campaigns', JSON.stringify(campaigns));
+      return campaigns[index];
+    }
+    return null;
+  },
+  deleteCampaign: (id: string) => {
+    const campaigns = campaignStore.getCampaigns();
+    const filtered = campaigns.filter(c => c.id !== id);
+    localStorage.setItem('notification_campaigns', JSON.stringify(filtered));
+  },
+  getCampaignById: (id: string) => {
+    const campaigns = campaignStore.getCampaigns();
+    return campaigns.find(c => c.id === id);
+  },
+};
+
+export const webhookEventStore = {
+  getEvents: (): WebhookEvent[] => {
+    const stored = localStorage.getItem('webhook_events');
+    return stored ? JSON.parse(stored) : [];
+  },
+  addEvent: (event: Omit<WebhookEvent, 'id'>) => {
+    const events = webhookEventStore.getEvents();
+    const newEvent = {
+      ...event,
+      id: generateId(),
+    };
+    events.push(newEvent);
+    localStorage.setItem('webhook_events', JSON.stringify(events));
+    return newEvent;
+  },
+  getEventsByCampaign: (campaignId: string): WebhookEvent[] => {
+    const events = webhookEventStore.getEvents();
+    return events.filter(e => e.campaignId === campaignId);
+  },
+  getEventsByType: (type: string): WebhookEvent[] => {
+    const events = webhookEventStore.getEvents();
+    return events.filter(e => e.type === type);
+  },
+};
+
+export const roiStore = {
+  calculateROI: (startDate: string, endDate: string): NotificationROI => {
+    const campaigns = campaignStore.getCampaigns();
+    const events = webhookEventStore.getEvents();
+
+    const filtered = campaigns.filter(c => {
+      const date = new Date(c.createdAt);
+      return date >= new Date(startDate) && date <= new Date(endDate);
+    });
+
+    const channels = {
+      email: { campaigns: 0, sent: 0, converted: 0, revenue: 0, cost: 0, roi: 0, conversionRate: 0, revenuePerSent: 0, costPerConversion: 0 },
+      push: { campaigns: 0, sent: 0, converted: 0, revenue: 0, cost: 0, roi: 0, conversionRate: 0, revenuePerSent: 0, costPerConversion: 0 },
+      whatsapp: { campaigns: 0, sent: 0, converted: 0, revenue: 0, cost: 0, roi: 0, conversionRate: 0, revenuePerSent: 0, costPerConversion: 0 },
+      sms: { campaigns: 0, sent: 0, converted: 0, revenue: 0, cost: 0, roi: 0, conversionRate: 0, revenuePerSent: 0, costPerConversion: 0 },
+    };
+
+    let totalSent = 0;
+    let totalConverted = 0;
+    let totalRevenue = 0;
+    let totalCost = 0;
+
+    filtered.forEach(campaign => {
+      const channel = channels[campaign.channel];
+      const campaignEvents = events.filter(e => e.campaignId === campaign.id);
+      
+      channel.campaigns += 1;
+      channel.sent += campaign.recipientCount;
+      totalSent += campaign.recipientCount;
+
+      const conversions = campaignEvents.filter(e => e.type === 'converted');
+      const revenue = conversions.reduce((sum, e) => sum + (e.metadata?.paymentAmount || 0), 0);
+
+      channel.converted += conversions.length;
+      channel.revenue += revenue;
+      totalConverted += conversions.length;
+      totalRevenue += revenue;
+
+      // Custo estimado: R$ 0.10 por email, R$ 0.05 por push, R$ 0.15 por SMS, R$ 0.20 por WhatsApp
+      const costPerMessage = {
+        email: 0.10,
+        push: 0.05,
+        whatsapp: 0.20,
+        sms: 0.15,
+      };
+
+      const cost = campaign.recipientCount * costPerMessage[campaign.channel];
+      channel.cost += cost;
+      totalCost += cost;
+    });
+
+    // Calcular métricas
+    Object.values(channels).forEach(ch => {
+      ch.conversionRate = ch.sent > 0 ? (ch.converted / ch.sent) * 100 : 0;
+      ch.revenuePerSent = ch.sent > 0 ? ch.revenue / ch.sent : 0;
+      ch.costPerConversion = ch.converted > 0 ? ch.cost / ch.converted : 0;
+      ch.roi = ch.cost > 0 ? ((ch.revenue - ch.cost) / ch.cost) * 100 : 0;
+    });
+
+    const bestChannel = Object.entries(channels).reduce((best, [key, val]) => 
+      val.roi > best[1].roi ? [key, val] : best
+    );
+
+    return {
+      period: { startDate, endDate },
+      channels,
+      totalCampaigns: filtered.length,
+      totalSent,
+      totalConverted,
+      totalRevenue,
+      totalCost,
+      overallROI: totalCost > 0 ? ((totalRevenue - totalCost) / totalCost) * 100 : 0,
+      bestPerformingChannel: bestChannel[0],
+      bestPerformingTemplate: '',
+    };
+  },
+};

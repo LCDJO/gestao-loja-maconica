@@ -371,3 +371,102 @@ export interface BillTypeMetrics {
   openRate: number;
   clickRate: number;
 }
+
+export interface NotificationCampaign {
+  id: string;
+  name: string;
+  description: string;
+  billType: 'mensalidade' | 'mutua' | 'taxa' | 'outro';
+  channel: 'email' | 'push' | 'whatsapp' | 'sms';
+  scheduledFor: string;
+  status: 'draft' | 'scheduled' | 'sent' | 'cancelled';
+  templateId: string;
+  recipientCount: number;
+  abTest?: ABTest;
+  createdAt: string;
+  sentAt?: string;
+  campaignMetrics?: CampaignMetrics;
+}
+
+export interface ABTest {
+  enabled: boolean;
+  templateAId: string;
+  templateBId: string;
+  splitPercentage: number; // 50 = 50/50 split
+  winnerTemplate?: string;
+  results?: {
+    templateA: ABTestResults;
+    templateB: ABTestResults;
+  };
+}
+
+export interface ABTestResults {
+  sent: number;
+  delivered: number;
+  opened: number;
+  clicked: number;
+  converted: number;
+  openRate: number;
+  clickRate: number;
+  conversionRate: number;
+}
+
+export interface CampaignMetrics {
+  sent: number;
+  delivered: number;
+  opened: number;
+  clicked: number;
+  converted: number;
+  revenue: number;
+  openRate: number;
+  clickRate: number;
+  conversionRate: number;
+  roi: number;
+}
+
+export interface WebhookEvent {
+  id: string;
+  campaignId: string;
+  type: 'sent' | 'delivered' | 'opened' | 'clicked' | 'converted' | 'bounced' | 'unsubscribed';
+  memberId: string;
+  memberEmail: string;
+  timestamp: string;
+  metadata?: {
+    templateId?: string;
+    linkUrl?: string;
+    paymentAmount?: number;
+  };
+}
+
+export interface NotificationROI {
+  period: {
+    startDate: string;
+    endDate: string;
+  };
+  channels: {
+    email: ChannelROI;
+    push: ChannelROI;
+    whatsapp: ChannelROI;
+    sms: ChannelROI;
+  };
+  totalCampaigns: number;
+  totalSent: number;
+  totalConverted: number;
+  totalRevenue: number;
+  totalCost: number;
+  overallROI: number;
+  bestPerformingChannel: string;
+  bestPerformingTemplate: string;
+}
+
+export interface ChannelROI {
+  campaigns: number;
+  sent: number;
+  converted: number;
+  revenue: number;
+  cost: number;
+  roi: number;
+  conversionRate: number;
+  revenuePerSent: number;
+  costPerConversion: number;
+}

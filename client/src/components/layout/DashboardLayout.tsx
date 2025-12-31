@@ -13,7 +13,9 @@ import {
   Banknote,
   Mail,
   BarChart3,
-  FileText
+  FileText,
+  Clock,
+  TrendingUp
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -76,6 +78,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       label: "Templates", 
       icon: FileText, 
       href: "/templates-notificacao" 
+    },
+    { 
+      label: "Campanhas", 
+      icon: Clock, 
+      href: "/agendamento-campanhas" 
+    },
+    { 
+      label: "ROI", 
+      icon: TrendingUp, 
+      href: "/relatorio-roi" 
     },
   ];
 

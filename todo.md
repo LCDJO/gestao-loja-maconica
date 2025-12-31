@@ -104,3 +104,30 @@
 - [ ] Implementar seletor de cores
 - [ ] Criar templates padrão para cada tipo de cobrança
 - [ ] Implementar variáveis dinâmicas (nome, valor, vencimento, etc)
+
+
+## Fase 27: Agendamento de Campanhas com Testes A/B
+- [ ] Criar tipos para campanhas e testes A/B
+- [ ] Implementar store para campanhas
+- [ ] Criar página de agendamento de campanhas
+- [ ] Implementar seleção de templates para A/B
+- [ ] Implementar agendamento de data/hora
+- [ ] Criar interface de configuração de testes A/B
+- [ ] Implementar simulação de envio em lote
+
+## Fase 28: Webhooks de Rastreamento
+- [ ] Criar tipos para eventos de webhook
+- [ ] Implementar store para eventos de rastreamento
+- [ ] Criar sistema de simulação de webhooks
+- [ ] Implementar rastreamento de aberturas
+- [ ] Implementar rastreamento de cliques
+- [ ] Implementar rastreamento de conversões
+- [ ] Atualizar analytics em tempo real
+
+## Fase 29: Relatório de ROI
+- [ ] Criar tipos para ROI
+- [ ] Implementar cálculo de ROI por canal
+- [ ] Criar página de relatório de ROI
+- [ ] Implementar gráficos de conversão
+- [ ] Implementar análise de arrecadação por canal
+- [ ] Criar exportação de relatórios

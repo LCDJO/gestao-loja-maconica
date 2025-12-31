@@ -22,6 +22,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import NotificationCenter from "@/components/NotificationCenter";
+import { userPermissionsStore } from "@/lib/store";
+import { Lock } from "lucide-react";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -50,6 +52,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     parameters: false,
   });
   const [expandedSubmenus, setExpandedSubmenus] = useState<Record<string, boolean>>({});
+  const userPermissions = userPermissionsStore.getCurrentUser();
+  const canAccessParametros = userPermissionsStore.canAccessParametros();
 
   const toggleSection = (section: string) => {
     setExpandedSections(prev => ({
@@ -72,28 +76,28 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       items: [
         { label: "Painel Geral", icon: LayoutDashboard, href: "/" },
         { label: "Dashboard Executivo", icon: BarChart3, href: "/dashboard-executivo" },
-        { label: "Secretaria", icon: ScrollText, href: "/secretaria" },
-        { label: "Chancelaria", icon: Users, href: "/chancelaria" },
-        { label: "Tesouraria", icon: Landmark, href: "/tesouraria" },
+        ...(userPermissions.permissions.secretaria ? [{ label: "Secretaria", icon: ScrollText, href: "/secretaria" }] : []),
+        ...(userPermissions.permissions.chancelaria ? [{ label: "Chancelaria", icon: Users, href: "/chancelaria" }] : []),
+        ...(userPermissions.permissions.tesouraria ? [{ label: "Tesouraria", icon: Landmark, href: "/tesouraria" }] : []),
       ]
     },
-    {
+    ...(userPermissions.permissions.comunicados || userPermissions.permissions.agendamentoCampanhas ? [{
       id: "communication",
       label: "Ações de Comunicação",
       items: [
-        { label: "Comunicados", icon: Mail, href: "/comunicados" },
-        { label: "Agendamento de Campanhas", icon: Clock, href: "/agendamento-campanhas" },
+        ...(userPermissions.permissions.comunicados ? [{ label: "Comunicados", icon: Mail, href: "/comunicados" }] : []),
+        ...(userPermissions.permissions.agendamentoCampanhas ? [{ label: "Agendamento de Campanhas", icon: Clock, href: "/agendamento-campanhas" }] : []),
       ]
-    },
-    {
+    }] : []),
+    ...(userPermissions.permissions.relatorios || userPermissions.permissions.roi || userPermissions.permissions.churn ? [{
       id: "reports",
       label: "Relatórios & Análise",
       items: [
-        { label: "Relatórios", icon: PieChart, href: "/relatorios" },
-        { label: "ROI", icon: TrendingUp, href: "/relatorio-roi" },
-        { label: "Churn", icon: TrendingUp, href: "/relatorio-churn" },
+        ...(userPermissions.permissions.relatorios ? [{ label: "Relatórios", icon: PieChart, href: "/relatorios" }] : []),
+        ...(userPermissions.permissions.roi ? [{ label: "ROI", icon: TrendingUp, href: "/relatorio-roi" }] : []),
+        ...(userPermissions.permissions.churn ? [{ label: "Churn", icon: TrendingUp, href: "/relatorio-churn" }] : []),
       ]
-    },
+    }] : []),
     {
       id: "parameters",
       label: "Parâmetros",

@@ -1423,3 +1423,151 @@ export const pushNotificationCampaignStore = {
     };
   },
 };
+
+
+// ===== USER PERMISSIONS STORE =====
+export type UserRole = 'admin' | 'tesoureiro' | 'secretario' | 'visualizador' | 'membro';
+
+export interface UserPermissions {
+  userId: string;
+  role: UserRole;
+  permissions: {
+    // Módulos
+    secretaria: boolean;
+    chancelaria: boolean;
+    tesouraria: boolean;
+    
+    // Ações de Comunicação
+    comunicados: boolean;
+    agendamentoCampanhas: boolean;
+    
+    // Parâmetros
+    parametros: boolean;
+    integracoes: boolean;
+    templates: boolean;
+    agendamentos: boolean;
+    analytics: boolean;
+    
+    // Relatórios
+    relatorios: boolean;
+    roi: boolean;
+    churn: boolean;
+  };
+}
+
+export const userPermissionsStore = {
+  getCurrentUser: (): UserPermissions => {
+    const stored = localStorage.getItem('current_user');
+    if (stored) {
+      return JSON.parse(stored);
+    }
+    // Usuário padrão (admin com todas as permissões)
+    return {
+      userId: 'admin_default',
+      role: 'admin',
+      permissions: {
+        secretaria: true,
+        chancelaria: true,
+        tesouraria: true,
+        comunicados: true,
+        agendamentoCampanhas: true,
+        parametros: true,
+        integracoes: true,
+        templates: true,
+        agendamentos: true,
+        analytics: true,
+        relatorios: true,
+        roi: true,
+        churn: true,
+      }
+    };
+  },
+  
+  setCurrentUser: (user: UserPermissions) => {
+    localStorage.setItem('current_user', JSON.stringify(user));
+  },
+  
+  isAdmin: (): boolean => {
+    const user = userPermissionsStore.getCurrentUser();
+    return user.role === 'admin';
+  },
+  
+  hasPermission: (permission: keyof UserPermissions['permissions']): boolean => {
+    const user = userPermissionsStore.getCurrentUser();
+    return user.permissions[permission] === true;
+  },
+  
+  canAccessParametros: (): boolean => {
+    return userPermissionsStore.isAdmin();
+  },
+  
+  canAccessComunicacao: (): boolean => {
+    const user = userPermissionsStore.getCurrentUser();
+    return user.permissions.comunicados || user.permissions.agendamentoCampanhas;
+  },
+  
+  getPermissionsByRole: (role: UserRole): UserPermissions['permissions'] => {
+    const basePermissions: UserPermissions['permissions'] = {
+      secretaria: false,
+      chancelaria: false,
+      tesouraria: false,
+      comunicados: false,
+      agendamentoCampanhas: false,
+      parametros: false,
+      integracoes: false,
+      templates: false,
+      agendamentos: false,
+      analytics: false,
+      relatorios: false,
+      roi: false,
+      churn: false,
+    };
+    
+    switch (role) {
+      case 'admin':
+        return {
+          secretaria: true,
+          chancelaria: true,
+          tesouraria: true,
+          comunicados: true,
+          agendamentoCampanhas: true,
+          parametros: true,
+          integracoes: true,
+          templates: true,
+          agendamentos: true,
+          analytics: true,
+          relatorios: true,
+          roi: true,
+          churn: true,
+        };
+      case 'tesoureiro':
+        return {
+          ...basePermissions,
+          tesouraria: true,
+          relatorios: true,
+          roi: true,
+          churn: true,
+        };
+      case 'secretario':
+        return {
+          ...basePermissions,
+          secretaria: true,
+          chancelaria: true,
+          comunicados: true,
+          agendamentoCampanhas: true,
+          relatorios: true,
+        };
+      case 'visualizador':
+        return {
+          ...basePermissions,
+          relatorios: true,
+          roi: true,
+          churn: true,
+        };
+      case 'membro':
+        return basePermissions;
+      default:
+        return basePermissions;
+    }
+  }
+};

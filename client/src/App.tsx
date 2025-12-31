@@ -22,6 +22,7 @@ import AnalyticsNotificacoes from "./pages/AnalyticsNotificacoes";
 import TemplatesNotificacao from "./pages/TemplatesNotificacao";
 import AgendamentoCampanhas from "./pages/AgendamentoCampanhas";
 import RelatorioROI from "./pages/RelatorioROI";
+import Parametrizacao from "./pages/Parametrizacao";
 import { MemberAuthProvider } from "./contexts/MemberAuthContext";
 
 
@@ -46,6 +47,7 @@ function Router() {
       <Route path={"/templates-notificacao"} component={TemplatesNotificacao} />
       <Route path={"/agendamento-campanhas"} component={AgendamentoCampanhas} />
       <Route path={"/relatorio-roi"} component={RelatorioROI} />
+      <Route path={"/parametrizacao"} component={Parametrizacao} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

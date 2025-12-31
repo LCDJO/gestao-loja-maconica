@@ -319,6 +319,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 Portal do Membro
               </div>
             </Link>
+
+            {/* Version Footer */}
+            <Link href="/changelog">
+              <div className="text-xs text-gray-500 hover:text-gray-700 font-medium px-3 py-2 rounded-md hover:bg-gray-100 transition-colors cursor-pointer border-t border-gray-200 mt-3 pt-3 text-center">
+                <span className="block font-bold text-gray-600">v2.5.0</span>
+                <span className="block text-gray-400 text-xs mt-1">Ver changelog</span>
+              </div>
+            </Link>
           </div>
         </div>
       </aside>

@@ -72,3 +72,35 @@
 - [ ] Criar página de gerenciamento de documentos para assinatura
 - [ ] Implementar fluxo de envio de documento para assinatura
 - [ ] Adicionar histórico de assinaturas
+
+
+## Fase 22: Módulo de Gerenciamento de Documentos
+- [ ] Criar tipos para documentos e lotes de assinatura
+- [ ] Implementar store para gerenciamento de documentos
+- [ ] Criar página de upload e gerenciamento de documentos
+- [ ] Implementar seleção de signatários para lote
+- [ ] Criar interface de envio em lote para OpenSign
+- [ ] Implementar rastreamento de status de assinatura
+- [ ] Adicionar histórico de documentos assinados
+- [ ] Criar templates de documentos padrão
+
+
+## Fase 24: Dashboard de Analytics de Notificações
+- [ ] Criar tipos para métricas de notificação
+- [ ] Implementar store para analytics
+- [ ] Criar página de dashboard de analytics
+- [ ] Implementar gráficos de taxa de entrega por canal
+- [ ] Implementar gráficos de taxa de abertura
+- [ ] Implementar gráficos de cliques em links
+- [ ] Adicionar filtros por período e tipo de cobrança
+- [ ] Criar relatórios exportáveis
+
+## Fase 25: Templates Customizáveis de Notificação
+- [ ] Criar tipos para templates
+- [ ] Implementar store para templates
+- [ ] Criar página de gerenciamento de templates
+- [ ] Implementar editor de templates com preview
+- [ ] Adicionar suporte a upload de logo
+- [ ] Implementar seletor de cores
+- [ ] Criar templates padrão para cada tipo de cobrança
+- [ ] Implementar variáveis dinâmicas (nome, valor, vencimento, etc)

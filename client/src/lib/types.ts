@@ -248,3 +248,126 @@ export interface DocumentSignature {
   expiresAt?: string;
   openSignDocumentId?: string;
 }
+
+export interface Document {
+  id: string;
+  name: string;
+  description: string;
+  fileUrl: string;
+  fileType: string;
+  uploadedAt: string;
+  uploadedBy: string;
+  status: 'draft' | 'ready' | 'sent' | 'completed' | 'failed';
+  documentType: 'ata' | 'estatuto' | 'contrato' | 'outro';
+}
+
+export interface SignatureBatch {
+  id: string;
+  name: string;
+  description: string;
+  documents: string[]; // IDs dos documentos
+  signers: BatchSigner[];
+  status: 'draft' | 'pending' | 'in_progress' | 'completed' | 'failed';
+  createdAt: string;
+  createdBy: string;
+  sentAt?: string;
+  completedAt?: string;
+  openSignBatchId?: string;
+}
+
+export interface BatchSigner {
+  id: string;
+  memberId: string;
+  memberName: string;
+  memberEmail: string;
+  status: 'pending' | 'signed' | 'rejected' | 'expired';
+  signedAt?: string;
+  openSignSignerId?: string;
+}
+
+export interface DocumentTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: 'ata' | 'estatuto' | 'contrato' | 'outro';
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface NotificationMetrics {
+  id: string;
+  notificationId: string;
+  channel: 'email' | 'push' | 'whatsapp' | 'sms';
+  billType: 'mensalidade' | 'mutua' | 'taxa' | 'outro';
+  sentAt: string;
+  sent: number;
+  delivered: number;
+  opened: number;
+  clicked: number;
+  failed: number;
+  deliveryRate: number;
+  openRate: number;
+  clickRate: number;
+}
+
+export interface NotificationTemplate {
+  id: string;
+  name: string;
+  billType: 'mensalidade' | 'mutua' | 'taxa' | 'outro';
+  channel: 'email' | 'push' | 'whatsapp' | 'sms';
+  subject?: string;
+  content: string;
+  logoUrl?: string;
+  primaryColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  variables: string[]; // Ex: ['{nome}', '{valor}', '{vencimento}']
+  createdAt: string;
+  updatedAt: string;
+  isDefault: boolean;
+}
+
+export interface NotificationAnalytics {
+  period: {
+    startDate: string;
+    endDate: string;
+  };
+  channels: {
+    email: ChannelMetrics;
+    push: ChannelMetrics;
+    whatsapp: ChannelMetrics;
+    sms: ChannelMetrics;
+  };
+  byBillType: {
+    mensalidade: BillTypeMetrics;
+    mutua: BillTypeMetrics;
+    taxa: BillTypeMetrics;
+    outro: BillTypeMetrics;
+  };
+  totalNotificationsSent: number;
+  totalDelivered: number;
+  totalOpened: number;
+  totalClicked: number;
+}
+
+export interface ChannelMetrics {
+  sent: number;
+  delivered: number;
+  opened: number;
+  clicked: number;
+  failed: number;
+  deliveryRate: number;
+  openRate: number;
+  clickRate: number;
+}
+
+export interface BillTypeMetrics {
+  sent: number;
+  delivered: number;
+  opened: number;
+  clicked: number;
+  deliveryRate: number;
+  openRate: number;
+  clickRate: number;
+}

@@ -573,3 +573,156 @@ export const documentSignatureStore = {
     return documents.filter(d => d.signerEmail === signerEmail);
   },
 };
+
+import { NotificationMetrics, NotificationTemplate, NotificationAnalytics } from "./types";
+
+export const notificationMetricsStore = {
+  getMetrics: (): NotificationMetrics[] => {
+    const stored = localStorage.getItem('notification_metrics');
+    return stored ? JSON.parse(stored) : [];
+  },
+  addMetric: (metric: Omit<NotificationMetrics, 'id'>) => {
+    const metrics = notificationMetricsStore.getMetrics();
+    const newMetric = { ...metric, id: generateId() };
+    metrics.push(newMetric);
+    localStorage.setItem('notification_metrics', JSON.stringify(metrics));
+    return newMetric;
+  },
+  getAnalytics: (startDate: string, endDate: string): NotificationAnalytics => {
+    const metrics = notificationMetricsStore.getMetrics();
+    const filtered = metrics.filter(m => {
+      const date = new Date(m.sentAt);
+      return date >= new Date(startDate) && date <= new Date(endDate);
+    });
+
+    const channels = {
+      email: { sent: 0, delivered: 0, opened: 0, clicked: 0, failed: 0, deliveryRate: 0, openRate: 0, clickRate: 0 },
+      push: { sent: 0, delivered: 0, opened: 0, clicked: 0, failed: 0, deliveryRate: 0, openRate: 0, clickRate: 0 },
+      whatsapp: { sent: 0, delivered: 0, opened: 0, clicked: 0, failed: 0, deliveryRate: 0, openRate: 0, clickRate: 0 },
+      sms: { sent: 0, delivered: 0, opened: 0, clicked: 0, failed: 0, deliveryRate: 0, openRate: 0, clickRate: 0 },
+    };
+
+    const byBillType = {
+      mensalidade: { sent: 0, delivered: 0, opened: 0, clicked: 0, deliveryRate: 0, openRate: 0, clickRate: 0 },
+      mutua: { sent: 0, delivered: 0, opened: 0, clicked: 0, deliveryRate: 0, openRate: 0, clickRate: 0 },
+      taxa: { sent: 0, delivered: 0, opened: 0, clicked: 0, deliveryRate: 0, openRate: 0, clickRate: 0 },
+      outro: { sent: 0, delivered: 0, opened: 0, clicked: 0, deliveryRate: 0, openRate: 0, clickRate: 0 },
+    };
+
+    filtered.forEach(metric => {
+      const channel = channels[metric.channel];
+      const billType = byBillType[metric.billType];
+
+      channel.sent += metric.sent;
+      channel.delivered += metric.delivered;
+      channel.opened += metric.opened;
+      channel.clicked += metric.clicked;
+      channel.failed += metric.failed;
+
+      billType.sent += metric.sent;
+      billType.delivered += metric.delivered;
+      billType.opened += metric.opened;
+      billType.clicked += metric.clicked;
+    });
+
+    // Calcular taxas
+    Object.values(channels).forEach(ch => {
+      ch.deliveryRate = ch.sent > 0 ? (ch.delivered / ch.sent) * 100 : 0;
+      ch.openRate = ch.delivered > 0 ? (ch.opened / ch.delivered) * 100 : 0;
+      ch.clickRate = ch.opened > 0 ? (ch.clicked / ch.opened) * 100 : 0;
+    });
+
+    Object.values(byBillType).forEach(bt => {
+      bt.deliveryRate = bt.sent > 0 ? (bt.delivered / bt.sent) * 100 : 0;
+      bt.openRate = bt.delivered > 0 ? (bt.opened / bt.delivered) * 100 : 0;
+      bt.clickRate = bt.opened > 0 ? (bt.clicked / bt.opened) * 100 : 0;
+    });
+
+    return {
+      period: { startDate, endDate },
+      channels,
+      byBillType,
+      totalNotificationsSent: filtered.reduce((sum, m) => sum + m.sent, 0),
+      totalDelivered: filtered.reduce((sum, m) => sum + m.delivered, 0),
+      totalOpened: filtered.reduce((sum, m) => sum + m.opened, 0),
+      totalClicked: filtered.reduce((sum, m) => sum + m.clicked, 0),
+    };
+  },
+};
+
+export const notificationTemplateStore = {
+  getTemplates: (): NotificationTemplate[] => {
+    const stored = localStorage.getItem('notification_templates');
+    if (stored) {
+      return JSON.parse(stored);
+    }
+    // Templates padrão
+    return [
+      {
+        id: generateId(),
+        name: 'Mensalidade - Email',
+        billType: 'mensalidade',
+        channel: 'email',
+        subject: 'Aviso de Vencimento - Mensalidade',
+        content: `Prezado(a) {nome},\n\nInformamos que sua mensalidade no valor de R$ {valor} vence em {vencimento}.\n\nPara efetuar o pagamento, utilize a chave PIX ou o boleto em anexo.\n\nAtenciosamente,\nLoja Maçônica`,
+        primaryColor: '#1e3a8a',
+        secondaryColor: '#d4af37',
+        accentColor: '#ffffff',
+        variables: ['{nome}', '{valor}', '{vencimento}'],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        isDefault: true,
+      },
+      {
+        id: generateId(),
+        name: 'Mútua - Email',
+        billType: 'mutua',
+        channel: 'email',
+        subject: 'Aviso de Vencimento - Mútua',
+        content: `Prezado(a) {nome},\n\nInformamos que sua mútua no valor de R$ {valor} vence em {vencimento}.\n\nPara efetuar o pagamento, utilize a chave PIX ou o boleto em anexo.\n\nAtenciosamente,\nLoja Maçônica`,
+        primaryColor: '#1e3a8a',
+        secondaryColor: '#d4af37',
+        accentColor: '#ffffff',
+        variables: ['{nome}', '{valor}', '{vencimento}'],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        isDefault: true,
+      },
+    ];
+  },
+  addTemplate: (template: Omit<NotificationTemplate, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const templates = notificationTemplateStore.getTemplates();
+    const newTemplate = {
+      ...template,
+      id: generateId(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    templates.push(newTemplate);
+    localStorage.setItem('notification_templates', JSON.stringify(templates));
+    return newTemplate;
+  },
+  updateTemplate: (id: string, data: Partial<NotificationTemplate>) => {
+    const templates = notificationTemplateStore.getTemplates();
+    const index = templates.findIndex(t => t.id === id);
+    if (index !== -1) {
+      templates[index] = {
+        ...templates[index],
+        ...data,
+        updatedAt: new Date().toISOString(),
+      };
+      localStorage.setItem('notification_templates', JSON.stringify(templates));
+      return templates[index];
+    }
+    return null;
+  },
+  deleteTemplate: (id: string) => {
+    const templates = notificationTemplateStore.getTemplates();
+    const filtered = templates.filter(t => t.id !== id);
+    localStorage.setItem('notification_templates', JSON.stringify(filtered));
+  },
+  getTemplatesByBillType: (billType: string): NotificationTemplate[] => {
+    const templates = notificationTemplateStore.getTemplates();
+    return templates.filter(t => t.billType === billType);
+  },
+};

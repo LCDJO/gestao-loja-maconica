@@ -11,7 +11,9 @@ import {
   LogOut,
   Settings,
   Banknote,
-  Mail
+  Mail,
+  BarChart3,
+  FileText
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -64,6 +66,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       label: "Notificações", 
       icon: Mail, 
       href: "/notificacoes" 
+    },
+    { 
+      label: "Analytics", 
+      icon: BarChart3, 
+      href: "/analytics-notificacoes" 
+    },
+    { 
+      label: "Templates", 
+      icon: FileText, 
+      href: "/templates-notificacao" 
     },
   ];
 

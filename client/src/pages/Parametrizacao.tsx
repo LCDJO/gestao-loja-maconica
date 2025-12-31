@@ -143,7 +143,7 @@ export default function Parametrizacao() {
             </TabsTrigger>
             <TabsTrigger value="comunicacao" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-600">
               <Phone className="h-4 w-4 mr-2" />
-              Comunicação
+              Comunicacao
             </TabsTrigger>
           </TabsList>
 

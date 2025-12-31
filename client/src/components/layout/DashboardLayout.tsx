@@ -72,14 +72,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { label: "Churn", icon: TrendingUp, href: "/relatorio-churn" },
       ]
     },
-    {
-      id: "automation",
-      label: "Automacao & Integracoes",
-      items: [
-        { label: "Automacao", icon: Clock, href: "/automacao-campanhas" },
-        { label: "Pagamentos", icon: Banknote, href: "/integracao-pagamentos" },
-      ]
-    },
+
   ];
 
   return (

@@ -1303,3 +1303,123 @@ export const notificationFilterStore = {
     localStorage.removeItem('notification_filters');
   },
 };
+
+
+// ===== PUSH NOTIFICATION TRACKING STORE =====
+export interface PushNotificationEvent {
+  id: string;
+  notificationId: string;
+  userId: string;
+  eventType: 'sent' | 'delivered' | 'opened' | 'clicked' | 'failed';
+  timestamp: string;
+  metadata?: Record<string, any>;
+}
+
+export const pushNotificationEventStore = {
+  getAll: (): PushNotificationEvent[] => {
+    const stored = localStorage.getItem('push_notification_events');
+    return stored ? JSON.parse(stored) : [];
+  },
+  add: (event: Omit<PushNotificationEvent, 'id'>) => {
+    const all = pushNotificationEventStore.getAll();
+    const newEvent: PushNotificationEvent = {
+      ...event,
+      id: generateId(),
+    };
+    all.push(newEvent);
+    localStorage.setItem('push_notification_events', JSON.stringify(all));
+    return newEvent;
+  },
+  getByNotificationId: (notificationId: string): PushNotificationEvent[] => {
+    const all = pushNotificationEventStore.getAll();
+    return all.filter(e => e.notificationId === notificationId);
+  },
+  getStats: (notificationId: string) => {
+    const events = pushNotificationEventStore.getByNotificationId(notificationId);
+    return {
+      sent: events.filter(e => e.eventType === 'sent').length,
+      delivered: events.filter(e => e.eventType === 'delivered').length,
+      opened: events.filter(e => e.eventType === 'opened').length,
+      clicked: events.filter(e => e.eventType === 'clicked').length,
+      failed: events.filter(e => e.eventType === 'failed').length,
+    };
+  },
+  getRecentStats: (days: number = 30) => {
+    const all = pushNotificationEventStore.getAll();
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - days);
+    
+    const recent = all.filter(e => new Date(e.timestamp) >= cutoff);
+    
+    return {
+      totalEvents: recent.length,
+      sent: recent.filter(e => e.eventType === 'sent').length,
+      delivered: recent.filter(e => e.eventType === 'delivered').length,
+      opened: recent.filter(e => e.eventType === 'opened').length,
+      clicked: recent.filter(e => e.eventType === 'clicked').length,
+      failed: recent.filter(e => e.eventType === 'failed').length,
+      deliveryRate: recent.length > 0 
+        ? Math.round((recent.filter(e => e.eventType === 'delivered').length / recent.filter(e => e.eventType === 'sent').length) * 100)
+        : 0,
+      openRate: recent.length > 0
+        ? Math.round((recent.filter(e => e.eventType === 'opened').length / recent.filter(e => e.eventType === 'delivered').length) * 100)
+        : 0,
+      clickRate: recent.length > 0
+        ? Math.round((recent.filter(e => e.eventType === 'clicked').length / recent.filter(e => e.eventType === 'opened').length) * 100)
+        : 0,
+    };
+  },
+};
+
+// ===== PUSH NOTIFICATION CAMPAIGN TRACKING =====
+export interface PushNotificationCampaign {
+  id: string;
+  name: string;
+  type: 'comunicado' | 'reuniao' | 'sistema';
+  totalRecipients: number;
+  sentAt: string;
+  status: 'enviado' | 'agendado' | 'cancelado';
+  metadata?: Record<string, any>;
+}
+
+export const pushNotificationCampaignStore = {
+  getAll: (): PushNotificationCampaign[] => {
+    const stored = localStorage.getItem('push_notification_campaigns');
+    return stored ? JSON.parse(stored) : [];
+  },
+  add: (campaign: Omit<PushNotificationCampaign, 'id'>) => {
+    const all = pushNotificationCampaignStore.getAll();
+    const newCampaign: PushNotificationCampaign = {
+      ...campaign,
+      id: generateId(),
+    };
+    all.push(newCampaign);
+    localStorage.setItem('push_notification_campaigns', JSON.stringify(all));
+    return newCampaign;
+  },
+  getById: (id: string): PushNotificationCampaign | null => {
+    const all = pushNotificationCampaignStore.getAll();
+    return all.find(c => c.id === id) || null;
+  },
+  getCampaignStats: (campaignId: string) => {
+    const campaign = pushNotificationCampaignStore.getById(campaignId);
+    if (!campaign) return null;
+    
+    const events = pushNotificationEventStore.getByNotificationId(campaignId);
+    const stats = pushNotificationEventStore.getStats(campaignId);
+    
+    return {
+      campaign,
+      ...stats,
+      deliveryRate: campaign.totalRecipients > 0
+        ? Math.round((stats.delivered / campaign.totalRecipients) * 100)
+        : 0,
+      openRate: stats.delivered > 0
+        ? Math.round((stats.opened / stats.delivered) * 100)
+        : 0,
+      clickRate: stats.opened > 0
+        ? Math.round((stats.clicked / stats.opened) * 100)
+        : 0,
+    };
+  },
+};

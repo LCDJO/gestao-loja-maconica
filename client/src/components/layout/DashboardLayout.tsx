@@ -73,8 +73,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       items: [
         { label: "Relatórios", icon: PieChart, href: "/relatorios" },
         { label: "Agendamento", icon: Clock, href: "/agendamento-relatorios" },
+        { label: "Analytics Push", icon: TrendingUp, href: "/analytics-push" },
         { label: "ROI", icon: TrendingUp, href: "/relatorio-roi" },
         { label: "Churn", icon: TrendingUp, href: "/relatorio-churn" },
+      ]
+    },
+    {
+      id: "integrations",
+      label: "Integrações",
+      items: [
+        { label: "Configuração de Email", icon: Mail, href: "/configuracao-email" },
       ]
     },
 

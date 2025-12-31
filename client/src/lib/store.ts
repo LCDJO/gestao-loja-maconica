@@ -1571,3 +1571,183 @@ export const userPermissionsStore = {
     }
   }
 };
+
+
+// ===== USER MANAGEMENT STORE =====
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  status: 'ativo' | 'inativo' | 'suspenso';
+  createdAt: string;
+  updatedAt: string;
+  lastLogin?: string;
+}
+
+export const userManagementStore = {
+  getAll: (): User[] => {
+    const stored = localStorage.getItem('users');
+    if (!stored) {
+      // Usuário admin padrão
+      return [{
+        id: 'admin_default',
+        name: 'Administrador',
+        email: 'admin@loja-maconica.com.br',
+        role: 'admin',
+        status: 'ativo',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }];
+    }
+    return JSON.parse(stored);
+  },
+  
+  getById: (id: string): User | null => {
+    const users = userManagementStore.getAll();
+    return users.find(u => u.id === id) || null;
+  },
+  
+  getByEmail: (email: string): User | null => {
+    const users = userManagementStore.getAll();
+    return users.find(u => u.email === email) || null;
+  },
+  
+  add: (user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const users = userManagementStore.getAll();
+    const newUser: User = {
+      ...user,
+      id: generateId(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+    accessAuditStore.log('CREATE_USER', newUser.id, `Usuário ${newUser.name} criado`);
+    return newUser;
+  },
+  
+  update: (id: string, updates: Partial<User>) => {
+    const users = userManagementStore.getAll();
+    const index = users.findIndex(u => u.id === id);
+    if (index === -1) return null;
+    
+    users[index] = {
+      ...users[index],
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    };
+    localStorage.setItem('users', JSON.stringify(users));
+    accessAuditStore.log('UPDATE_USER', id, `Usuário atualizado`);
+    return users[index];
+  },
+  
+  delete: (id: string) => {
+    const users = userManagementStore.getAll();
+    const filtered = users.filter(u => u.id !== id);
+    localStorage.setItem('users', JSON.stringify(filtered));
+    accessAuditStore.log('DELETE_USER', id, `Usuário deletado`);
+    return true;
+  },
+  
+  updateLastLogin: (id: string) => {
+    return userManagementStore.update(id, {
+      lastLogin: new Date().toISOString(),
+    });
+  },
+  
+  changeRole: (id: string, newRole: UserRole) => {
+    return userManagementStore.update(id, { role: newRole });
+  },
+  
+  changeStatus: (id: string, status: 'ativo' | 'inativo' | 'suspenso') => {
+    return userManagementStore.update(id, { status });
+  },
+};
+
+// ===== ACCESS AUDIT STORE =====
+export interface AuditLog {
+  id: string;
+  action: string;
+  userId: string;
+  targetId?: string;
+  description: string;
+  timestamp: string;
+  ipAddress?: string;
+  userAgent?: string;
+}
+
+export const accessAuditStore = {
+  getAll: (): AuditLog[] => {
+    const stored = localStorage.getItem('audit_logs');
+    return stored ? JSON.parse(stored) : [];
+  },
+  
+  log: (action: string, targetId: string, description: string) => {
+    const logs = accessAuditStore.getAll();
+    const currentUser = userPermissionsStore.getCurrentUser();
+    
+    const newLog: AuditLog = {
+      id: generateId(),
+      action,
+      userId: currentUser.userId,
+      targetId,
+      description,
+      timestamp: new Date().toISOString(),
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
+    };
+    
+    logs.push(newLog);
+    // Manter apenas últimos 10000 logs
+    if (logs.length > 10000) {
+      logs.shift();
+    }
+    localStorage.setItem('audit_logs', JSON.stringify(logs));
+    return newLog;
+  },
+  
+  getByUser: (userId: string): AuditLog[] => {
+    const logs = accessAuditStore.getAll();
+    return logs.filter(l => l.userId === userId);
+  },
+  
+  getByAction: (action: string): AuditLog[] => {
+    const logs = accessAuditStore.getAll();
+    return logs.filter(l => l.action === action);
+  },
+  
+  getByDateRange: (startDate: Date, endDate: Date): AuditLog[] => {
+    const logs = accessAuditStore.getAll();
+    return logs.filter(l => {
+      const logDate = new Date(l.timestamp);
+      return logDate >= startDate && logDate <= endDate;
+    });
+  },
+  
+  getRecent: (days: number = 7): AuditLog[] => {
+    const logs = accessAuditStore.getAll();
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - days);
+    
+    return logs.filter(l => new Date(l.timestamp) >= cutoff);
+  },
+  
+  clear: () => {
+    localStorage.removeItem('audit_logs');
+  },
+  
+  getStats: () => {
+    const logs = accessAuditStore.getAll();
+    const actions = new Map<string, number>();
+    
+    logs.forEach(log => {
+      actions.set(log.action, (actions.get(log.action) || 0) + 1);
+    });
+    
+    return {
+      totalLogs: logs.length,
+      actions: Object.fromEntries(actions),
+      lastLog: logs[logs.length - 1] || null,
+    };
+  },
+};

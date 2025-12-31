@@ -17,7 +17,8 @@ import {
   Clock,
   TrendingUp,
   ChevronDown,
-  Calendar
+  Calendar,
+  Shield
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -135,8 +136,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           icon: BarChart3, 
           href: "#analytics",
           submenu: [
-            { label: "Notificações", icon: BarChart3, href: "/analytics-notificacoes" },
+            { label: "Notificau00e7u00f5es", icon: BarChart3, href: "/analytics-notificacoes" },
             { label: "Push", icon: BarChart3, href: "/analytics-push" },
+          ]
+        },
+        { 
+          label: "Segurança", 
+          icon: Shield, 
+          href: "#seguranca",
+          submenu: [
+            { label: "Gerenciamento de Usuários", icon: Users, href: "/gerenciamento-usuarios" },
+            { label: "Auditoria de Acesso", icon: BarChart3, href: "/auditoria-acesso" },
           ]
         },
       ]

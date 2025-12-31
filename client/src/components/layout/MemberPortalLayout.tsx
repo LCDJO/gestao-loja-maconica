@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
-import { LogOut, Home, FileText, History } from 'lucide-react';
+import { LogOut, Home, FileText, History, Bell } from 'lucide-react';
 import { useMemberAuth } from '@/contexts/MemberAuthContext';
 
 interface MemberPortalLayoutProps {
@@ -16,6 +16,7 @@ export default function MemberPortalLayout({ children }: MemberPortalLayoutProps
     { label: 'Dashboard', icon: Home, href: '/membro/dashboard' },
     { label: 'Pendências', icon: FileText, href: '/membro/pendencias' },
     { label: 'Histórico', icon: History, href: '/membro/historico' },
+    { label: 'Notificações', icon: Bell, href: '/membro/notificacoes' },
   ];
 
   const handleLogout = () => {

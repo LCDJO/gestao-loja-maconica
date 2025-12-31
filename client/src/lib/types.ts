@@ -201,3 +201,50 @@ export interface NotificationSettings {
   mailgunKey?: string;
   mailgunDomain?: string;
 }
+
+export interface MemberNotificationPreferences {
+  memberId: string;
+  emailNotifications: boolean;
+  pushNotifications: boolean;
+  whatsappNotifications: boolean;
+  smsNotifications: boolean;
+  whatsappPhone?: string;
+  smsPhone?: string;
+  notificationTypes: {
+    reminder3Days: boolean;
+    reminder1Day: boolean;
+    overdue7Days: boolean;
+    overdue15Days: boolean;
+    eventNotifications: boolean;
+    meetingReminders: boolean;
+  };
+  updatedAt: string;
+}
+
+export interface OneSignalConfig {
+  enabled: boolean;
+  appId: string;
+  apiKey: string;
+  restApiKey: string;
+}
+
+export interface OpenSignConfig {
+  enabled: boolean;
+  apiKey: string;
+  apiUrl: string;
+  signerEmail: string;
+  signerName: string;
+}
+
+export interface DocumentSignature {
+  id: string;
+  documentName: string;
+  documentUrl: string;
+  signerEmail: string;
+  signerName: string;
+  status: 'pending' | 'signed' | 'rejected' | 'expired';
+  createdAt: string;
+  signedAt?: string;
+  expiresAt?: string;
+  openSignDocumentId?: string;
+}

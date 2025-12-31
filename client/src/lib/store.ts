@@ -471,3 +471,105 @@ export const notificationSettingsStore = {
     return settings;
   },
 };
+
+import { MemberNotificationPreferences, OneSignalConfig, OpenSignConfig, DocumentSignature } from "./types";
+
+export const memberNotificationPreferencesStore = {
+  getPreferences: (memberId: string): MemberNotificationPreferences => {
+    const stored = localStorage.getItem(`member_preferences_${memberId}`);
+    if (stored) {
+      return JSON.parse(stored);
+    }
+    // Preferências padrão
+    return {
+      memberId,
+      emailNotifications: true,
+      pushNotifications: true,
+      whatsappNotifications: false,
+      smsNotifications: false,
+      notificationTypes: {
+        reminder3Days: true,
+        reminder1Day: true,
+        overdue7Days: true,
+        overdue15Days: true,
+        eventNotifications: true,
+        meetingReminders: true,
+      },
+      updatedAt: new Date().toISOString(),
+    };
+  },
+  updatePreferences: (preferences: MemberNotificationPreferences) => {
+    localStorage.setItem(
+      `member_preferences_${preferences.memberId}`,
+      JSON.stringify({ ...preferences, updatedAt: new Date().toISOString() })
+    );
+    return preferences;
+  },
+};
+
+export const oneSignalConfigStore = {
+  getConfig: (): OneSignalConfig => {
+    const stored = localStorage.getItem('onesignal_config');
+    if (stored) {
+      return JSON.parse(stored);
+    }
+    return {
+      enabled: false,
+      appId: '',
+      apiKey: '',
+      restApiKey: '',
+    };
+  },
+  updateConfig: (config: OneSignalConfig) => {
+    localStorage.setItem('onesignal_config', JSON.stringify(config));
+    return config;
+  },
+};
+
+export const openSignConfigStore = {
+  getConfig: (): OpenSignConfig => {
+    const stored = localStorage.getItem('opensign_config');
+    if (stored) {
+      return JSON.parse(stored);
+    }
+    return {
+      enabled: false,
+      apiKey: '',
+      apiUrl: 'https://api.opensign.com',
+      signerEmail: '',
+      signerName: '',
+    };
+  },
+  updateConfig: (config: OpenSignConfig) => {
+    localStorage.setItem('opensign_config', JSON.stringify(config));
+    return config;
+  },
+};
+
+export const documentSignatureStore = {
+  getDocuments: (): DocumentSignature[] => {
+    const stored = localStorage.getItem('document_signatures');
+    return stored ? JSON.parse(stored) : [];
+  },
+  addDocument: (document: Omit<DocumentSignature, 'id'>) => {
+    const documents = documentSignatureStore.getDocuments();
+    const newDocument = { ...document, id: generateId() };
+    documents.push(newDocument);
+    localStorage.setItem('document_signatures', JSON.stringify(documents));
+    return newDocument;
+  },
+  updateDocument: (id: string, data: Partial<DocumentSignature>) => {
+    const documents = documentSignatureStore.getDocuments();
+    const index = documents.findIndex(d => d.id === id);
+    if (index !== -1) {
+      documents[index] = { ...documents[index], ...data };
+      localStorage.setItem('document_signatures', JSON.stringify(documents));
+      return documents[index];
+    }
+    return null;
+  },
+  getDocumentsByMember: (signerEmail: string): DocumentSignature[] => {
+    const documents = documentSignatureStore.getDocuments();
+    return documents.filter(d => d.signerEmail === signerEmail);
+  },
+};

@@ -16,6 +16,8 @@ import MemberDashboard from "./pages/MemberDashboard";
 import MemberPendencias from "./pages/MemberPendencias";
 import MemberHistorico from "./pages/MemberHistorico";
 import NotificacoesEmail from "./pages/NotificacoesEmail";
+import MemberNotificacoes from "./pages/MemberNotificacoes";
+import ConfiguracoesPush from "./pages/ConfiguracoesPush";
 import { MemberAuthProvider } from "./contexts/MemberAuthContext";
 
 
@@ -33,7 +35,9 @@ function Router() {
       <Route path={"/membro/dashboard"} component={MemberDashboard} />
       <Route path={"/membro/pendencias"} component={MemberPendencias} />
       <Route path={"/membro/historico"} component={MemberHistorico} />
+      <Route path={"/membro/notificacoes"} component={MemberNotificacoes} />
       <Route path={"/notificacoes"} component={NotificacoesEmail} />
+      <Route path={"/configuracoes-push"} component={ConfiguracoesPush} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

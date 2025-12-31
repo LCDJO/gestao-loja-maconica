@@ -48,3 +48,27 @@
 - [ ] Criar templates de email para diferentes cenários
 - [ ] Implementar visualização de histórico de envios
 - [ ] Adicionar testes de envio de email
+
+
+## Fase 18: Preferências de Notificação do Membro
+- [ ] Criar tipos para preferências de notificação do membro
+- [ ] Implementar store para preferências do membro
+- [ ] Criar página de configurações de notificação no portal do membro
+- [ ] Adicionar toggles para email, push, WhatsApp e SMS
+- [ ] Implementar validação de telefone/WhatsApp
+- [ ] Salvar preferências no localStorage
+
+## Fase 19: Integração OneSignal
+- [ ] Criar tipos para configuração OneSignal
+- [ ] Adicionar campos de configuração OneSignal no menu de Configurações
+- [ ] Implementar SDK do OneSignal
+- [ ] Criar função para registrar dispositivo no OneSignal
+- [ ] Implementar envio de push notifications via OneSignal
+
+## Fase 20: Integração OpenSign
+- [ ] Criar tipos para documentos e assinaturas
+- [ ] Adicionar campos de configuração OpenSign no menu de Configurações
+- [ ] Implementar integração com API OpenSign
+- [ ] Criar página de gerenciamento de documentos para assinatura
+- [ ] Implementar fluxo de envio de documento para assinatura
+- [ ] Adicionar histórico de assinaturas

@@ -13,13 +13,15 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { Save, Server, CreditCard, QrCode, FileText } from "lucide-react";
+import { Save, Server, CreditCard, QrCode, FileText, Bell, FileSignature } from "lucide-react";
+import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { configStore } from "@/lib/store";
 import { AppConfig } from "@/lib/types";
 
 export default function Configuracoes() {
   const [config, setConfig] = useState<AppConfig>(configStore.get());
+  const [, navigate] = useLocation();
 
   const handleSave = () => {
     configStore.save(config);
@@ -40,9 +42,10 @@ export default function Configuracoes() {
         </div>
 
         <Tabs defaultValue="integracoes" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger value="integracoes">Integrações (API)</TabsTrigger>
             <TabsTrigger value="pagamentos">Formas de Pagamento</TabsTrigger>
+            <TabsTrigger value="push">Push & Assinatura</TabsTrigger>
           </TabsList>
 
           <TabsContent value="integracoes" className="space-y-6">
@@ -350,6 +353,62 @@ export default function Configuracoes() {
                     })}
                   />
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="push" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Bell className="h-5 w-5 text-primary" />
+                    <div>
+                      <CardTitle>OneSignal - Push Notifications</CardTitle>
+                      <CardDescription>Configure notificações push para membros</CardDescription>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => navigate('/configuracoes-push')}
+                    variant="outline"
+                    className="gap-2"
+                  >
+                    <Bell className="h-4 w-4" />
+                    Configurar
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  OneSignal permite enviar notificações push para navegadores e aplicativos móveis. Ideal para lembretes de vencimento de cobranças e eventos da loja.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <FileSignature className="h-5 w-5 text-primary" />
+                    <div>
+                      <CardTitle>OpenSign - Assinatura Digital</CardTitle>
+                      <CardDescription>Configure assinatura eletrônica de documentos</CardDescription>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => navigate('/configuracoes-push')}
+                    variant="outline"
+                    className="gap-2"
+                  >
+                    <FileSignature className="h-4 w-4" />
+                    Configurar
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  OpenSign permite assinar documentos digitalmente com certificado digital. Perfeito para assinar atas, estatutos e outros documentos maçônicos.
+                </p>
               </CardContent>
             </Card>
           </TabsContent>

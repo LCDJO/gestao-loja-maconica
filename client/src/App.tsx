@@ -39,6 +39,7 @@ import ConfiguracaoEmail from "./pages/ConfiguracaoEmail";
 import AnalyticsPush from "./pages/AnalyticsPush";
 import GerenciamentoUsuarios from "./pages/GerenciamentoUsuarios";
 import AuditoriaAcesso from "./pages/AuditoriaAcesso";
+import ConfiguracoesLoja from "./pages/ConfiguracoesLoja";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { MemberAuthProvider } from "./contexts/MemberAuthContext";
 
@@ -81,6 +82,7 @@ function Router() {
       <Route path="/analytics-push" component={AnalyticsPush} />
       <Route path="/gerenciamento-usuarios" component={GerenciamentoUsuarios} />
       <Route path="/auditoria-acesso" component={AuditoriaAcesso} />
+      <Route path="/configuracoes-loja" component={ConfiguracoesLoja} />
       <Route path="/404" component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

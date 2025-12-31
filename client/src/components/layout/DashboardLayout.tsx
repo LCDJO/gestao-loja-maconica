@@ -101,9 +101,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     }] : []),
     {
       id: "parameters",
-      label: "Parâmetros",
+      label: "Configurações",
       items: [
-        { label: "Configuração Geral", icon: Settings, href: "/configuracoes" },
+        { label: "Configurações da Loja", icon: Settings, href: "/configuracoes-loja" },
         { 
           label: "Integrações", 
           icon: Mail, 

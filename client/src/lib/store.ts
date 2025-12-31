@@ -1208,3 +1208,98 @@ export const realtimeNotificationStore = {
     return notifications.filter(n => !n.read).length;
   },
 };
+
+
+
+
+// ===== SCHEDULED REPORTS STORE =====
+export interface ScheduledReport {
+  id: string;
+  name: string;
+  type: 'dashboard' | 'comunicados' | 'financeiro';
+  frequency: 'diario' | 'semanal' | 'mensal';
+  dayOfWeek?: number; // 0-6 para semanal
+  dayOfMonth?: number; // 1-31 para mensal
+  hour: number; // 0-23
+  minute: number; // 0-59
+  recipients: string[]; // emails
+  enabled: boolean;
+  lastRun?: string;
+  nextRun: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const scheduledReportStore = {
+  getAll: (): ScheduledReport[] => {
+    const stored = localStorage.getItem('scheduled_reports');
+    if (!stored) {
+      return [];
+    }
+    return JSON.parse(stored);
+  },
+  add: (report: Omit<ScheduledReport, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const reports = scheduledReportStore.getAll();
+    const newReport: ScheduledReport = {
+      ...report,
+      id: generateId(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    reports.push(newReport);
+    localStorage.setItem('scheduled_reports', JSON.stringify(reports));
+    return newReport;
+  },
+  update: (id: string, data: Partial<ScheduledReport>) => {
+    const reports = scheduledReportStore.getAll();
+    const index = reports.findIndex(r => r.id === id);
+    if (index !== -1) {
+      reports[index] = {
+        ...reports[index],
+        ...data,
+        updatedAt: new Date().toISOString(),
+      };
+      localStorage.setItem('scheduled_reports', JSON.stringify(reports));
+      return reports[index];
+    }
+    return null;
+  },
+  delete: (id: string) => {
+    const reports = scheduledReportStore.getAll();
+    const filtered = reports.filter(r => r.id !== id);
+    localStorage.setItem('scheduled_reports', JSON.stringify(filtered));
+  },
+  getById: (id: string): ScheduledReport | null => {
+    const reports = scheduledReportStore.getAll();
+    return reports.find(r => r.id === id) || null;
+  },
+};
+
+// ===== NOTIFICATION FILTERS STORE =====
+export interface NotificationFilter {
+  type?: 'comunicado' | 'reuniao' | 'sistema';
+  startDate?: string;
+  endDate?: string;
+  readStatus?: 'todos' | 'lidos' | 'nao-lidos';
+}
+
+export const notificationFilterStore = {
+  get: (): NotificationFilter => {
+    const stored = localStorage.getItem('notification_filters');
+    if (!stored) {
+      return {
+        type: undefined,
+        startDate: undefined,
+        endDate: undefined,
+        readStatus: 'todos',
+      };
+    }
+    return JSON.parse(stored);
+  },
+  set: (filters: NotificationFilter) => {
+    localStorage.setItem('notification_filters', JSON.stringify(filters));
+  },
+  reset: () => {
+    localStorage.removeItem('notification_filters');
+  },
+};

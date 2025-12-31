@@ -72,6 +72,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       label: "Relatórios & Análise",
       items: [
         { label: "Relatórios", icon: PieChart, href: "/relatorios" },
+        { label: "Agendamento", icon: Clock, href: "/agendamento-relatorios" },
         { label: "ROI", icon: TrendingUp, href: "/relatorio-roi" },
         { label: "Churn", icon: TrendingUp, href: "/relatorio-churn" },
       ]

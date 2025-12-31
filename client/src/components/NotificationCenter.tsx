@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, X, Check, CheckCheck } from 'lucide-react';
-import { realtimeNotificationStore, RealtimeNotification } from '@/lib/store';
+import { Bell, X, Check, CheckCheck, Filter } from 'lucide-react';
+import { realtimeNotificationStore, RealtimeNotification, notificationFilterStore, NotificationFilter } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function NotificationCenter() {
   const [notifications, setNotifications] = useState<RealtimeNotification[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [filters, setFilters] = useState<NotificationFilter>(notificationFilterStore.get());
 
   useEffect(() => {
     // Carregar notificações iniciais
@@ -51,6 +54,52 @@ export default function NotificationCenter() {
     setNotifications([]);
     setUnreadCount(0);
   };
+
+  const applyFilters = (notifs: RealtimeNotification[]): RealtimeNotification[] => {
+    let filtered = notifs;
+
+    // Filtrar por tipo
+    if (filters.type) {
+      filtered = filtered.filter(n => n.type === filters.type);
+    }
+
+    // Filtrar por status de leitura
+    if (filters.readStatus === 'lidos') {
+      filtered = filtered.filter(n => n.read);
+    } else if (filters.readStatus === 'nao-lidos') {
+      filtered = filtered.filter(n => !n.read);
+    }
+
+    // Filtrar por data
+    if (filters.startDate) {
+      const startDate = new Date(filters.startDate).getTime();
+      filtered = filtered.filter(n => new Date(n.timestamp).getTime() >= startDate);
+    }
+    if (filters.endDate) {
+      const endDate = new Date(filters.endDate).getTime();
+      filtered = filtered.filter(n => new Date(n.timestamp).getTime() <= endDate);
+    }
+
+    return filtered;
+  };
+
+  const handleFilterChange = (newFilters: NotificationFilter) => {
+    setFilters(newFilters);
+    notificationFilterStore.set(newFilters);
+  };
+
+  const handleResetFilters = () => {
+    const defaultFilters: NotificationFilter = {
+      type: undefined,
+      startDate: undefined,
+      endDate: undefined,
+      readStatus: 'todos',
+    };
+    setFilters(defaultFilters);
+    notificationFilterStore.reset();
+  };
+
+  const filteredNotifications = applyFilters(notifications);
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
@@ -119,16 +168,65 @@ export default function NotificationCenter() {
             </div>
           </div>
 
+          {/* Filtros */}
+          {notifications.length > 0 && (
+            <div className="px-4 py-2 border-b border-gray-200 bg-white">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+              >
+                <Filter className="w-3 h-3" /> Filtros
+              </button>
+              {showFilters && (
+                <div className="mt-3 space-y-2 pb-2">
+                  <div>
+                    <label className="text-xs font-medium text-gray-700">Tipo</label>
+                    <Select value={filters.type || ''} onValueChange={(v) => handleFilterChange({...filters, type: v as any})}>
+                      <SelectTrigger className="h-8 text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">Todos os tipos</SelectItem>
+                        <SelectItem value="comunicado">Comunicados</SelectItem>
+                        <SelectItem value="reuniao">Reuniões</SelectItem>
+                        <SelectItem value="sistema">Sistema</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-gray-700">Status</label>
+                    <Select value={filters.readStatus || 'todos'} onValueChange={(v) => handleFilterChange({...filters, readStatus: v as any})}>
+                      <SelectTrigger className="h-8 text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="todos">Todas</SelectItem>
+                        <SelectItem value="lidos">Lidas</SelectItem>
+                        <SelectItem value="nao-lidos">Não lidas</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <button
+                    onClick={handleResetFilters}
+                    className="text-xs text-gray-600 hover:text-gray-900 font-medium w-full text-center py-1"
+                  >
+                    Limpar filtros
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Lista de Notificações */}
           <div className="overflow-y-auto flex-1">
-            {notifications.length === 0 ? (
+            {filteredNotifications.length === 0 ? (
               <div className="p-8 text-center text-gray-500">
                 <Bell className="w-12 h-12 mx-auto mb-3 opacity-20" />
-                <p>Nenhuma notificação</p>
+                <p>{notifications.length === 0 ? 'Nenhuma notificação' : 'Nenhuma notificação com esses filtros'}</p>
               </div>
             ) : (
               <div className="divide-y divide-gray-200">
-                {notifications.map((notification) => (
+                {filteredNotifications.map((notification) => (
                   <div
                     key={notification.id}
                     className={cn(

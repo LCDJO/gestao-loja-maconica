@@ -34,6 +34,7 @@ import Permissoes from "./pages/Permissoes";
 import DashboardExecutivo from "./pages/DashboardExecutivo";
 import Comunicados from "./pages/Comunicados";
 import GoogleCalendarIntegracao from "./pages/GoogleCalendarIntegracao";
+import AgendamentoRelatorios from "./pages/AgendamentoRelatorios";
 import { MemberAuthProvider } from "./contexts/MemberAuthContext";
 
 
@@ -70,6 +71,7 @@ function Router() {
       <Route path="/dashboard-executivo" component={DashboardExecutivo} />
       <Route path="/comunicados" component={Comunicados} />
       <Route path="/google-calendar" component={GoogleCalendarIntegracao} />
+      <Route path="/agendamento-relatorios" component={AgendamentoRelatorios} />
       <Route path="/404" component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

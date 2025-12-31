@@ -70,3 +70,67 @@ export interface MonthlyFee {
   status: 'pago' | 'pendente' | 'atrasado';
   paymentDate?: string;
 }
+
+export interface AppConfig {
+  integrations: {
+    evolutionApi: {
+      enabled: boolean;
+      baseUrl: string;
+      apiKey: string;
+      instanceName: string;
+    };
+    gowa: {
+      enabled: boolean;
+      baseUrl: string;
+      token: string;
+    };
+  };
+  paymentMethods: {
+    pix: {
+      enabled: boolean;
+      key: string;
+      keyType: 'cpf' | 'cnpj' | 'email' | 'phone' | 'random';
+      merchantName: string;
+      merchantCity: string;
+    };
+    boleto: {
+      enabled: boolean;
+      provider: string;
+      clientId: string;
+      clientSecret: string;
+    };
+    creditCard: {
+      enabled: boolean;
+      provider: string;
+      publicKey: string;
+    };
+  };
+}
+
+export type BillingEventType = 'mutua' | 'taxa_extra' | 'mensalidade' | 'evento';
+
+export interface BillingEvent {
+  id: string;
+  title: string;
+  type: BillingEventType;
+  description: string;
+  amount: number;
+  dueDate: string;
+  createdAt: string;
+  targetMembers: 'all' | 'active' | 'specific'; // Quem recebe a cobrança
+  status: 'draft' | 'generated' | 'cancelled';
+}
+
+export interface Bill {
+  id: string;
+  billingEventId: string;
+  memberId: string;
+  amount: number;
+  dueDate: string;
+  status: 'pending' | 'paid' | 'overdue' | 'cancelled';
+  paymentMethod?: 'pix' | 'boleto' | 'credit_card' | 'cash';
+  paymentDate?: string;
+  pixCode?: string; // Código copia e cola gerado
+  sentViaWhatsapp: boolean;
+  whatsappSentAt?: string;
+}

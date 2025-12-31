@@ -9,6 +9,7 @@ import Secretaria from "./pages/Secretaria";
 import Chancelaria from "./pages/Chancelaria";
 import Tesouraria from "./pages/Tesouraria";
 import Relatorios from "./pages/Relatorios";
+import Configuracoes from "./pages/Configuracoes";
 
 
 function Router() {
@@ -19,6 +20,7 @@ function Router() {
       <Route path={"/chancelaria"} component={Chancelaria} />
       <Route path={"/tesouraria"} component={Tesouraria} />
       <Route path={"/relatorios"} component={Relatorios} />
+      <Route path={"/configuracoes"} component={Configuracoes} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

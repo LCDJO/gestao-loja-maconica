@@ -48,6 +48,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       icon: PieChart, 
       href: "/relatorios" 
     },
+    { 
+      label: "Configurações", 
+      icon: Settings, 
+      href: "/configuracoes" 
+    },
   ];
 
   return (

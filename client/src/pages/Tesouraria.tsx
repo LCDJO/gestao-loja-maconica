@@ -10,7 +10,8 @@ import {
   DialogHeader, 
   DialogTitle, 
   DialogTrigger,
-  DialogFooter
+  DialogFooter,
+  DialogDescription
 } from "@/components/ui/dialog";
 import { 
   Select, 
@@ -29,12 +30,15 @@ import {
   Filter,
   Download,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Receipt,
+  Send,
+  MessageCircle
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { memberStore, transactionStore, feeStore } from "@/lib/store";
-import { Member, Transaction, MonthlyFee, TransactionType, TransactionCategory } from "@/lib/types";
+import { memberStore, transactionStore, feeStore, billingStore, configStore } from "@/lib/store";
+import { Member, Transaction, MonthlyFee, TransactionType, TransactionCategory, BillingEvent, BillingEventType, Bill } from "@/lib/types";
 
 export default function Tesouraria() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -43,6 +47,15 @@ export default function Tesouraria() {
   const [selectedMemberId, setSelectedMemberId] = useState<string>("");
   const [memberFees, setMemberFees] = useState<MonthlyFee[]>([]);
   
+  // Billing States
+  const [billingEvents, setBillingEvents] = useState<BillingEvent[]>([]);
+  const [bills, setBills] = useState<Bill[]>([]);
+  const [isAddBillingOpen, setIsAddBillingOpen] = useState(false);
+  const [newBillingEvent, setNewBillingEvent] = useState<Partial<BillingEvent>>({
+    type: 'mensalidade',
+    targetMembers: 'active'
+  });
+
   const [isAddTransactionOpen, setIsAddTransactionOpen] = useState(false);
   const [newTransaction, setNewTransaction] = useState<Partial<Transaction>>({
     type: 'receita',
@@ -58,6 +71,8 @@ export default function Tesouraria() {
     setTransactions(allTransactions);
     setBalance(transactionStore.getBalance());
     setMembers(memberStore.getAll());
+    setBillingEvents(billingStore.getEvents());
+    setBills(billingStore.getBills());
   };
 
   const handleAddTransaction = () => {
@@ -72,11 +87,63 @@ export default function Tesouraria() {
     loadData();
   };
 
+  const handleCreateBillingEvent = () => {
+    if (!newBillingEvent.title || !newBillingEvent.amount || !newBillingEvent.dueDate) {
+      toast.error("Preencha os campos obrigatórios");
+      return;
+    }
+
+    const event = billingStore.addEvent({
+      ...newBillingEvent,
+      status: 'generated',
+      createdAt: new Date().toISOString()
+    } as BillingEvent);
+
+    // Gerar cobranças individuais
+    const generatedBills = billingStore.generateBills(event, members);
+    
+    toast.success(`${generatedBills.length} cobranças geradas com sucesso`);
+    setIsAddBillingOpen(false);
+    setNewBillingEvent({ type: 'mensalidade', targetMembers: 'active' });
+    loadData();
+  };
+
+  const handleSendWhatsapp = (bill: Bill) => {
+    const config = configStore.get();
+    const member = members.find(m => m.id === bill.memberId);
+    const event = billingEvents.find(e => e.id === bill.billingEventId);
+
+    if (!config.integrations.evolutionApi.enabled && !config.integrations.gowa.enabled) {
+      toast.error("Nenhuma integração de WhatsApp configurada");
+      return;
+    }
+
+    if (!member?.phone) {
+      toast.error("Membro sem telefone cadastrado");
+      return;
+    }
+
+    // Simulação de envio
+    toast.promise(
+      new Promise((resolve) => setTimeout(resolve, 1500)),
+      {
+        loading: 'Enviando cobrança via WhatsApp...',
+        success: () => {
+          billingStore.updateBill(bill.id, { 
+            sentViaWhatsapp: true, 
+            whatsappSentAt: new Date().toISOString() 
+          });
+          loadData();
+          return `Cobrança enviada para ${member.name}`;
+        },
+        error: 'Erro ao enviar mensagem'
+      }
+    );
+  };
+
   const handleMemberSelect = (memberId: string) => {
     setSelectedMemberId(memberId);
     let fees = feeStore.getByMember(memberId);
-    
-    // Se não tiver mensalidades geradas, gera para o ano atual
     if (fees.length === 0) {
       fees = feeStore.generateForYear(memberId, new Date().getFullYear(), 150.00);
     }
@@ -90,7 +157,6 @@ export default function Tesouraria() {
     setMemberFees(updatedFees);
     feeStore.save(selectedMemberId, updatedFees);
     
-    // Registrar transação automaticamente
     transactionStore.add({
       date: new Date().toISOString().split('T')[0],
       type: 'receita',
@@ -136,9 +202,96 @@ export default function Tesouraria() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="font-display text-3xl font-bold text-primary">Tesouraria</h1>
-            <p className="text-muted-foreground font-serif italic">Gestão financeira e mensalidades.</p>
+            <p className="text-muted-foreground font-serif italic">Gestão financeira, faturamento e cobranças.</p>
           </div>
           <div className="flex gap-2">
+            <Dialog open={isAddBillingOpen} onOpenChange={setIsAddBillingOpen}>
+              <DialogTrigger asChild>
+                <Button className="gap-2 bg-secondary text-secondary-foreground hover:bg-secondary/90">
+                  <Receipt className="h-4 w-4" /> Gerar Cobranças
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Novo Evento de Faturamento</DialogTitle>
+                  <DialogDescription>Gere cobranças em lote para todos os membros.</DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="space-y-2">
+                    <Label>Título do Evento</Label>
+                    <Input 
+                      placeholder="Ex: Mensalidade Junho/2024" 
+                      value={newBillingEvent.title || ''} 
+                      onChange={e => setNewBillingEvent({...newBillingEvent, title: e.target.value})} 
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Tipo</Label>
+                      <Select 
+                        value={newBillingEvent.type} 
+                        onValueChange={(v: BillingEventType) => setNewBillingEvent({...newBillingEvent, type: v})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="mensalidade">Mensalidade</SelectItem>
+                          <SelectItem value="mutua">Mútua</SelectItem>
+                          <SelectItem value="taxa_extra">Taxa Extra</SelectItem>
+                          <SelectItem value="evento">Evento</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Público Alvo</Label>
+                      <Select 
+                        value={newBillingEvent.targetMembers} 
+                        onValueChange={(v: any) => setNewBillingEvent({...newBillingEvent, targetMembers: v})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="active">Membros Ativos</SelectItem>
+                          <SelectItem value="all">Todos os Membros</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Valor (R$)</Label>
+                      <Input 
+                        type="number" 
+                        step="0.01" 
+                        value={newBillingEvent.amount || ''} 
+                        onChange={e => setNewBillingEvent({...newBillingEvent, amount: parseFloat(e.target.value)})} 
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Vencimento</Label>
+                      <Input 
+                        type="date" 
+                        value={newBillingEvent.dueDate || ''} 
+                        onChange={e => setNewBillingEvent({...newBillingEvent, dueDate: e.target.value})} 
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Descrição (para o boleto/mensagem)</Label>
+                    <Input 
+                      value={newBillingEvent.description || ''} 
+                      onChange={e => setNewBillingEvent({...newBillingEvent, description: e.target.value})} 
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button onClick={handleCreateBillingEvent}>Gerar Cobranças</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+
             <Dialog open={isAddTransactionOpen} onOpenChange={setIsAddTransactionOpen}>
               <DialogTrigger asChild>
                 <Button className="gap-2 bg-primary text-primary-foreground">
@@ -236,11 +389,73 @@ export default function Tesouraria() {
           </Card>
         </div>
 
-        <Tabs defaultValue="fluxo" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+        <Tabs defaultValue="cobrancas" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
+            <TabsTrigger value="cobrancas">Gestão de Cobranças</TabsTrigger>
             <TabsTrigger value="fluxo">Fluxo de Caixa</TabsTrigger>
-            <TabsTrigger value="mensalidades">Controle de Mensalidades</TabsTrigger>
+            <TabsTrigger value="mensalidades">Histórico Individual</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="cobrancas" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Cobranças Geradas</CardTitle>
+                <CardDescription>Gerencie o envio de cobranças e status de pagamento.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {bills.length === 0 ? (
+                    <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-lg">
+                      Nenhuma cobrança gerada. Use o botão "Gerar Cobranças" para começar.
+                    </div>
+                  ) : (
+                    bills.slice().reverse().map((bill) => {
+                      const member = members.find(m => m.id === bill.memberId);
+                      const event = billingEvents.find(e => e.id === bill.billingEventId);
+                      if (!member || !event) return null;
+
+                      return (
+                        <div key={bill.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/5">
+                          <div className="flex items-center gap-4">
+                            <div className={`p-2 rounded-full ${bill.status === 'paid' ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}`}>
+                              <Receipt className="h-5 w-5" />
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-foreground">{event.title}</h4>
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <span>{member.name}</span>
+                                <span>•</span>
+                                <span>Vence em {new Date(bill.dueDate).toLocaleDateString('pt-BR')}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <div className="text-right">
+                              <div className="font-bold">{formatCurrency(bill.amount)}</div>
+                              <Badge variant={bill.status === 'paid' ? 'default' : 'outline'} className={bill.status === 'paid' ? 'bg-green-600' : ''}>
+                                {bill.status === 'paid' ? 'Pago' : 'Pendente'}
+                              </Badge>
+                            </div>
+                            {bill.status !== 'paid' && (
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                className={`gap-2 ${bill.sentViaWhatsapp ? 'text-green-600 border-green-200' : ''}`}
+                                onClick={() => handleSendWhatsapp(bill)}
+                              >
+                                <MessageCircle className="h-4 w-4" />
+                                {bill.sentViaWhatsapp ? 'Reenviar' : 'Cobrar'}
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="fluxo" className="space-y-4">
             <Card>

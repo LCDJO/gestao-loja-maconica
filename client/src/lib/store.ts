@@ -270,3 +270,107 @@ export const feeStore = {
     return fees;
   }
 };
+
+import { AppConfig, BillingEvent, Bill } from "./types";
+
+const initialConfig: AppConfig = {
+  integrations: {
+    evolutionApi: {
+      enabled: false,
+      baseUrl: '',
+      apiKey: '',
+      instanceName: ''
+    },
+    gowa: {
+      enabled: false,
+      baseUrl: '',
+      token: ''
+    }
+  },
+  paymentMethods: {
+    pix: {
+      enabled: true,
+      key: '12.345.678/0001-90',
+      keyType: 'cnpj',
+      merchantName: 'Loja Maçônica Exemplo',
+      merchantCity: 'São Paulo'
+    },
+    boleto: {
+      enabled: false,
+      provider: 'asaas',
+      clientId: '',
+      clientSecret: ''
+    },
+    creditCard: {
+      enabled: false,
+      provider: 'stripe',
+      publicKey: ''
+    }
+  }
+};
+
+export const configStore = {
+  get: (): AppConfig => {
+    const stored = localStorage.getItem('app_config');
+    if (!stored) {
+      localStorage.setItem('app_config', JSON.stringify(initialConfig));
+      return initialConfig;
+    }
+    return JSON.parse(stored);
+  },
+  save: (config: AppConfig) => {
+    localStorage.setItem('app_config', JSON.stringify(config));
+  }
+};
+
+export const billingStore = {
+  getEvents: (): BillingEvent[] => {
+    const stored = localStorage.getItem('billing_events');
+    return stored ? JSON.parse(stored) : [];
+  },
+  addEvent: (event: Omit<BillingEvent, 'id'>) => {
+    const events = billingStore.getEvents();
+    const newEvent = { ...event, id: generateId() };
+    events.push(newEvent);
+    localStorage.setItem('billing_events', JSON.stringify(events));
+    return newEvent;
+  },
+  getBills: (): Bill[] => {
+    const stored = localStorage.getItem('bills');
+    return stored ? JSON.parse(stored) : [];
+  },
+  generateBills: (event: BillingEvent, members: Member[]) => {
+    const bills = billingStore.getBills();
+    const newBills: Bill[] = [];
+    
+    const targets = event.targetMembers === 'all' 
+      ? members 
+      : members.filter(m => m.status === 'ativo');
+
+    targets.forEach(member => {
+      newBills.push({
+        id: generateId(),
+        billingEventId: event.id,
+        memberId: member.id,
+        amount: event.amount,
+        dueDate: event.dueDate,
+        status: 'pending',
+        sentViaWhatsapp: false
+      });
+    });
+
+    const updatedBills = [...bills, ...newBills];
+    localStorage.setItem('bills', JSON.stringify(updatedBills));
+    return newBills;
+  },
+  updateBill: (id: string, data: Partial<Bill>) => {
+    const bills = billingStore.getBills();
+    const index = bills.findIndex(b => b.id === id);
+    if (index !== -1) {
+      bills[index] = { ...bills[index], ...data };
+      localStorage.setItem('bills', JSON.stringify(bills));
+      return bills[index];
+    }
+    return null;
+  }
+};

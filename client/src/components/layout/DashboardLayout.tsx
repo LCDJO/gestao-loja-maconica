@@ -57,7 +57,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       label: "Comunicação",
       items: [
         { label: "Notificações", icon: Mail, href: "/notificacoes" },
-        { label: "Templates", icon: FileText, href: "/templates-notificacao" },
+        { label: "Templates", icon: FileText, href: "/editor-templates" },
         { label: "Campanhas", icon: Clock, href: "/agendamento-campanhas" },
         { label: "Analytics", icon: BarChart3, href: "/analytics-notificacoes" },
       ]

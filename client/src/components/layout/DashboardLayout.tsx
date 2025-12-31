@@ -105,14 +105,22 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       items: [
         { label: "Configurações da Loja", icon: Settings, href: "/configuracoes-loja" },
         { 
-          label: "Integrações", 
+          label: "WhatsApp", 
           icon: Mail, 
-          href: "#integrações",
+          href: "#whatsapp",
+          submenu: [
+            { label: "Evolution API", icon: Mail, href: "/configuracoes" },
+            { label: "Histórico de Testes", icon: Clock, href: "/historico-testes-evolution" },
+          ]
+        },
+        { 
+          label: "Notificações", 
+          icon: Mail, 
+          href: "#notificacoes",
           submenu: [
             { label: "Email (SendGrid/Mailgun)", icon: Mail, href: "/configuracao-email" },
+            { label: "Push (OneSignal)", icon: Mail, href: "/configuracoes-push" },
             { label: "Google Calendar", icon: Calendar, href: "/google-calendar" },
-            { label: "OneSignal", icon: Mail, href: "/configuracoes-push" },
-            { label: "Histórico de Testes", icon: Clock, href: "/historico-testes-evolution" },
           ]
         },
         { 
@@ -193,12 +201,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 {/* Section Header */}
                 <button
                   onClick={() => toggleSection(section.id)}
-                  className="w-full flex items-center justify-between px-3 py-2 text-xs font-bold text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+                  className="w-full flex items-center justify-between px-3 py-2.5 text-xs font-bold text-gray-700 hover:bg-gray-50 rounded-md transition-colors mt-3 mb-1"
                 >
-                  <span className="tracking-wide">{section.label}</span>
+                  <span className="tracking-wider uppercase text-gray-600">{section.label}</span>
                   <ChevronDown 
                     className={cn(
-                      "h-4 w-4 transition-transform",
+                      "h-4 w-4 transition-transform text-gray-500",
                       expandedSections[section.id] ? "rotate-180" : ""
                     )}
                   />
@@ -206,7 +214,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
                 {/* Section Items */}
                 {expandedSections[section.id] && (
-                  <div className="space-y-1 mt-2">
+                  <div className="space-y-0.5 mt-2">
                     {section.items.map((item) => {
                       const isActive = location === item.href || location.startsWith(`${item.href}/`);
                       const submenuKey = `${section.id}-${item.label}`;
@@ -221,8 +229,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                 toggleSubmenu(submenuKey);
                               }}
                               className={cn(
-                                "w-full flex items-center justify-between gap-3 px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium",
-                                "text-gray-700 hover:bg-gray-100"
+                                "w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-md transition-all duration-200 text-sm font-medium",
+                                expandedSubmenus[submenuKey] ? "bg-gray-50 text-gray-900" : "text-gray-700 hover:bg-gray-50"
                               )}
                             >
                               <div className="flex items-center gap-3">
@@ -240,10 +248,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             <Link href={item.href}>
                               <div 
                                 className={cn(
-                                  "flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-200 cursor-pointer text-sm font-medium",
+                                  "flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 cursor-pointer text-sm font-medium",
                                   isActive 
-                                    ? "bg-blue-50 text-blue-600" 
-                                    : "text-gray-700 hover:bg-gray-100"
+                                    ? "bg-blue-50 text-blue-600 border-l-2 border-blue-600" 
+                                    : "text-gray-700 hover:bg-gray-50"
                                 )}
                               >
                                 <item.icon className={cn("h-4 w-4", isActive ? "text-blue-600" : "text-gray-600")} />
@@ -254,7 +262,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
                           {/* Submenu Items */}
                           {hasSubmenu && expandedSubmenus[submenuKey] && (
-                            <div className="space-y-1 mt-1 ml-4 border-l border-gray-200 pl-2">
+                            <div className="space-y-0.5 mt-1 ml-3 border-l border-gray-200 pl-3">
                               {item.submenu!.map((subitem) => {
                                 const isSubActive = location === subitem.href || location.startsWith(`${subitem.href}/`);
                                 return (

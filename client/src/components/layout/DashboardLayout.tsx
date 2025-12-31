@@ -117,20 +117,20 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           href: "#integracoes",
           submenu: [
             // Comunicação
-            { label: "Comunicação", icon: MessageCircle, href: "#" },
+            { label: "Comunicação", icon: MessageCircle, href: "#comunicacao" },
             { label: "  WhatsApp (Evolution API)", icon: MessageCircle, href: "/configuracoes" },
             { label: "  GOWA", icon: MessageCircle, href: "/configuracao-gowa" },
             { label: "  Histórico de Testes", icon: Clock, href: "/historico-testes-evolution" },
             // Notificação
-            { label: "Notificação", icon: Bell, href: "#" },
+            { label: "Notificação", icon: Bell, href: "#notificacao" },
             { label: "  Email (SendGrid/Mailgun)", icon: Mail, href: "/configuracao-email" },
             { label: "  Push (OneSignal)", icon: Bell, href: "/configuracoes-push" },
             { label: "  Google Calendar", icon: Calendar, href: "/google-calendar" },
             // Documentos
-            { label: "Documentos", icon: FileSignature, href: "#" },
+            { label: "Documentos", icon: FileSignature, href: "#documentos" },
             { label: "  Assinatura Digital (OpenSign)", icon: FileSignature, href: "/configuracao-opensign" },
             // Backup
-            { label: "Backup", icon: HardDrive, href: "#" },
+            { label: "Backup", icon: HardDrive, href: "#backup" },
             { label: "  Configuração de Backup", icon: HardDrive, href: "/configuracao-backup" },
           ]
         },

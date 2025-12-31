@@ -24,6 +24,7 @@ import AgendamentoCampanhas from "./pages/AgendamentoCampanhas";
 import RelatorioROI from "./pages/RelatorioROI";
 import Parametrizacao from "./pages/Parametrizacao";
 import EditorTemplates from "./pages/EditorTemplates";
+import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import { MemberAuthProvider } from "./contexts/MemberAuthContext";
 
 
@@ -50,6 +51,7 @@ function Router() {
       <Route path={"/relatorio-roi"} component={RelatorioROI} />
       <Route path={"/parametrizacao"} component={Parametrizacao} />
       <Route path={"/editor-templates"} component={EditorTemplates} />
+      <Route path={"/super-admin"} component={SuperAdminDashboard} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

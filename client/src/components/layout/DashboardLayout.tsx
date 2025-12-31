@@ -27,6 +27,19 @@ interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
+interface NavItem {
+  label: string;
+  icon: any;
+  href: string;
+  submenu?: NavItem[];
+}
+
+interface NavSection {
+  id: string;
+  label: string;
+  items: NavItem[];
+}
+
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [location] = useLocation();
@@ -34,7 +47,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     modules: true,
     communication: false,
     reports: false,
+    parameters: false,
   });
+  const [expandedSubmenus, setExpandedSubmenus] = useState<Record<string, boolean>>({});
 
   const toggleSection = (section: string) => {
     setExpandedSections(prev => ({
@@ -43,7 +58,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     }));
   };
 
-  const navSections = [
+  const toggleSubmenu = (key: string) => {
+    setExpandedSubmenus(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  const navSections: NavSection[] = [
     {
       id: "modules",
       label: "Módulos",
@@ -57,14 +79,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     },
     {
       id: "communication",
-      label: "Comunicação",
+      label: "Ações de Comunicação",
       items: [
         { label: "Comunicados", icon: Mail, href: "/comunicados" },
-        { label: "Notificações", icon: Mail, href: "/notificacoes" },
-        { label: "Templates", icon: FileText, href: "/editor-templates" },
-        { label: "Campanhas", icon: Clock, href: "/agendamento-campanhas" },
-        { label: "Analytics", icon: BarChart3, href: "/analytics-notificacoes" },
-        { label: "Google Calendar", icon: Calendar, href: "/google-calendar" },
+        { label: "Agendamento de Campanhas", icon: Clock, href: "/agendamento-campanhas" },
       ]
     },
     {
@@ -72,20 +90,53 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       label: "Relatórios & Análise",
       items: [
         { label: "Relatórios", icon: PieChart, href: "/relatorios" },
-        { label: "Agendamento", icon: Clock, href: "/agendamento-relatorios" },
-        { label: "Analytics Push", icon: TrendingUp, href: "/analytics-push" },
         { label: "ROI", icon: TrendingUp, href: "/relatorio-roi" },
         { label: "Churn", icon: TrendingUp, href: "/relatorio-churn" },
       ]
     },
     {
-      id: "integrations",
-      label: "Integrações",
+      id: "parameters",
+      label: "Parâmetros",
       items: [
-        { label: "Configuração de Email", icon: Mail, href: "/configuracao-email" },
+        { label: "Configuração Geral", icon: Settings, href: "/configuracoes" },
+        { 
+          label: "Integrações", 
+          icon: Mail, 
+          href: "#integrações",
+          submenu: [
+            { label: "Email (SendGrid/Mailgun)", icon: Mail, href: "/configuracao-email" },
+            { label: "Google Calendar", icon: Calendar, href: "/google-calendar" },
+            { label: "OneSignal", icon: Mail, href: "/configuracoes-push" },
+          ]
+        },
+        { 
+          label: "Templates", 
+          icon: FileText, 
+          href: "#templates",
+          submenu: [
+            { label: "Notificações", icon: FileText, href: "/templates-notificacao" },
+            { label: "Editor Visual", icon: FileText, href: "/editor-templates" },
+          ]
+        },
+        { 
+          label: "Agendamentos", 
+          icon: Clock, 
+          href: "#agendamentos",
+          submenu: [
+            { label: "Relatórios", icon: Clock, href: "/agendamento-relatorios" },
+          ]
+        },
+        { 
+          label: "Analytics", 
+          icon: BarChart3, 
+          href: "#analytics",
+          submenu: [
+            { label: "Notificações", icon: BarChart3, href: "/analytics-notificacoes" },
+            { label: "Push", icon: BarChart3, href: "/analytics-push" },
+          ]
+        },
       ]
     },
-
   ];
 
   return (
@@ -143,20 +194,70 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   <div className="space-y-1 mt-2">
                     {section.items.map((item) => {
                       const isActive = location === item.href || location.startsWith(`${item.href}/`);
+                      const submenuKey = `${section.id}-${item.label}`;
+                      const hasSubmenu = item.submenu && item.submenu.length > 0;
+
                       return (
-                        <Link key={item.href} href={item.href}>
-                          <div 
-                            className={cn(
-                              "flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-200 cursor-pointer text-sm font-medium",
-                              isActive 
-                                ? "bg-blue-50 text-blue-600" 
-                                : "text-gray-700 hover:bg-gray-100"
-                            )}
-                          >
-                            <item.icon className={cn("h-4 w-4", isActive ? "text-blue-600" : "text-gray-600")} />
-                            <span>{item.label}</span>
-                          </div>
-                        </Link>
+                        <div key={item.label}>
+                          {hasSubmenu ? (
+                            <button
+                              onClick={() => toggleSubmenu(submenuKey)}
+                              className={cn(
+                                "w-full flex items-center justify-between gap-3 px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium",
+                                "text-gray-700 hover:bg-gray-100"
+                              )}
+                            >
+                              <div className="flex items-center gap-3">
+                                <item.icon className="h-4 w-4 text-gray-600" />
+                                <span>{item.label}</span>
+                              </div>
+                              <ChevronDown 
+                                className={cn(
+                                  "h-3 w-3 transition-transform",
+                                  expandedSubmenus[submenuKey] ? "rotate-180" : ""
+                                )}
+                              />
+                            </button>
+                          ) : (
+                            <Link href={item.href}>
+                              <div 
+                                className={cn(
+                                  "flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-200 cursor-pointer text-sm font-medium",
+                                  isActive 
+                                    ? "bg-blue-50 text-blue-600" 
+                                    : "text-gray-700 hover:bg-gray-100"
+                                )}
+                              >
+                                <item.icon className={cn("h-4 w-4", isActive ? "text-blue-600" : "text-gray-600")} />
+                                <span>{item.label}</span>
+                              </div>
+                            </Link>
+                          )}
+
+                          {/* Submenu Items */}
+                          {hasSubmenu && expandedSubmenus[submenuKey] && (
+                            <div className="space-y-1 mt-1 ml-4 border-l border-gray-200 pl-2">
+                              {item.submenu!.map((subitem) => {
+                                const isSubActive = location === subitem.href || location.startsWith(`${subitem.href}/`);
+                                return (
+                                  <Link key={subitem.href} href={subitem.href}>
+                                    <div 
+                                      className={cn(
+                                        "flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-200 cursor-pointer text-sm",
+                                        isSubActive 
+                                          ? "bg-blue-50 text-blue-600 font-medium" 
+                                          : "text-gray-600 hover:bg-gray-100"
+                                      )}
+                                    >
+                                      <subitem.icon className={cn("h-3 w-3", isSubActive ? "text-blue-600" : "text-gray-500")} />
+                                      <span>{subitem.label}</span>
+                                    </div>
+                                  </Link>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
                       );
                     })}
                   </div>
@@ -171,7 +272,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <Link href="/parametrizacao">
               <div className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-200 cursor-pointer text-sm font-medium text-gray-700 transition-colors">
                 <Settings className="h-4 w-4 text-gray-600" />
-                <span>Parametrização</span>
+                <span>Parametrização Avançada</span>
               </div>
             </Link>
 
@@ -198,7 +299,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             {/* Portal do Membro Link */}
             <Link href="/membro/login">
               <div className="text-xs text-blue-600 hover:text-blue-700 font-medium px-3 py-2 rounded-md hover:bg-blue-50 transition-colors cursor-pointer">
-                → Portal do Membro
+                Portal do Membro
               </div>
             </Link>
           </div>
@@ -206,29 +307,26 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Mobile Header */}
-        <header className="lg:hidden h-16 bg-white border-b border-gray-200 flex items-center px-4 justify-between shadow-sm z-40">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)} className="text-gray-600">
-              <Menu className="h-6 w-6" />
-            </Button>
-            <span className="font-bold text-gray-900">Gestão Maçônica</span>
-          </div>
-          <NotificationCenter />
-        </header>
-
-        {/* Desktop Header with Notifications */}
-        <header className="hidden lg:flex h-16 bg-white border-b border-gray-200 items-center px-8 justify-end shadow-sm z-40">
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Top Bar */}
+        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-6 shadow-sm">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="lg:hidden text-gray-600 hover:bg-gray-100"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+          
+          <div className="flex-1" />
+          
           <NotificationCenter />
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-8 relative lg:mt-0">
-          {/* Background Texture Overlay */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-multiply"></div>
-          
-          <div className="max-w-7xl mx-auto relative z-10 animate-in fade-in duration-500 slide-in-from-bottom-4">
+        <main className="flex-1 overflow-auto bg-gray-50">
+          <div className="p-4 lg:p-6">
             {children}
           </div>
         </main>

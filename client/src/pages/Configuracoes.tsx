@@ -13,19 +13,53 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { Save, Server, CreditCard, QrCode, FileText, Bell, FileSignature } from "lucide-react";
+import { Save, Server, CreditCard, QrCode, FileText, Bell, FileSignature, Zap, CheckCircle, AlertCircle } from "lucide-react";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { configStore } from "@/lib/store";
 import { AppConfig } from "@/lib/types";
+import { testEvolutionConnection, sendTestMessage } from "@/lib/evolutionApiUtils";
 
 export default function Configuracoes() {
   const [config, setConfig] = useState<AppConfig>(configStore.get());
   const [, navigate] = useLocation();
+  const [testingConnection, setTestingConnection] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [testPhoneNumber, setTestPhoneNumber] = useState('');
+  const [sendingTestMessage, setSendingTestMessage] = useState(false);
 
   const handleSave = () => {
     configStore.save(config);
     toast.success("Configurações salvas com sucesso");
+  };
+
+  const handleTestConnection = async () => {
+    setTestingConnection(true);
+    const result = await testEvolutionConnection(config.integrations.evolutionApi);
+    if (result.success) {
+      setConnectionStatus('success');
+      toast.success(result.message);
+    } else {
+      setConnectionStatus('error');
+      toast.error(result.message);
+    }
+    setTestingConnection(false);
+  };
+
+  const handleSendTestMessage = async () => {
+    if (!testPhoneNumber) {
+      toast.error('Digite um número de telefone para teste');
+      return;
+    }
+    setSendingTestMessage(true);
+    const result = await sendTestMessage(config.integrations.evolutionApi, testPhoneNumber);
+    if (result.success) {
+      toast.success(result.message);
+      setTestPhoneNumber('');
+    } else {
+      toast.error(result.message);
+    }
+    setSendingTestMessage(false);
   };
 
   return (
@@ -117,6 +151,51 @@ export default function Configuracoes() {
                         })}
                       />
                     </div>
+
+                    {connectionStatus !== 'idle' && (
+                      <div className={`p-3 rounded-md flex items-center gap-2 ${connectionStatus === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
+                        {connectionStatus === 'success' ? (
+                          <CheckCircle className="h-4 w-4" />
+                        ) : (
+                          <AlertCircle className="h-4 w-4" />
+                        )}
+                        <span className="text-sm font-medium">
+                          {connectionStatus === 'success' ? 'Conexão estabelecida com sucesso!' : 'Falha na conexão. Verifique as configurações.'}
+                        </span>
+                      </div>
+                    )}
+
+                    <Button 
+                      variant="outline" 
+                      className="w-full gap-2"
+                      onClick={handleTestConnection}
+                      disabled={testingConnection}
+                    >
+                      <Zap className="h-4 w-4" />
+                      {testingConnection ? 'Testando...' : 'Testar Conexão'}
+                    </Button>
+
+                    {connectionStatus === 'success' && (
+                      <div className="space-y-2 pt-4 border-t border-gray-200">
+                        <Label>Teste de Envio de Mensagem</Label>
+                        <div className="flex gap-2">
+                          <Input 
+                            placeholder="5511999999999"
+                            value={testPhoneNumber}
+                            onChange={(e) => setTestPhoneNumber(e.target.value)}
+                            disabled={sendingTestMessage}
+                          />
+                          <Button 
+                            variant="outline"
+                            onClick={handleSendTestMessage}
+                            disabled={sendingTestMessage}
+                          >
+                            {sendingTestMessage ? 'Enviando...' : 'Enviar'}
+                          </Button>
+                        </div>
+                        <p className="text-xs text-gray-500">Formato: 5511999999999 (com código do país e área)</p>
+                      </div>
+                    )}
                   </>
                 )}
               </CardContent>

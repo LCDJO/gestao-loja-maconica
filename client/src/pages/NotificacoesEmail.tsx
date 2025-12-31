@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -25,7 +25,7 @@ import {
   Play,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { notificationSettingsStore, emailNotificationStore } from '@/lib/store';
+import { notificationSettingsStore, emailNotificationStore, notificationTemplateStore } from '@/lib/store';
 import { checkAndCreateNotifications, processPendingNotifications } from '@/lib/emailNotifications';
 import { EmailNotification, NotificationSettings } from '@/lib/types';
 
@@ -34,6 +34,13 @@ export default function NotificacoesEmail() {
   const [notifications, setNotifications] = useState<EmailNotification[]>(emailNotificationStore.getNotifications());
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [selectedTemplates, setSelectedTemplates] = useState<Record<string, string>>({
+    reminder3Days: '',
+    reminder1Day: '',
+    overdue7Days: '',
+    overdue15Days: '',
+  });
+  const emailTemplates = notificationTemplateStore.getTemplatesByType('email');
 
   const pendingNotifications = notifications.filter(n => n.status === 'pending');
   const sentNotifications = notifications.filter(n => n.status === 'sent');
@@ -57,47 +64,44 @@ export default function NotificacoesEmail() {
 
   const handleSaveSettings = () => {
     setIsSaving(true);
-    setTimeout(() => {
+    try {
       notificationSettingsStore.updateSettings(settings);
-      toast.success('Configurações salvas com sucesso');
+      toast.success('Configurações salvas com sucesso!');
+    } finally {
       setIsSaving(false);
-    }, 800);
-  };
-
-  const handleCheckNotifications = () => {
-    checkAndCreateNotifications();
-    setNotifications(emailNotificationStore.getNotifications());
-    toast.success('Notificações verificadas e criadas');
+    }
   };
 
   const handleProcessNotifications = async () => {
     setIsProcessing(true);
-    const result = await processPendingNotifications();
-    setNotifications(emailNotificationStore.getNotifications());
-    toast.success(`${result.sent} emails enviados, ${result.failed} falharam`);
-    setIsProcessing(false);
+    try {
+      await processPendingNotifications();
+      setNotifications(emailNotificationStore.getNotifications());
+      toast.success('Notificações processadas com sucesso!');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
-  const handleRetryFailed = async () => {
-    setIsProcessing(true);
-    let retried = 0;
-    for (const notification of failedNotifications) {
-      emailNotificationStore.updateNotification(notification.id, { status: 'pending' });
-      retried++;
+  const handleCheckNotifications = () => {
+    try {
+      checkAndCreateNotifications();
+      setNotifications(emailNotificationStore.getNotifications());
+      toast.success('Notificações verificadas!');
+    } catch (error) {
+      toast.error('Erro ao verificar notificações');
     }
-    setNotifications(emailNotificationStore.getNotifications());
-    toast.success(`${retried} notificações marcadas para reenvio`);
-    setIsProcessing(false);
   };
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="font-display text-3xl font-bold text-primary">
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="space-y-2">
+          <h1 className="text-4xl font-bold text-foreground font-display">
             Notificações por Email
           </h1>
-          <p className="text-muted-foreground font-serif italic mt-1">
+          <p className="text-muted-foreground">
             Configure e gerencie notificações automáticas de cobranças
           </p>
         </div>
@@ -144,68 +148,148 @@ export default function NotificacoesEmail() {
               <CardHeader>
                 <CardTitle>Tipos de Notificação</CardTitle>
                 <CardDescription>
-                  Selecione quais notificações devem ser enviadas
+                  Selecione quais notificações devem ser enviadas e escolha o template para cada uma
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div>
-                    <p className="font-medium text-foreground">Lembrete 3 dias antes</p>
-                    <p className="text-sm text-muted-foreground">
-                      Enviar email 3 dias antes do vencimento
-                    </p>
+                {/* Lembrete 3 dias */}
+                <div className="space-y-3 p-4 border rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-foreground">Lembrete 3 dias antes</p>
+                      <p className="text-sm text-muted-foreground">
+                        Enviar email 3 dias antes do vencimento
+                      </p>
+                    </div>
+                    <Switch
+                      checked={settings.sendReminder3Days}
+                      onCheckedChange={(checked) =>
+                        handleSettingsChange('sendReminder3Days', checked)
+                      }
+                    />
                   </div>
-                  <Switch
-                    checked={settings.sendReminder3Days}
-                    onCheckedChange={(checked) =>
-                      handleSettingsChange('sendReminder3Days', checked)
-                    }
-                  />
+                  {settings.sendReminder3Days && (
+                    <div>
+                      <Label className="text-sm">Selecionar Template</Label>
+                      <Select value={selectedTemplates.reminder3Days} onValueChange={(value) => setSelectedTemplates({...selectedTemplates, reminder3Days: value})}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="Escolha um template" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {emailTemplates.map(template => (
+                            <SelectItem key={template.id} value={template.id}>
+                              {template.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div>
-                    <p className="font-medium text-foreground">Lembrete 1 dia antes</p>
-                    <p className="text-sm text-muted-foreground">
-                      Enviar email 1 dia antes do vencimento
-                    </p>
+                {/* Lembrete 1 dia */}
+                <div className="space-y-3 p-4 border rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-foreground">Lembrete 1 dia antes</p>
+                      <p className="text-sm text-muted-foreground">
+                        Enviar email 1 dia antes do vencimento
+                      </p>
+                    </div>
+                    <Switch
+                      checked={settings.sendReminder1Day}
+                      onCheckedChange={(checked) =>
+                        handleSettingsChange('sendReminder1Day', checked)
+                      }
+                    />
                   </div>
-                  <Switch
-                    checked={settings.sendReminder1Day}
-                    onCheckedChange={(checked) =>
-                      handleSettingsChange('sendReminder1Day', checked)
-                    }
-                  />
+                  {settings.sendReminder1Day && (
+                    <div>
+                      <Label className="text-sm">Selecionar Template</Label>
+                      <Select value={selectedTemplates.reminder1Day} onValueChange={(value) => setSelectedTemplates({...selectedTemplates, reminder1Day: value})}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="Escolha um template" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {emailTemplates.map(template => (
+                            <SelectItem key={template.id} value={template.id}>
+                              {template.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div>
-                    <p className="font-medium text-foreground">Aviso 7 dias atrasado</p>
-                    <p className="text-sm text-muted-foreground">
-                      Enviar email se estiver 7 dias atrasado
-                    </p>
+                {/* Aviso 7 dias atrasado */}
+                <div className="space-y-3 p-4 border rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-foreground">Aviso 7 dias atrasado</p>
+                      <p className="text-sm text-muted-foreground">
+                        Enviar email se estiver 7 dias atrasado
+                      </p>
+                    </div>
+                    <Switch
+                      checked={settings.sendOverdue7Days}
+                      onCheckedChange={(checked) =>
+                        handleSettingsChange('sendOverdue7Days', checked)
+                      }
+                    />
                   </div>
-                  <Switch
-                    checked={settings.sendOverdue7Days}
-                    onCheckedChange={(checked) =>
-                      handleSettingsChange('sendOverdue7Days', checked)
-                    }
-                  />
+                  {settings.sendOverdue7Days && (
+                    <div>
+                      <Label className="text-sm">Selecionar Template</Label>
+                      <Select value={selectedTemplates.overdue7Days} onValueChange={(value) => setSelectedTemplates({...selectedTemplates, overdue7Days: value})}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="Escolha um template" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {emailTemplates.map(template => (
+                            <SelectItem key={template.id} value={template.id}>
+                              {template.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div>
-                    <p className="font-medium text-foreground">Aviso 15 dias atrasado</p>
-                    <p className="text-sm text-muted-foreground">
-                      Enviar email se estiver 15 dias atrasado
-                    </p>
+                {/* Aviso 15 dias atrasado */}
+                <div className="space-y-3 p-4 border rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-foreground">Aviso 15 dias atrasado</p>
+                      <p className="text-sm text-muted-foreground">
+                        Enviar email se estiver 15 dias atrasado
+                      </p>
+                    </div>
+                    <Switch
+                      checked={settings.sendOverdue15Days}
+                      onCheckedChange={(checked) =>
+                        handleSettingsChange('sendOverdue15Days', checked)
+                      }
+                    />
                   </div>
-                  <Switch
-                    checked={settings.sendOverdue15Days}
-                    onCheckedChange={(checked) =>
-                      handleSettingsChange('sendOverdue15Days', checked)
-                    }
-                  />
+                  {settings.sendOverdue15Days && (
+                    <div>
+                      <Label className="text-sm">Selecionar Template</Label>
+                      <Select value={selectedTemplates.overdue15Days} onValueChange={(value) => setSelectedTemplates({...selectedTemplates, overdue15Days: value})}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="Escolha um template" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {emailTemplates.map(template => (
+                            <SelectItem key={template.id} value={template.id}>
+                              {template.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -216,283 +300,198 @@ export default function NotificacoesEmail() {
                 <CardHeader>
                   <CardTitle>Configuração SMTP</CardTitle>
                   <CardDescription>
-                    Configure as credenciais do seu servidor SMTP
+                    Configure os dados do servidor de email
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="host">Host SMTP</Label>
+                    <div>
+                      <Label htmlFor="smtp-host">Host SMTP</Label>
                       <Input
-                        id="host"
+                        id="smtp-host"
                         placeholder="smtp.gmail.com"
                         value={settings.smtpConfig?.host || ''}
                         onChange={(e) => handleSmtpConfigChange('host', e.target.value)}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="port">Porta</Label>
+                    <div>
+                      <Label htmlFor="smtp-port">Porta</Label>
                       <Input
-                        id="port"
+                        id="smtp-port"
                         placeholder="587"
                         value={settings.smtpConfig?.port || ''}
                         onChange={(e) => handleSmtpConfigChange('port', e.target.value)}
                       />
                     </div>
                   </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="user">Usuário/Email</Label>
-                    <Input
-                      id="user"
-                      placeholder="seu-email@gmail.com"
-                      value={settings.smtpConfig?.user || ''}
-                      onChange={(e) => handleSmtpConfigChange('user', e.target.value)}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Senha</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={settings.smtpConfig?.password || ''}
-                      onChange={(e) => handleSmtpConfigChange('password', e.target.value)}
-                    />
-                  </div>
-
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="fromEmail">Email de Envio</Label>
+                    <div>
+                      <Label htmlFor="smtp-user">Usuário</Label>
                       <Input
-                        id="fromEmail"
-                        placeholder="noreply@loja-maconica.com.br"
+                        id="smtp-user"
+                        placeholder="seu-email@gmail.com"
+                        value={settings.smtpConfig?.user || ''}
+                        onChange={(e) => handleSmtpConfigChange('user', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="smtp-password">Senha</Label>
+                      <Input
+                        id="smtp-password"
+                        type="password"
+                        placeholder="sua-senha"
+                        value={settings.smtpConfig?.password || ''}
+                        onChange={(e) => handleSmtpConfigChange('password', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="smtp-from-email">Email Remetente</Label>
+                      <Input
+                        id="smtp-from-email"
+                        placeholder="noreply@lojamaonica.com"
                         value={settings.smtpConfig?.fromEmail || ''}
                         onChange={(e) => handleSmtpConfigChange('fromEmail', e.target.value)}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="fromName">Nome do Remetente</Label>
+                    <div>
+                      <Label htmlFor="smtp-from-name">Nome Remetente</Label>
                       <Input
-                        id="fromName"
+                        id="smtp-from-name"
                         placeholder="Loja Maçônica"
                         value={settings.smtpConfig?.fromName || ''}
                         onChange={(e) => handleSmtpConfigChange('fromName', e.target.value)}
                       />
                     </div>
                   </div>
-
-                  <Button
-                    onClick={handleSaveSettings}
-                    disabled={isSaving}
-                    className="w-full bg-primary text-primary-foreground"
-                  >
-                    {isSaving ? 'Salvando...' : 'Salvar Configurações'}
-                  </Button>
                 </CardContent>
               </Card>
             )}
 
-            {/* Ações */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Ações</CardTitle>
-                <CardDescription>
-                  Gerencie o envio de notificações
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button
-                  onClick={handleCheckNotifications}
-                  className="w-full gap-2 bg-blue-600 text-white"
-                >
-                  <Clock className="h-4 w-4" />
-                  Verificar e Criar Notificações
-                </Button>
-                <Button
-                  onClick={handleProcessNotifications}
-                  disabled={isProcessing || pendingNotifications.length === 0}
-                  className="w-full gap-2 bg-green-600 text-white"
-                >
-                  <Send className="h-4 w-4" />
-                  {isProcessing
-                    ? 'Processando...'
-                    : `Enviar ${pendingNotifications.length} Notificações`}
-                </Button>
-                {failedNotifications.length > 0 && (
-                  <Button
-                    onClick={handleRetryFailed}
-                    disabled={isProcessing}
-                    variant="outline"
-                    className="w-full gap-2"
-                  >
-                    <AlertCircle className="h-4 w-4" />
-                    Reenviar {failedNotifications.length} Falhadas
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
+            {/* Salvar Configurações */}
+            <Button
+              onClick={handleSaveSettings}
+              disabled={isSaving}
+              className="w-full bg-primary text-primary-foreground"
+            >
+              {isSaving ? 'Salvando...' : 'Salvar Configurações'}
+            </Button>
           </TabsContent>
 
           <TabsContent value="historico" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Histórico de Notificações</CardTitle>
-                <CardDescription>
-                  Todas as notificações enviadas e pendentes
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {notifications.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
-                    Nenhuma notificação registrada
-                  </div>
-                ) : (
-                  <div className="space-y-3 max-h-96 overflow-y-auto">
-                    {notifications.map((notification) => (
-                      <div
-                        key={notification.id}
-                        className={`p-4 border rounded-lg ${
-                          notification.status === 'sent'
-                            ? 'bg-green-50/30 border-green-100'
-                            : notification.status === 'failed'
-                              ? 'bg-red-50/30 border-red-100'
-                              : 'bg-amber-50/30 border-amber-100'
-                        }`}
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <p className="font-medium text-foreground">
-                                {notification.email}
-                              </p>
-                              <Badge
-                                variant={
-                                  notification.status === 'sent'
-                                    ? 'default'
-                                    : notification.status === 'failed'
-                                      ? 'destructive'
-                                      : 'outline'
-                                }
-                                className={
-                                  notification.status === 'sent'
-                                    ? 'bg-green-600'
-                                    : ''
-                                }
-                              >
-                                {notification.status === 'sent'
-                                  ? 'Enviado'
-                                  : notification.status === 'failed'
-                                    ? 'Falha'
-                                    : 'Pendente'}
-                              </Badge>
-                            </div>
-                            <p className="text-sm text-muted-foreground mb-2">
-                              {notification.subject}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              Criado em{' '}
-                              {new Date(notification.createdAt).toLocaleDateString('pt-BR')}{' '}
-                              às{' '}
-                              {new Date(notification.createdAt).toLocaleTimeString('pt-BR')}
-                            </p>
-                            {notification.sentAt && (
-                              <p className="text-xs text-muted-foreground">
-                                Enviado em{' '}
-                                {new Date(notification.sentAt).toLocaleDateString('pt-BR')}{' '}
-                                às{' '}
-                                {new Date(notification.sentAt).toLocaleTimeString('pt-BR')}
-                              </p>
-                            )}
-                            {notification.failureReason && (
-                              <p className="text-xs text-red-600 mt-1">
-                                Erro: {notification.failureReason}
-                              </p>
-                            )}
-                          </div>
-                          <div className="ml-4">
-                            {notification.status === 'sent' ? (
-                              <CheckCircle2 className="h-5 w-5 text-green-600" />
-                            ) : notification.status === 'failed' ? (
-                              <AlertCircle className="h-5 w-5 text-red-600" />
-                            ) : (
-                              <Clock className="h-5 w-5 text-amber-600" />
-                            )}
-                          </div>
-                        </div>
+            {sentNotifications.length === 0 ? (
+              <Card>
+                <CardContent className="pt-6">
+                  <p className="text-center text-muted-foreground">
+                    Nenhuma notificação enviada ainda
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              sentNotifications.map(notification => (
+                <Card key={notification.id}>
+                  <CardContent className="pt-6">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <p className="font-medium text-foreground">{notification.email}</p>
+                        <p className="text-sm text-muted-foreground">{notification.subject}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Enviado em {new Date(notification.sentAt!).toLocaleString('pt-BR')}
+                        </p>
                       </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                      <Badge className="bg-green-600">Enviado</Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </TabsContent>
 
           <TabsContent value="status" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Ações Rápidas */}
+            <div className="grid grid-cols-2 gap-4">
+              <Button
+                onClick={handleCheckNotifications}
+                className="bg-blue-600 text-white"
+              >
+                <Clock className="h-4 w-4 mr-2" />
+                Verificar Notificações
+              </Button>
+              <Button
+                onClick={handleProcessNotifications}
+                disabled={isProcessing || pendingNotifications.length === 0}
+                className="bg-green-600 text-white"
+              >
+                <Send className="h-4 w-4 mr-2" />
+                Enviar Pendentes
+              </Button>
+            </div>
+
+            {/* Status Geral */}
+            <div className="grid grid-cols-3 gap-4">
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Pendentes</CardTitle>
-                  <Clock className="h-4 w-4 text-amber-600" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-amber-600">
-                    {pendingNotifications.length}
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <p className="text-3xl font-bold text-amber-600">{pendingNotifications.length}</p>
+                    <p className="text-sm text-muted-foreground mt-2">Pendentes</p>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Aguardando envio
-                  </p>
                 </CardContent>
               </Card>
-
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Enviadas</CardTitle>
-                  <CheckCircle2 className="h-4 w-4 text-green-600" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-green-600">
-                    {sentNotifications.length}
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <p className="text-3xl font-bold text-green-600">{sentNotifications.length}</p>
+                    <p className="text-sm text-muted-foreground mt-2">Enviadas</p>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Enviadas com sucesso
-                  </p>
                 </CardContent>
               </Card>
-
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Falhadas</CardTitle>
-                  <AlertCircle className="h-4 w-4 text-red-600" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-red-600">
-                    {failedNotifications.length}
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <p className="text-3xl font-bold text-red-600">{failedNotifications.length}</p>
+                    <p className="text-sm text-muted-foreground mt-2">Falhadas</p>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Erros no envio
-                  </p>
                 </CardContent>
               </Card>
             </div>
 
-            {failedNotifications.length > 0 && (
-              <Card className="bg-red-50/50 border-red-100">
+            {/* Notificações Pendentes */}
+            {pendingNotifications.length > 0 && (
+              <Card>
                 <CardHeader>
-                  <CardTitle className="text-red-700">Notificações Falhadas</CardTitle>
+                  <CardTitle>Notificações Pendentes</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {failedNotifications.map((notification) => (
-                      <div key={notification.id} className="text-sm">
-                        <p className="font-medium text-red-700">{notification.email}</p>
-                        <p className="text-xs text-red-600">
-                          {notification.failureReason}
-                        </p>
+                <CardContent className="space-y-3">
+                  {pendingNotifications.map(notification => (
+                    <div key={notification.id} className="flex items-start justify-between p-3 border rounded-lg">
+                      <div className="flex-1">
+                        <p className="font-medium text-foreground">{notification.email}</p>
+                        <p className="text-sm text-muted-foreground">{notification.subject}</p>
                       </div>
-                    ))}
-                  </div>
+                      <Clock className="h-5 w-5 text-amber-600" />
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Notificações Falhadas */}
+            {failedNotifications.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Notificações Falhadas</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {failedNotifications.map(notification => (
+                    <div key={notification.id} className="flex items-start justify-between p-3 border rounded-lg border-red-200 bg-red-50">
+                      <div className="flex-1">
+                        <p className="font-medium text-foreground">{notification.email}</p>
+                        <p className="text-sm text-red-600">{notification.failureReason}</p>
+                      </div>
+                      <AlertCircle className="h-5 w-5 text-red-600" />
+                    </div>
+                  ))}
                 </CardContent>
               </Card>
             )}

@@ -314,6 +314,8 @@ export interface NotificationMetrics {
 export interface NotificationTemplate {
   id: string;
   name: string;
+  description?: string;
+  type: 'sms' | 'push' | 'email' | 'whatsapp'; // Tipo de template
   billType: 'mensalidade' | 'mutua' | 'taxa' | 'outro';
   channel: 'email' | 'push' | 'whatsapp' | 'sms';
   subject?: string;
@@ -469,4 +471,117 @@ export interface ChannelROI {
   conversionRate: number;
   revenuePerSent: number;
   costPerConversion: number;
+}
+
+
+// ===== MULTITENANT TYPES =====
+
+export interface Lodge {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  foundedYear: number;
+  status: 'active' | 'inactive' | 'suspended';
+  planId: string;
+  createdAt: string;
+  updatedAt: string;
+  adminEmail: string;
+  adminName: string;
+  maxMembers: number;
+  features: string[];
+}
+
+export interface SaaSPlan {
+  id: string;
+  name: string;
+  description: string;
+  monthlyPrice: number;
+  annualPrice: number;
+  maxMembers: number;
+  maxLojas: number;
+  features: string[];
+  status: 'active' | 'inactive';
+  createdAt: string;
+}
+
+export interface LodgeSubscription {
+  id: string;
+  lodgeId: string;
+  planId: string;
+  status: 'active' | 'inactive' | 'past_due' | 'cancelled';
+  billingCycle: 'monthly' | 'annual';
+  startDate: string;
+  renewalDate: string;
+  cancelledAt?: string;
+  amount: number;
+  paymentMethod: 'credit_card' | 'bank_transfer' | 'pix';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LodgeInvoice {
+  id: string;
+  lodgeId: string;
+  subscriptionId: string;
+  invoiceNumber: string;
+  amount: number;
+  status: 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
+  dueDate: string;
+  paidDate?: string;
+  paymentMethod?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FinancialContact {
+  id: string;
+  lodgeId: string;
+  name: string;
+  email: string;
+  phone: string;
+  position: string;
+  type: 'billing' | 'technical' | 'general';
+  isPrimary: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SuperAdminUser {
+  id: string;
+  email: string;
+  name: string;
+  role: 'super_admin' | 'admin' | 'support';
+  status: 'active' | 'inactive';
+  lastLogin?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LodgeUser {
+  id: string;
+  lodgeId: string;
+  email: string;
+  name: string;
+  role: 'admin' | 'secretary' | 'treasurer' | 'chancellor' | 'member';
+  status: 'active' | 'inactive';
+  lastLogin?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SystemMetrics {
+  totalLojas: number;
+  activeLojas: number;
+  totalMembers: number;
+  totalRevenue: number;
+  monthlyRecurringRevenue: number;
+  churnRate: number;
+  averageUsagePerLoja: number;
+  topFeatures: string[];
 }

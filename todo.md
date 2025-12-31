@@ -131,3 +131,33 @@
 - [ ] Implementar gráficos de conversão
 - [ ] Implementar análise de arrecadação por canal
 - [ ] Criar exportação de relatórios
+
+
+## Fase 31: Arquitetura Multitenant
+- [ ] Criar tipos para lojas e contexto multitenant
+- [ ] Implementar store para lojas
+- [ ] Criar contexto de loja ativa
+- [ ] Implementar seletor de loja no header
+- [ ] Adicionar isolamento de dados por loja
+
+## Fase 32: Painel de Super Administrador
+- [ ] Criar página de login de super admin
+- [ ] Implementar dashboard de super admin
+- [ ] Criar página de gestão de lojas
+- [ ] Implementar CRUD de lojas
+- [ ] Adicionar funcionalidades de ativar/desativar lojas
+- [ ] Criar página de usuários do sistema
+
+## Fase 33: Mensalidades de Aluguel
+- [ ] Criar tipos para planos e mensalidades
+- [ ] Implementar store para planos
+- [ ] Criar página de gestão de planos
+- [ ] Implementar sistema de cobrança de aluguel
+- [ ] Adicionar histórico de pagamentos de aluguel
+
+## Fase 34: Gestão Financeira
+- [ ] Criar tipos para contatos financeiros
+- [ ] Implementar store para contatos
+- [ ] Criar página de gestão de contatos financeiros
+- [ ] Implementar dashboard financeiro de super admin
+- [ ] Adicionar relatórios de receita por loja

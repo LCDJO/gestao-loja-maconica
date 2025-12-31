@@ -661,6 +661,7 @@ export const notificationTemplateStore = {
       {
         id: generateId(),
         name: 'Mensalidade - Email',
+        type: 'email',
         billType: 'mensalidade',
         channel: 'email',
         subject: 'Aviso de Vencimento - Mensalidade',
@@ -676,6 +677,7 @@ export const notificationTemplateStore = {
       {
         id: generateId(),
         name: 'Mútua - Email',
+        type: 'email',
         billType: 'mutua',
         channel: 'email',
         subject: 'Aviso de Vencimento - Mútua',
@@ -724,6 +726,14 @@ export const notificationTemplateStore = {
   getTemplatesByBillType: (billType: string): NotificationTemplate[] => {
     const templates = notificationTemplateStore.getTemplates();
     return templates.filter(t => t.billType === billType);
+  },
+  getTemplatesByType: (type: string): NotificationTemplate[] => {
+    const templates = notificationTemplateStore.getTemplates();
+    return templates.filter(t => t.type === type);
+  },
+  getTemplatesByTypeAndBillType: (type: string, billType: string): NotificationTemplate[] => {
+    const templates = notificationTemplateStore.getTemplates();
+    return templates.filter(t => t.type === type && t.billType === billType);
   },
 };
 
@@ -866,5 +876,269 @@ export const roiStore = {
       bestPerformingChannel: bestChannel[0],
       bestPerformingTemplate: '',
     };
+  },
+};
+
+
+import { Lodge, SaaSPlan, LodgeSubscription, LodgeInvoice, FinancialContact, SuperAdminUser, LodgeUser } from "./types";
+
+// ===== LODGE STORE =====
+export const lodgeStore = {
+  getAll: (): Lodge[] => {
+    const stored = localStorage.getItem('lodges');
+    if (!stored) {
+      // Criar lojas de exemplo
+      const defaultLodges = [
+        {
+          id: '1',
+          name: 'Loja Maçônica Central',
+          email: 'contato@loja-central.com',
+          phone: '(11) 3000-0000',
+          address: 'Rua das Flores, 123',
+          city: 'São Paulo',
+          state: 'SP',
+          zipCode: '01000-000',
+          foundedYear: 1990,
+          status: 'active' as const,
+          planId: '1',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          adminEmail: 'admin@loja-central.com',
+          adminName: 'João Silva',
+          maxMembers: 100,
+          features: ['secretaria', 'chancelaria', 'tesouraria', 'notificacoes', 'analytics'],
+        },
+      ];
+      localStorage.setItem('lodges', JSON.stringify(defaultLodges));
+      return defaultLodges;
+    }
+    return JSON.parse(stored);
+  },
+  add: (lodge: Omit<Lodge, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const lodges = lodgeStore.getAll();
+    const newLodge = {
+      ...lodge,
+      id: generateId(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    lodges.push(newLodge);
+    localStorage.setItem('lodges', JSON.stringify(lodges));
+    return newLodge;
+  },
+  update: (id: string, data: Partial<Lodge>) => {
+    const lodges = lodgeStore.getAll();
+    const index = lodges.findIndex(l => l.id === id);
+    if (index !== -1) {
+      lodges[index] = { ...lodges[index], ...data, updatedAt: new Date().toISOString() };
+      localStorage.setItem('lodges', JSON.stringify(lodges));
+      return lodges[index];
+    }
+    return null;
+  },
+  delete: (id: string) => {
+    const lodges = lodgeStore.getAll();
+    const filtered = lodges.filter(l => l.id !== id);
+    localStorage.setItem('lodges', JSON.stringify(filtered));
+  },
+  getById: (id: string) => {
+    const lodges = lodgeStore.getAll();
+    return lodges.find(l => l.id === id);
+  },
+};
+
+// ===== SAAS PLAN STORE =====
+export const saaSPlanStore = {
+  getAll: (): SaaSPlan[] => {
+    const stored = localStorage.getItem('saas_plans');
+    if (!stored) {
+      const defaultPlans = [
+        {
+          id: '1',
+          name: 'Plano Básico',
+          description: 'Perfeito para lojas pequenas',
+          monthlyPrice: 99,
+          annualPrice: 990,
+          maxMembers: 50,
+          maxLojas: 1,
+          features: ['secretaria', 'chancelaria', 'tesouraria'],
+          status: 'active' as const,
+          createdAt: new Date().toISOString(),
+        },
+        {
+          id: '2',
+          name: 'Plano Profissional',
+          description: 'Para lojas em crescimento',
+          monthlyPrice: 199,
+          annualPrice: 1990,
+          maxMembers: 200,
+          maxLojas: 3,
+          features: ['secretaria', 'chancelaria', 'tesouraria', 'notificacoes', 'analytics', 'templates'],
+          status: 'active' as const,
+          createdAt: new Date().toISOString(),
+        },
+        {
+          id: '3',
+          name: 'Plano Enterprise',
+          description: 'Solução completa para grandes lojas',
+          monthlyPrice: 499,
+          annualPrice: 4990,
+          maxMembers: 1000,
+          maxLojas: 10,
+          features: ['secretaria', 'chancelaria', 'tesouraria', 'notificacoes', 'analytics', 'templates', 'campanhas', 'roi', 'webhooks'],
+          status: 'active' as const,
+          createdAt: new Date().toISOString(),
+        },
+      ];
+      localStorage.setItem('saas_plans', JSON.stringify(defaultPlans));
+      return defaultPlans;
+    }
+    return JSON.parse(stored);
+  },
+  getById: (id: string) => {
+    const plans = saaSPlanStore.getAll();
+    return plans.find(p => p.id === id);
+  },
+};
+
+// ===== LODGE SUBSCRIPTION STORE =====
+export const lodgeSubscriptionStore = {
+  getAll: (): LodgeSubscription[] => {
+    const stored = localStorage.getItem('lodge_subscriptions');
+    return stored ? JSON.parse(stored) : [];
+  },
+  add: (subscription: Omit<LodgeSubscription, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const subscriptions = lodgeSubscriptionStore.getAll();
+    const newSubscription = {
+      ...subscription,
+      id: generateId(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    subscriptions.push(newSubscription);
+    localStorage.setItem('lodge_subscriptions', JSON.stringify(subscriptions));
+    return newSubscription;
+  },
+  getByLodge: (lodgeId: string) => {
+    const subscriptions = lodgeSubscriptionStore.getAll();
+    return subscriptions.find(s => s.lodgeId === lodgeId);
+  },
+  update: (id: string, data: Partial<LodgeSubscription>) => {
+    const subscriptions = lodgeSubscriptionStore.getAll();
+    const index = subscriptions.findIndex(s => s.id === id);
+    if (index !== -1) {
+      subscriptions[index] = { ...subscriptions[index], ...data, updatedAt: new Date().toISOString() };
+      localStorage.setItem('lodge_subscriptions', JSON.stringify(subscriptions));
+      return subscriptions[index];
+    }
+    return null;
+  },
+};
+
+// ===== LODGE INVOICE STORE =====
+export const lodgeInvoiceStore = {
+  getAll: (): LodgeInvoice[] => {
+    const stored = localStorage.getItem('lodge_invoices');
+    return stored ? JSON.parse(stored) : [];
+  },
+  add: (invoice: Omit<LodgeInvoice, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const invoices = lodgeInvoiceStore.getAll();
+    const newInvoice = {
+      ...invoice,
+      id: generateId(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    invoices.push(newInvoice);
+    localStorage.setItem('lodge_invoices', JSON.stringify(invoices));
+    return newInvoice;
+  },
+  getByLodge: (lodgeId: string) => {
+    const invoices = lodgeInvoiceStore.getAll();
+    return invoices.filter(i => i.lodgeId === lodgeId);
+  },
+};
+
+// ===== FINANCIAL CONTACT STORE =====
+export const financialContactStore = {
+  getAll: (): FinancialContact[] => {
+    const stored = localStorage.getItem('financial_contacts');
+    return stored ? JSON.parse(stored) : [];
+  },
+  add: (contact: Omit<FinancialContact, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const contacts = financialContactStore.getAll();
+    const newContact = {
+      ...contact,
+      id: generateId(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    contacts.push(newContact);
+    localStorage.setItem('financial_contacts', JSON.stringify(contacts));
+    return newContact;
+  },
+  getByLodge: (lodgeId: string) => {
+    const contacts = financialContactStore.getAll();
+    return contacts.filter(c => c.lodgeId === lodgeId);
+  },
+  update: (id: string, data: Partial<FinancialContact>) => {
+    const contacts = financialContactStore.getAll();
+    const index = contacts.findIndex(c => c.id === id);
+    if (index !== -1) {
+      contacts[index] = { ...contacts[index], ...data, updatedAt: new Date().toISOString() };
+      localStorage.setItem('financial_contacts', JSON.stringify(contacts));
+      return contacts[index];
+    }
+    return null;
+  },
+  delete: (id: string) => {
+    const contacts = financialContactStore.getAll();
+    const filtered = contacts.filter(c => c.id !== id);
+    localStorage.setItem('financial_contacts', JSON.stringify(filtered));
+  },
+};
+
+// ===== SUPER ADMIN USER STORE =====
+export const superAdminUserStore = {
+  getAll: (): SuperAdminUser[] => {
+    const stored = localStorage.getItem('super_admin_users');
+    if (!stored) {
+      const defaultUsers = [
+        {
+          id: '1',
+          email: 'admin@sistema.com',
+          name: 'Administrador Sistema',
+          role: 'super_admin' as const,
+          status: 'active' as const,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ];
+      localStorage.setItem('super_admin_users', JSON.stringify(defaultUsers));
+      return defaultUsers;
+    }
+    return JSON.parse(stored);
+  },
+  add: (user: Omit<SuperAdminUser, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const users = superAdminUserStore.getAll();
+    const newUser = {
+      ...user,
+      id: generateId(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    users.push(newUser);
+    localStorage.setItem('super_admin_users', JSON.stringify(users));
+    return newUser;
+  },
+  update: (id: string, data: Partial<SuperAdminUser>) => {
+    const users = superAdminUserStore.getAll();
+    const index = users.findIndex(u => u.id === id);
+    if (index !== -1) {
+      users[index] = { ...users[index], ...data, updatedAt: new Date().toISOString() };
+      localStorage.setItem('super_admin_users', JSON.stringify(users));
+      return users[index];
+    }
+    return null;
   },
 };

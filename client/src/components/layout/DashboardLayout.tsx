@@ -215,7 +215,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                         <div key={item.label}>
                           {hasSubmenu ? (
                             <button
-                              onClick={() => toggleSubmenu(submenuKey)}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                toggleSubmenu(submenuKey);
+                              }}
                               className={cn(
                                 "w-full flex items-center justify-between gap-3 px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium",
                                 "text-gray-700 hover:bg-gray-100"

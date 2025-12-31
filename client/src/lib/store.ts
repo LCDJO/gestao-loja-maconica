@@ -1751,3 +1751,69 @@ export const accessAuditStore = {
     };
   },
 };
+
+
+// ===== INTEGRATION STATUS STORE =====
+export interface IntegrationStatus {
+  id: string;
+  name: string;
+  connected: boolean;
+  lastChecked?: string;
+  errorMessage?: string;
+  metadata?: Record<string, any>;
+}
+
+export const integrationStatusStore = {
+  getAll: (): IntegrationStatus[] => {
+    const stored = localStorage.getItem('integration_status');
+    if (!stored) {
+      return [
+        { id: 'whatsapp', name: 'WhatsApp (Evolution API)', connected: false },
+        { id: 'gowa', name: 'GOWA', connected: false },
+        { id: 'email', name: 'Email (SendGrid/Mailgun)', connected: false },
+        { id: 'push', name: 'Push (OneSignal)', connected: false },
+        { id: 'calendar', name: 'Google Calendar', connected: false },
+        { id: 'opensign', name: 'Assinatura Digital (OpenSign)', connected: false },
+        { id: 'backup', name: 'Configuração de Backup', connected: false },
+      ];
+    }
+    return JSON.parse(stored);
+  },
+
+  getById: (id: string): IntegrationStatus | null => {
+    const statuses = integrationStatusStore.getAll();
+    return statuses.find(s => s.id === id) || null;
+  },
+
+  update: (id: string, data: Partial<IntegrationStatus>) => {
+    const statuses = integrationStatusStore.getAll();
+    const index = statuses.findIndex(s => s.id === id);
+    if (index === -1) return null;
+
+    statuses[index] = {
+      ...statuses[index],
+      ...data,
+      lastChecked: new Date().toISOString(),
+    };
+    localStorage.setItem('integration_status', JSON.stringify(statuses));
+    return statuses[index];
+  },
+
+  setConnected: (id: string, connected: boolean, errorMessage?: string) => {
+    return integrationStatusStore.update(id, {
+      connected,
+      errorMessage: connected ? undefined : errorMessage,
+    });
+  },
+
+  getConnectedCount: (): number => {
+    const statuses = integrationStatusStore.getAll();
+    return statuses.filter(s => s.connected).length;
+  },
+
+  getConnectedPercentage: (): number => {
+    const statuses = integrationStatusStore.getAll();
+    if (statuses.length === 0) return 0;
+    return Math.round((integrationStatusStore.getConnectedCount() / statuses.length) * 100);
+  },
+};

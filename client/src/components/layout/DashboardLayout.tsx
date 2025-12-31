@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { 
   LayoutDashboard, 
@@ -28,8 +28,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import NotificationCenter from "@/components/NotificationCenter";
-import { userPermissionsStore } from "@/lib/store";
-import { Lock } from "lucide-react";
+import { userPermissionsStore, integrationStatusStore } from "@/lib/store";
+import { Lock, Circle } from "lucide-react";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -60,8 +60,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     parameters: false,
   });
   const [expandedSubmenus, setExpandedSubmenus] = useState<Record<string, boolean>>({});
+  const [integrationStatuses, setIntegrationStatuses] = useState(integrationStatusStore.getAll());
   const userPermissions = userPermissionsStore.getCurrentUser();
   const canAccessParametros = userPermissionsStore.canAccessParametros();
+
+  // Atualizar status de integrações quando componente monta
+  useEffect(() => {
+    setIntegrationStatuses(integrationStatusStore.getAll());
+  }, []);
 
   const toggleSection = (section: string) => {
     setExpandedSections(prev => ({
@@ -288,6 +294,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             <div className="space-y-0.5 mt-1 ml-3 border-l border-gray-200 pl-3">
                               {item.submenu!.map((subitem) => {
                                 const isSubActive = location === subitem.href || location.startsWith(`${subitem.href}/`);
+                                const integrationStatus = integrationStatuses.find(
+                                  s => s.name.toLowerCase().includes(subitem.label.toLowerCase())
+                                );
                                 return (
                                   <Link key={subitem.href} href={subitem.href}>
                                     <div 
@@ -299,7 +308,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                       )}
                                     >
                                       <subitem.icon className={cn("h-3 w-3", isSubActive ? "text-blue-600" : "text-gray-500")} />
-                                      <span>{subitem.label}</span>
+                                      <span className="flex-1">{subitem.label}</span>
+                                      {integrationStatus && (
+                                        <Circle 
+                                          className={cn(
+                                            "h-2 w-2 fill-current",
+                                            integrationStatus.connected ? "text-green-500" : "text-red-500"
+                                          )}
+                                        />
+                                      )}
                                     </div>
                                   </Link>
                                 );

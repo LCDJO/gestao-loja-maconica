@@ -18,7 +18,12 @@ import {
   TrendingUp,
   ChevronDown,
   Calendar,
-  Shield
+  Shield,
+  MessageCircle,
+  Bell,
+  FileSignature,
+  HardDrive,
+  Search
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -46,6 +51,8 @@ interface NavSection {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [location] = useLocation();
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     modules: true,
     communication: false,
@@ -105,22 +112,26 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       items: [
         { label: "Configurações da Loja", icon: Settings, href: "/configuracoes-loja" },
         { 
-          label: "WhatsApp", 
-          icon: Mail, 
-          href: "#whatsapp",
+          label: "Integrações", 
+          icon: Settings, 
+          href: "#integracoes",
           submenu: [
-            { label: "Evolution API", icon: Mail, href: "/configuracoes" },
-            { label: "Histórico de Testes", icon: Clock, href: "/historico-testes-evolution" },
-          ]
-        },
-        { 
-          label: "Notificações", 
-          icon: Mail, 
-          href: "#notificacoes",
-          submenu: [
-            { label: "Email (SendGrid/Mailgun)", icon: Mail, href: "/configuracao-email" },
-            { label: "Push (OneSignal)", icon: Mail, href: "/configuracoes-push" },
-            { label: "Google Calendar", icon: Calendar, href: "/google-calendar" },
+            // Comunicação
+            { label: "Comunicação", icon: MessageCircle, href: "#" },
+            { label: "  WhatsApp (Evolution API)", icon: MessageCircle, href: "/configuracoes" },
+            { label: "  GOWA", icon: MessageCircle, href: "/configuracao-gowa" },
+            { label: "  Histórico de Testes", icon: Clock, href: "/historico-testes-evolution" },
+            // Notificação
+            { label: "Notificação", icon: Bell, href: "#" },
+            { label: "  Email (SendGrid/Mailgun)", icon: Mail, href: "/configuracao-email" },
+            { label: "  Push (OneSignal)", icon: Bell, href: "/configuracoes-push" },
+            { label: "  Google Calendar", icon: Calendar, href: "/google-calendar" },
+            // Documentos
+            { label: "Documentos", icon: FileSignature, href: "#" },
+            { label: "  Assinatura Digital (OpenSign)", icon: FileSignature, href: "/configuracao-opensign" },
+            // Backup
+            { label: "Backup", icon: HardDrive, href: "#" },
+            { label: "  Configuração de Backup", icon: HardDrive, href: "/configuracao-backup" },
           ]
         },
         { 
@@ -145,7 +156,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           icon: BarChart3, 
           href: "#analytics",
           submenu: [
-            { label: "Notificau00e7u00f5es", icon: BarChart3, href: "/analytics-notificacoes" },
+            { label: "Notificações", icon: BarChart3, href: "/analytics-notificacoes" },
             { label: "Push", icon: BarChart3, href: "/analytics-push" },
           ]
         },
@@ -192,6 +203,18 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             >
               <X className="h-5 w-5" />
             </Button>
+          </div>
+
+          {/* Search Bar */}
+          <div className="px-3 py-3 border-b border-gray-200">
+            <button
+              onClick={() => setSearchOpen(!searchOpen)}
+              className="w-full flex items-center gap-2 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors text-sm text-gray-600"
+            >
+              <Search className="h-4 w-4" />
+              <span className="flex-1 text-left">Buscar...</span>
+              <kbd className="text-xs bg-white px-2 py-1 rounded border border-gray-300">Cmd+K</kbd>
+            </button>
           </div>
 
           {/* Navigation - Facebook Style */}

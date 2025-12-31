@@ -390,10 +390,11 @@ export default function Tesouraria() {
         </div>
 
         <Tabs defaultValue="cobrancas" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
             <TabsTrigger value="cobrancas">Gestão de Cobranças</TabsTrigger>
             <TabsTrigger value="fluxo">Fluxo de Caixa</TabsTrigger>
             <TabsTrigger value="mensalidades">Histórico Individual</TabsTrigger>
+            <TabsTrigger value="conciliacao">Conciliação Bancária</TabsTrigger>
           </TabsList>
 
           <TabsContent value="cobrancas" className="space-y-4">
@@ -604,6 +605,31 @@ export default function Tesouraria() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          <TabsContent value="conciliacao" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Conciliacao Bancaria</CardTitle>
+                <CardDescription>Importe arquivos OFX e de baixa automatica nas cobrancas.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="border-2 border-dashed rounded-lg p-8 text-center hover:bg-gray-50 cursor-pointer transition">
+                  <Download className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                  <p className="font-medium text-gray-900">Importe seu arquivo OFX</p>
+                  <p className="text-sm text-gray-600 mt-1">Arraste um arquivo OFX ou clique para selecionar</p>
+                </div>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-sm text-blue-900"><strong>Dica:</strong> Exporte seu extrato do banco em formato OFX para importar automaticamente as transacoes.</p>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="font-medium text-gray-900">Transacoes Importadas</h3>
+                  <div className="text-center py-8 text-muted-foreground border rounded-lg">
+                    Nenhuma transacao importada ainda. Importe um arquivo OFX para comecar.
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

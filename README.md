@@ -1,7 +1,7 @@
 # 🧭 Sistema de Gestão Integrada
 
 <p align="center">
-  <img src="docs/logo-esquadro-compasso.png" alt="Logo Esquadro e Compasso" width="180"/>
+  <img src="" alt="Logo Esquadro e Compasso" width="180"/>
 </p>
 
 ## 📘 Sobre o Projeto

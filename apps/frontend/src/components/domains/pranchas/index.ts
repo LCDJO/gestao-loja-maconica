@@ -1,2 +1,2 @@
-// Componentes de Pranchas
-// Publicações e pranchas (artigos)
+export { ListaPranchas } from './ListaPranchas';
+export type { Prancha, PranchasStats } from './types';

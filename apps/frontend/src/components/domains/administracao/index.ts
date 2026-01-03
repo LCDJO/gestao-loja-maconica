@@ -1,8 +1,5 @@
-// Componentes de Administração
-// Gestão administrativa, configurações e controle de sistema
-
-// Export individual components here as they are created
-// export { NomeComponente } from './NomeComponente';
+export { Administracao } from './Administracao';
+export type { Usuario, ConfiguracoesAdm, AdministracaoStats } from './types';
 
 // Placeholder export to make this a valid module
 export {};

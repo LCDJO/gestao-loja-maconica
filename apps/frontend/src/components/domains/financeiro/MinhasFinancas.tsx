@@ -1,6 +1,5 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState } from 'react';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -9,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
 
 export interface LancamentoFinanceiro {
@@ -26,77 +25,45 @@ interface MinhasFinancasProps {
   userEmail?: string;
 }
 
-export const MinhasFinancas: FC<MinhasFinancasProps> = ({ userEmail }) => {
-  const [lancamentos, setLancamentos] = useState<LancamentoFinanceiro[]>([]);
-  const [loading, setLoading] = useState(true);
+export const MinhasFinancas: FC<MinhasFinancasProps> = () => {
+  const [lancamentos] = useState<LancamentoFinanceiro[]>([
+    {
+      id: '1',
+      descricao: 'Mensalidade Janeiro',
+      valor: 150.00,
+      data: '2026-01-15',
+      categoria: 'Mensalidade',
+      status: 'pago',
+      tipo: 'receita',
+    },
+    {
+      id: '2',
+      descricao: 'Mensalidade Fevereiro',
+      valor: 150.00,
+      data: '2026-02-15',
+      categoria: 'Mensalidade',
+      status: 'pendente',
+      tipo: 'receita',
+    },
+  ]);
+
   const [filtro, setFiltro] = useState<'todos' | 'pendentes' | 'pagos'>('todos');
   const [anoFiltro, setAnoFiltro] = useState(new Date().getFullYear());
 
-  // Estatísticas
-  const [totalReceitas, setTotalReceitas] = useState(0);
-  const [totalDespesas, setTotalDespesas] = useState(0);
-  const [saldoLiquido, setSaldoLiquido] = useState(0);
-  const [totalPago, setTotalPago] = useState(0);
-
-  useEffect(() => {
-    carregarMinhasFinancas();
-  }, [userEmail, filtro, anoFiltro]);
-
-  const carregarMinhasFinancas = async () => {
-    try {
-      setLoading(true);
-      
-      // TODO: Implementar carregamento de dados do backend
-      // Por enquanto, usando dados mock
-      const dadosMock: LancamentoFinanceiro[] = [
-        {
-          id: '1',
-          descricao: 'Mensalidade Janeiro',
-          valor: 150.00,
-          data: '2026-01-15',
-          categoria: 'Mensalidade',
-          status: 'pago',
-          tipo: 'receita',
-        },
-        {
-          id: '2',
-          descricao: 'Mensalidade Fevereiro',
-          valor: 150.00,
-          data: '2026-02-15',
-          categoria: 'Mensalidade',
-          status: 'pendente',
-          tipo: 'receita',
-        },
-      ];
-
-      setLancamentos(dadosMock);
-      calcularEstatisticas(dadosMock);
-    } catch (error) {
-      console.error('Erro ao carregar finanças:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const calcularEstatisticas = (dados: LancamentoFinanceiro[]) => {
-    let receitas = 0;
-    let despesas = 0;
-    let pago = 0;
-
-    dados.forEach((item) => {
-      if (item.tipo === 'receita') {
-        receitas += item.valor;
-        if (item.status === 'pago') pago += item.valor;
-      } else {
-        despesas += item.valor;
-      }
-    });
-
-    setTotalReceitas(receitas);
-    setTotalDespesas(despesas);
-    setTotalPago(pago);
-    setSaldoLiquido(receitas - despesas);
-  };
+  // Estatísticas - Cálculo
+  const totalReceitas = lancamentos
+    .filter(l => l.tipo === 'receita')
+    .reduce((sum, l) => sum + l.valor, 0);
+  
+  const totalDespesas = lancamentos
+    .filter(l => l.tipo === 'despesa')
+    .reduce((sum, l) => sum + l.valor, 0);
+  
+  const totalPago = lancamentos
+    .filter(l => l.status === 'pago')
+    .reduce((sum, l) => sum + l.valor, 0);
+  
+  const saldoLiquido = totalReceitas - totalDespesas;
 
   const lancamentosFiltrados = lancamentos.filter((item) => {
     if (filtro === 'pendentes') return item.status === 'pendente';

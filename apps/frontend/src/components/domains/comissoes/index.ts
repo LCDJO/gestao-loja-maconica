@@ -1,2 +1,2 @@
-// Componentes de Comissões
-// Gestão de comissões internas
+export { ListaComissoes } from './ListaComissoes';
+export type { Comissao, ComissoesStats } from './types';

@@ -1,2 +1,2 @@
-// Componentes de Sistema
-// Componentes de infraestrutura e sistema
+export { DadosLoja } from './DadosLoja';
+export type { DadosLoja as DadosLojaType, ConfiguracaoSistema } from './types';

@@ -23,7 +23,11 @@ import {
   Bell,
   FileSignature,
   HardDrive,
-  Search
+  Search,
+  Heart,
+  BookOpen,
+  Trophy,
+  Gift
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -97,16 +101,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       id: "domains",
       label: "Domínios",
       items: [
-        // Administração
+        // Financeiro
         { 
-          label: "Administração", 
-          icon: Shield, 
-          href: "#admin",
+          label: "Financeiro", 
+          icon: Banknote, 
+          href: "#financeiro",
           submenu: [
-            { label: "Gerenciamento de Usuários", icon: Users, href: "/gerenciamento-usuarios" },
-            { label: "Auditoria de Acesso", icon: BarChart3, href: "/auditoria-acesso" },
-            { label: "Permissões", icon: Lock, href: "/permissoes" },
-            { label: "Auditoria Geral", icon: BarChart3, href: "/auditoria" },
+            { label: "Minhas Finanças", icon: Banknote, href: "/financeiro" },
+            { label: "Tesouraria", icon: Landmark, href: "/tesouraria" },
+            { label: "Conciliação", icon: FileText, href: "/conciliacao" },
           ]
         },
         // Irmãos (Membros)
@@ -115,20 +118,75 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           icon: Users, 
           href: "#irmaos",
           submenu: [
+            { label: "Lista de Irmãos", icon: Users, href: "/irmaos" },
             { label: "Pendências", icon: Clock, href: "/membro/pendencias" },
             { label: "Histórico", icon: FileText, href: "/membro/historico" },
             { label: "Notificações", icon: Bell, href: "/membro/notificacoes" },
           ]
         },
-        // Finanças
+        // Vida Maçônica
         { 
-          label: "Financeiro", 
-          icon: Landmark, 
-          href: "#financeiro",
+          label: "Vida Maçônica", 
+          icon: Trophy, 
+          href: "#vida-maconica",
           submenu: [
-            { label: "Tesouraria", icon: Landmark, href: "/tesouraria" },
-            { label: "Conciliação", icon: FileText, href: "/conciliacao" },
-            { label: "Integrações de Pagamento", icon: Settings, href: "/integracao-pagamentos" },
+            { label: "Vida Maçônica", icon: Trophy, href: "/vida-maconica" },
+            { label: "Cronograma", icon: Calendar, href: "/cronograma" },
+          ]
+        },
+        // Aniversariantes
+        { 
+          label: "Aniversariantes", 
+          icon: Gift, 
+          href: "/aniversariantes",
+        },
+        // Caridade
+        { 
+          label: "Caridade", 
+          icon: Heart, 
+          href: "#caridade",
+          submenu: [
+            { label: "Registros de Caridade", icon: Heart, href: "/caridade" },
+          ]
+        },
+        // Biblioteca
+        { 
+          label: "Biblioteca", 
+          icon: BookOpen, 
+          href: "#biblioteca",
+          submenu: [
+            { label: "Catálogo", icon: BookOpen, href: "/biblioteca" },
+          ]
+        },
+        // Comissões
+        { 
+          label: "Comissões", 
+          icon: Users, 
+          href: "#comissoes",
+          submenu: [
+            { label: "Lista de Comissões", icon: Users, href: "/comissoes" },
+          ]
+        },
+        // Pranchas
+        { 
+          label: "Pranchas", 
+          icon: FileText, 
+          href: "#pranchas",
+          submenu: [
+            { label: "Lista de Pranchas", icon: FileText, href: "/pranchas" },
+          ]
+        },
+        // Administração
+        { 
+          label: "Administração", 
+          icon: Shield, 
+          href: "#admin",
+          submenu: [
+            { label: "Painel Admin", icon: Shield, href: "/administracao" },
+            { label: "Gerenciamento de Usuários", icon: Users, href: "/gerenciamento-usuarios" },
+            { label: "Auditoria de Acesso", icon: BarChart3, href: "/auditoria-acesso" },
+            { label: "Permissões", icon: Lock, href: "/permissoes" },
+            { label: "Auditoria Geral", icon: BarChart3, href: "/auditoria" },
           ]
         },
         // Secretaria
@@ -150,13 +208,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             { label: "Chancelaria", icon: Users, href: "/chancelaria" },
           ]
         },
-        // Vida Maçônica
+        // Sistema
         { 
-          label: "Vida Maçônica", 
-          icon: Landmark, 
-          href: "#vida-maconica",
+          label: "Sistema", 
+          icon: Settings, 
+          href: "#sistema",
           submenu: [
-            { label: "Cronograma", icon: Calendar, href: "/cronograma" },
+            { label: "Dados da Loja", icon: Settings, href: "/sistema" },
           ]
         },
       ]

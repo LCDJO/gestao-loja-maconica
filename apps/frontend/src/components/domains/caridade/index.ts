@@ -1,2 +1,2 @@
-// Componentes de Caridade
-// Programas e ações de caridade
+export { RegistrosCaridade } from './RegistrosCaridade';
+export type { RegistroCaridade, CaridadeStats } from './types';

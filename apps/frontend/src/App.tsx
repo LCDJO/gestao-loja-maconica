@@ -11,17 +11,39 @@ import { MemberAuthProvider } from "./contexts/MemberAuthContext";
 import MemberLogin from "./pages/auth/MemberLogin";
 import SuperAdminLogin from "./pages/auth/SuperAdminLogin";
 
+// Portal do Irmão
+import MemberPortalLogin from "./pages/member-portal/auth/MemberLogin";
+import MemberPortalDashboard from "./pages/member-portal/dashboard/Dashboard";
+import PersonalData from "./pages/member-portal/personal-data/PersonalData";
+import FinancialHistory from "./pages/member-portal/financial-history/FinancialHistory";
+import Documents from "./pages/member-portal/documents/Documents";
+import Attendance from "./pages/member-portal/attendance/Attendance";
+
 // Dashboards
 import Home from "./pages/dashboards/Home";
 import MemberDashboard from "./pages/dashboards/MemberDashboard";
 import SuperAdminDashboard from "./pages/dashboards/SuperAdminDashboard";
 import DashboardExecutivo from "./pages/dashboards/DashboardExecutivo";
 
-// Departments
-import Secretaria from "./pages/departments/Secretaria";
-import Chancelaria from "./pages/departments/Chancelaria";
-import Tesouraria from "./pages/departments/Tesouraria";
+// MÓDULO SECRETARIA
+import SecretariaDashboard from "./pages/modules/secretaria/Secretaria";
+import IrmaosList from "./pages/modules/secretaria/members/IrmaosList";
+import Aniversariantes from "./pages/modules/secretaria/members/Aniversariantes";
+import Cronograma from "./pages/modules/secretaria/schedule/Cronograma";
 
+// MÓDULO CHANCELARIA
+import ChancelariaDashboard from "./pages/modules/chancelaria/Chancelaria";
+import VidaMaconica from "./pages/modules/chancelaria/records/VidaMaconica";
+import ComissoesList from "./pages/modules/chancelaria/commissions/ComissoesList";
+import Caridade from "./pages/modules/chancelaria/charity/Caridade";
+
+// MÓDULO TESOURARIA
+import TesourariaDashboard from "./pages/modules/tesouraria/Tesouraria";
+import MinhasFinancas from "./pages/modules/tesouraria/flow/MinhasFinancas";
+import Conciliacao from "./pages/modules/tesouraria/accounts/Conciliacao";
+import DashboardFinanceiro from "./pages/modules/tesouraria/reports/DashboardFinanceiro";
+
+// PÁGINAS ANTIGAS (ainda não movidas)
 // Member
 import MemberPendencias from "./pages/member/MemberPendencias";
 import MemberHistorico from "./pages/member/MemberHistorico";
@@ -39,7 +61,6 @@ import ConfiguracoesPush from "./pages/config/ConfiguracoesPush";
 import ConfiguracoesLoja from "./pages/config/ConfiguracoesLoja";
 import ConfiguracaoEmail from "./pages/config/ConfiguracaoEmail";
 import Parametrizacao from "./pages/config/Parametrizacao";
-import Conciliacao from "./pages/config/Conciliacao";
 
 // Admin
 import Auditoria from "./pages/admin/Auditoria";
@@ -50,8 +71,12 @@ import Backup from "./pages/admin/Backup";
 import Comunicados from "./pages/admin/Comunicados";
 import Changelog from "./pages/admin/Changelog";
 
-// Domains
-import Cronograma from "./pages/domains/Cronograma";
+// Pages antigas não movidas ainda
+import Sistema from "./pages/domains/Sistema";
+import Biblioteca from "./pages/domains/Biblioteca";
+import Comissoes from "./pages/domains/Comissoes";
+import Pranchas from "./pages/domains/Pranchas";
+import Administracao from "./pages/domains/Administracao";
 
 // Integrations
 import IntegracaoPagamentos from "./pages/integrations/IntegracaoPagamentos";
@@ -76,25 +101,43 @@ function Router() {
       <Route path={"/membro/login"} component={MemberLogin} />
       <Route path={"/super-admin/login"} component={SuperAdminLogin} />
 
+      {/* ===== PORTAL DO IRMÃO ===== */}
+      <Route path={"/member/login"} component={MemberPortalLogin} />
+      <Route path={"/member-portal/dashboard"} component={MemberPortalDashboard} />
+      <Route path={"/member-portal/personal-data"} component={PersonalData} />
+      <Route path={"/member-portal/financial-history"} component={FinancialHistory} />
+      <Route path={"/member-portal/documents"} component={Documents} />
+      <Route path={"/member-portal/attendance"} component={Attendance} />
+
       {/* Dashboards */}
       <Route path={"/membro/dashboard"} component={MemberDashboard} />
       <Route path={"/super-admin"} component={SuperAdminDashboard} />
       <Route path={"/dashboard-executivo"} component={DashboardExecutivo} />
 
-      {/* Departments */}
-      <Route path={"/secretaria"} component={Secretaria} />
-      <Route path={"/chancelaria"} component={Chancelaria} />
-      <Route path={"/tesouraria"} component={Tesouraria} />
+      {/* ===== MÓDULO SECRETARIA ===== */}
+      <Route path={"/secretaria"} component={SecretariaDashboard} />
+      <Route path={"/secretaria/irmaos"} component={IrmaosList} />
+      <Route path={"/secretaria/aniversariantes"} component={Aniversariantes} />
+      <Route path={"/secretaria/cronograma"} component={Cronograma} />
 
-      {/* Domains */}
-      <Route path={"/cronograma"} component={Cronograma} />
+      {/* ===== MÓDULO CHANCELARIA ===== */}
+      <Route path={"/chancelaria"} component={ChancelariaDashboard} />
+      <Route path={"/chancelaria/vida-maconica"} component={VidaMaconica} />
+      <Route path={"/chancelaria/comissoes"} component={ComissoesList} />
+      <Route path={"/chancelaria/caridade"} component={Caridade} />
+
+      {/* ===== MÓDULO TESOURARIA ===== */}
+      <Route path={"/tesouraria"} component={TesourariaDashboard} />
+      <Route path={"/tesouraria/minhas-financas"} component={MinhasFinancas} />
+      <Route path={"/tesouraria/conciliacao"} component={Conciliacao} />
+      <Route path={"/tesouraria/dashboard"} component={DashboardFinanceiro} />
 
       {/* Member */}
       <Route path={"/membro/pendencias"} component={MemberPendencias} />
       <Route path={"/membro/historico"} component={MemberHistorico} />
       <Route path={"/membro/notificacoes"} component={MemberNotificacoes} />
 
-      {/* Reports */}
+      {/* Reports - TODO: Mover para tesouraria/reports */}
       <Route path={"/relatorios"} component={Relatorios} />
       <Route path={"/relatorio-roi"} component={RelatorioROI} />
       <Route path={"/relatorio-churn"} component={RelatorioChurn} />
@@ -106,7 +149,6 @@ function Router() {
       <Route path={"/configuracoes-loja"} component={ConfiguracoesLoja} />
       <Route path={"/configuracao-email"} component={ConfiguracaoEmail} />
       <Route path={"/parametrizacao"} component={Parametrizacao} />
-      <Route path={"/conciliacao"} component={Conciliacao} />
 
       {/* Admin */}
       <Route path={"/auditoria"} component={Auditoria} />
@@ -116,6 +158,13 @@ function Router() {
       <Route path={"/backup"} component={Backup} />
       <Route path={"/comunicados"} component={Comunicados} />
       <Route path={"/changelog"} component={Changelog} />
+
+      {/* Domains - TODO: Mover páginas antigas */}
+      <Route path={"/sistema"} component={Sistema} />
+      <Route path={"/biblioteca"} component={Biblioteca} />
+      <Route path={"/comissoes"} component={Comissoes} />
+      <Route path={"/pranchas"} component={Pranchas} />
+      <Route path={"/administracao"} component={Administracao} />
 
       {/* Integrations */}
       <Route path={"/integracao-pagamentos"} component={IntegracaoPagamentos} />

@@ -19,7 +19,7 @@ interface ListaSessoesProps {
   filtro?: 'todas' | 'proximas' | 'passadas';
 }
 
-export const ListaSessoes: FC<ListaSessoesProps> = ({ filtro = 'proximas' }) => {
+export const ListaSessoes: FC<ListaSessoesProps> = () => {
   const [sessoes] = useState<Sessao[]>([
     {
       id: '1',

@@ -1,5 +1,5 @@
 // Tipos compartilhados entre frontend e backend
-// Este arquivo será expandido com os tipos migrados de client/src/lib/types.ts
+// Este arquivo será expandido com os tipos migrados de apps/frontend/src/lib/types.ts
 
 export type MemberStatus = 'ativo' | 'inativo' | 'irregular';
 export type MemberDegree = 'aprendiz' | 'companheiro' | 'mestre';

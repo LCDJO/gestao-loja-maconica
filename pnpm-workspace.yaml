@@ -2,7 +2,6 @@ packages:
   - 'apps/*'
   - 'apps/backend/services/*'
   - 'packages/*'
-  - 'client'
 
 catalogs:
   react:

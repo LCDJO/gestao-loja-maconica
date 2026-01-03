@@ -99,6 +99,9 @@ jspm_packages/
 # Temporary folders
 tmp/
 
+# Planning and documentation (local planning)
+planejamento/
+
 # Planning and documentation (local only)
 planejamento/
 temp/

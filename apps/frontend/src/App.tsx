@@ -44,32 +44,25 @@ import Conciliacao from "./pages/modules/tesouraria/accounts/Conciliacao";
 import DashboardFinanceiro from "./pages/modules/tesouraria/reports/DashboardFinanceiro";
 
 // PÁGINAS ANTIGAS (ainda não movidas)
-// Member
-import MemberPendencias from "./pages/member/MemberPendencias";
-import MemberHistorico from "./pages/member/MemberHistorico";
-import MemberNotificacoes from "./pages/member/MemberNotificacoes";
-
 // Reports
 import Relatorios from "./pages/reports/Relatorios";
 import RelatorioROI from "./pages/reports/RelatorioROI";
 import RelatorioChurn from "./pages/reports/RelatorioChurn";
 import HistoricoTestesEvolution from "./pages/reports/HistoricoTestesEvolution";
 
-// Config
+// Config - Configurações da Loja
 import Configuracoes from "./pages/config/Configuracoes";
 import ConfiguracoesPush from "./pages/config/ConfiguracoesPush";
 import ConfiguracoesLoja from "./pages/config/ConfiguracoesLoja";
 import ConfiguracaoEmail from "./pages/config/ConfiguracaoEmail";
 import Parametrizacao from "./pages/config/Parametrizacao";
-
-// Admin
-import Auditoria from "./pages/admin/Auditoria";
-import AuditoriaAcesso from "./pages/admin/AuditoriaAcesso";
-import Permissoes from "./pages/admin/Permissoes";
-import GerenciamentoUsuarios from "./pages/admin/GerenciamentoUsuarios";
-import Backup from "./pages/admin/Backup";
-import Comunicados from "./pages/admin/Comunicados";
-import Changelog from "./pages/admin/Changelog";
+import Auditoria from "./pages/config/Auditoria";
+import AuditoriaAcesso from "./pages/config/AuditoriaAcesso";
+import Permissoes from "./pages/config/Permissoes";
+import GerenciamentoUsuarios from "./pages/config/GerenciamentoUsuarios";
+import Backup from "./pages/config/Backup";
+import Comunicados from "./pages/config/Comunicados";
+import Changelog from "./pages/config/Changelog";
 
 // Pages antigas não movidas ainda
 import Sistema from "./pages/domains/Sistema";
@@ -78,10 +71,8 @@ import Comissoes from "./pages/domains/Comissoes";
 import Pranchas from "./pages/domains/Pranchas";
 import Administracao from "./pages/domains/Administracao";
 
-// Integrations
-import IntegracaoPagamentos from "./pages/integrations/IntegracaoPagamentos";
-import GoogleCalendarIntegracao from "./pages/integrations/GoogleCalendarIntegracao";
-import EditorTemplates from "./pages/integrations/EditorTemplates";
+// Integrações de Sistema
+import { IntegracoesSystemaDashboard, IntegracoesPagamentos } from "./pages/integrations";
 
 // Notifications
 import NotificacoesEmail from "./pages/notifications/NotificacoesEmail";
@@ -132,32 +123,29 @@ function Router() {
       <Route path={"/tesouraria/conciliacao"} component={Conciliacao} />
       <Route path={"/tesouraria/dashboard"} component={DashboardFinanceiro} />
 
-      {/* Member */}
-      <Route path={"/membro/pendencias"} component={MemberPendencias} />
-      <Route path={"/membro/historico"} component={MemberHistorico} />
-      <Route path={"/membro/notificacoes"} component={MemberNotificacoes} />
-
       {/* Reports - TODO: Mover para tesouraria/reports */}
       <Route path={"/relatorios"} component={Relatorios} />
       <Route path={"/relatorio-roi"} component={RelatorioROI} />
       <Route path={"/relatorio-churn"} component={RelatorioChurn} />
       <Route path={"/historico-testes-evolution"} component={HistoricoTestesEvolution} />
 
-      {/* Config */}
-      <Route path={"/configuracoes"} component={Configuracoes} />
-      <Route path={"/configuracoes-push"} component={ConfiguracoesPush} />
-      <Route path={"/configuracoes-loja"} component={ConfiguracoesLoja} />
-      <Route path={"/configuracao-email"} component={ConfiguracaoEmail} />
-      <Route path={"/parametrizacao"} component={Parametrizacao} />
+      {/* ===== CONFIGURAÇÕES DA LOJA ===== */}
+      <Route path={"/config"} component={Configuracoes} />
+      <Route path={"/config/loja"} component={ConfiguracoesLoja} />
+      <Route path={"/config/usuarios"} component={GerenciamentoUsuarios} />
+      <Route path={"/config/permissoes"} component={Permissoes} />
+      <Route path={"/config/auditoria"} component={Auditoria} />
+      <Route path={"/config/acesso"} component={AuditoriaAcesso} />
+      <Route path={"/config/email"} component={ConfiguracaoEmail} />
+      <Route path={"/config/push"} component={ConfiguracoesPush} />
+      <Route path={"/config/parametrizacao"} component={Parametrizacao} />
+      <Route path={"/config/backup"} component={Backup} />
+      <Route path={"/config/comunicados"} component={Comunicados} />
+      <Route path={"/config/changelog"} component={Changelog} />
 
-      {/* Admin */}
-      <Route path={"/auditoria"} component={Auditoria} />
-      <Route path={"/auditoria-acesso"} component={AuditoriaAcesso} />
-      <Route path={"/permissoes"} component={Permissoes} />
-      <Route path={"/gerenciamento-usuarios"} component={GerenciamentoUsuarios} />
-      <Route path={"/backup"} component={Backup} />
-      <Route path={"/comunicados"} component={Comunicados} />
-      <Route path={"/changelog"} component={Changelog} />
+      {/* ===== INTEGRAÇÕES DE SISTEMA ===== */}
+      <Route path={"/integracao"} component={IntegracoesSystemaDashboard} />
+      <Route path={"/integracao/pagamentos"} component={IntegracoesPagamentos} />
 
       {/* Domains - TODO: Mover páginas antigas */}
       <Route path={"/sistema"} component={Sistema} />
@@ -165,11 +153,6 @@ function Router() {
       <Route path={"/comissoes"} component={Comissoes} />
       <Route path={"/pranchas"} component={Pranchas} />
       <Route path={"/administracao"} component={Administracao} />
-
-      {/* Integrations */}
-      <Route path={"/integracao-pagamentos"} component={IntegracaoPagamentos} />
-      <Route path={"/google-calendar"} component={GoogleCalendarIntegracao} />
-      <Route path={"/editor-templates"} component={EditorTemplates} />
 
       {/* Notifications */}
       <Route path={"/notificacoes"} component={NotificacoesEmail} />

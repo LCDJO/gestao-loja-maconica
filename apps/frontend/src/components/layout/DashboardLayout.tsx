@@ -257,40 +257,104 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       ]
     },
     {
-      id: "settings",
-      label: "Configurações",
+      id: "config",
+      label: "Configurações da Loja",
       items: [
-        { label: "Configurações da Loja", icon: Settings, href: "/configuracoes-loja" },
+        { label: "Dashboard Config", icon: Settings, href: "/config" },
+        { label: "Dados da Loja", icon: Settings, href: "/config/loja" },
+        { label: "Usuários", icon: Users, href: "/config/usuarios" },
+        { label: "Permissões", icon: Lock, href: "/config/permissoes" },
+        { label: "Email", icon: Mail, href: "/config/email" },
+        { label: "Push Notifications", icon: Bell, href: "/config/push" },
+        { label: "Parametrização", icon: Settings, href: "/config/parametrizacao" },
+        { label: "Backup", icon: HardDrive, href: "/config/backup" },
+        { label: "Comunicados", icon: Mail, href: "/config/comunicados" },
+        { label: "Auditoria", icon: BarChart3, href: "/config/auditoria" },
+        { label: "Auditoria de Acesso", icon: Shield, href: "/config/acesso" },
+        { label: "Changelog", icon: FileText, href: "/config/changelog" },
+      ]
+    },
+    {
+      id: "integrations",
+      label: "Integrações de Sistema",
+      items: [
+        { label: "Dashboard Integrações", icon: Settings, href: "/integracao" },
         { 
-          label: "Integrações & Canais", 
-          icon: Settings, 
-          href: "#integracoes",
+          label: "Pagamentos", 
+          icon: Banknote, 
+          href: "#integracao-pagamentos",
           submenu: [
-            { label: "WhatsApp (Evolution)", icon: MessageCircle, href: "/configuracoes" },
-            { label: "Email", icon: Mail, href: "/configuracao-email" },
-            { label: "Push (OneSignal)", icon: Bell, href: "/configuracoes-push" },
-            { label: "Google Calendar", icon: Calendar, href: "/google-calendar" },
-            { label: "Pagamentos", icon: Banknote, href: "/integracao-pagamentos" },
+            { label: "Stripe", icon: Banknote, href: "/integracao/pagamentos" },
+            { label: "PagSeguro", icon: Banknote, href: "/integracao/pagamentos#pagseguro" },
+            { label: "Pix", icon: Banknote, href: "/integracao/pagamentos#pix" },
           ]
         },
         { 
-          label: "Automações", 
-          icon: Clock, 
-          href: "#automacoes",
+          label: "Notificações", 
+          icon: Bell, 
+          href: "#integracao-notificacoes",
           submenu: [
-            { label: "Agendamento de Relatórios", icon: Clock, href: "/agendamento-relatorios" },
-            { label: "Templates", icon: FileText, href: "/templates-notificacao" },
-            { label: "Editor Visual", icon: FileText, href: "/editor-templates" },
+            { label: "OneSignal", icon: Bell, href: "/integracao/notificacoes/onesignal" },
+            { label: "Firebase", icon: Bell, href: "/integracao/notificacoes/firebase" },
+            { label: "AWS SNS", icon: Bell, href: "/integracao/notificacoes/sns" },
           ]
         },
         { 
-          label: "Sistema", 
+          label: "Agendamento", 
+          icon: Calendar, 
+          href: "#integracao-agendamento",
+          submenu: [
+            { label: "Google Calendar", icon: Calendar, href: "/integracao/agendamento/google" },
+            { label: "Outlook", icon: Calendar, href: "/integracao/agendamento/outlook" },
+          ]
+        },
+        { 
+          label: "Armazenamento", 
+          icon: HardDrive, 
+          href: "#integracao-armazenamento",
+          submenu: [
+            { label: "Google Drive", icon: HardDrive, href: "/integracao/armazenamento/google" },
+            { label: "AWS S3", icon: HardDrive, href: "/integracao/armazenamento/s3" },
+            { label: "Azure", icon: HardDrive, href: "/integracao/armazenamento/azure" },
+          ]
+        },
+        { 
+          label: "Analytics", 
+          icon: BarChart3, 
+          href: "#integracao-analytics",
+          submenu: [
+            { label: "Google Analytics", icon: BarChart3, href: "/integracao/analytics/google" },
+            { label: "Umami", icon: BarChart3, href: "/integracao/analytics/umami" },
+            { label: "Hotjar", icon: BarChart3, href: "/integracao/analytics/hotjar" },
+          ]
+        },
+        { 
+          label: "RH", 
+          icon: Users, 
+          href: "#integracao-rh",
+          submenu: [
+            { label: "Guia de Pontos", icon: Users, href: "/integracao/rh/guia" },
+            { label: "Zoho", icon: Users, href: "/integracao/rh/zoho" },
+          ]
+        },
+        { 
+          label: "ERP", 
           icon: Shield, 
-          href: "#sistema",
+          href: "#integracao-erp",
           submenu: [
-            { label: "Parametrização", icon: Settings, href: "/parametrizacao" },
-            { label: "Backup", icon: HardDrive, href: "/backup" },
-            { label: "Changelog", icon: FileText, href: "/changelog" },
+            { label: "SAP", icon: Shield, href: "/integracao/erp/sap" },
+            { label: "TOTVS", icon: Shield, href: "/integracao/erp/totvs" },
+            { label: "OpenERP", icon: Shield, href: "/integracao/erp/openerp" },
+          ]
+        },
+        { 
+          label: "Comunicação", 
+          icon: MessageCircle, 
+          href: "#integracao-comunicacao",
+          submenu: [
+            { label: "WhatsApp", icon: MessageCircle, href: "/integracao/comunicacao/whatsapp" },
+            { label: "Telegram", icon: MessageCircle, href: "/integracao/comunicacao/telegram" },
+            { label: "Email", icon: Mail, href: "/integracao/comunicacao/email" },
           ]
         },
       ]

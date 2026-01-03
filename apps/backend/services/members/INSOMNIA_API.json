@@ -1,0 +1,235 @@
+{
+  "_type": "export",
+  "__exportFormat": 4,
+  "__exportDate": "2026-01-03T10:00:00.000Z",
+  "__version": 4,
+  "_fileVersion": "4.6.0",
+  "collections": [
+    {
+      "version": 2,
+      "name": "Members Service - Portal do Irmão",
+      "scope": "collection",
+      "_id": "members-service",
+      "resources": [
+        {
+          "_id": "req_login",
+          "parentId": "members-service",
+          "modified": 1672531200000,
+          "created": 1672531200000,
+          "url": "http://localhost:3002/api/members/login",
+          "name": "Login",
+          "description": "Realizar login de membro",
+          "method": "POST",
+          "body": {
+            "mimeType": "application/json",
+            "text": "{\n  \"email\": \"joao@masonica.org\",\n  \"password\": \"senha123456\"\n}"
+          },
+          "parameters": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "authentication": {},
+          "metaSortKey": -200000,
+          "isPrivate": false,
+          "_type": "request"
+        },
+        {
+          "_id": "req_verify",
+          "parentId": "members-service",
+          "modified": 1672531200000,
+          "created": 1672531200000,
+          "url": "http://localhost:3002/api/members/verify",
+          "name": "Verify Token",
+          "description": "Verificar se o token é válido",
+          "method": "GET",
+          "body": {},
+          "parameters": [],
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+          ],
+          "authentication": {},
+          "metaSortKey": -100000,
+          "isPrivate": false,
+          "_type": "request"
+        },
+        {
+          "_id": "req_profile",
+          "parentId": "members-service",
+          "modified": 1672531200000,
+          "created": 1672531200000,
+          "url": "http://localhost:3002/api/members/profile",
+          "name": "Get Profile",
+          "description": "Obter dados do perfil do membro",
+          "method": "GET",
+          "body": {},
+          "parameters": [],
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+          ],
+          "authentication": {},
+          "metaSortKey": 0,
+          "isPrivate": false,
+          "_type": "request"
+        },
+        {
+          "_id": "req_update_profile",
+          "parentId": "members-service",
+          "modified": 1672531200000,
+          "created": 1672531200000,
+          "url": "http://localhost:3002/api/members/profile/update",
+          "name": "Update Profile",
+          "description": "Atualizar dados do perfil",
+          "method": "PUT",
+          "body": {
+            "mimeType": "application/json",
+            "text": "{\n  \"name\": \"João Silva Updated\",\n  \"phone\": \"(21) 99999-8888\",\n  \"city\": \"Niterói\"\n}"
+          },
+          "parameters": [],
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "authentication": {},
+          "metaSortKey": 100000,
+          "isPrivate": false,
+          "_type": "request"
+        },
+        {
+          "_id": "req_change_password",
+          "parentId": "members-service",
+          "modified": 1672531200000,
+          "created": 1672531200000,
+          "url": "http://localhost:3002/api/members/password",
+          "name": "Change Password",
+          "description": "Alterar senha do membro",
+          "method": "PUT",
+          "body": {
+            "mimeType": "application/json",
+            "text": "{\n  \"currentPassword\": \"senha123456\",\n  \"newPassword\": \"novaSenha@123\",\n  \"confirmPassword\": \"novaSenha@123\"\n}"
+          },
+          "parameters": [],
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "authentication": {},
+          "metaSortKey": 200000,
+          "isPrivate": false,
+          "_type": "request"
+        },
+        {
+          "_id": "req_balance",
+          "parentId": "members-service",
+          "modified": 1672531200000,
+          "created": 1672531200000,
+          "url": "http://localhost:3002/api/members/finances/balance",
+          "name": "Get Balance",
+          "description": "Obter saldo financeiro",
+          "method": "GET",
+          "body": {},
+          "parameters": [],
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+          ],
+          "authentication": {},
+          "metaSortKey": 300000,
+          "isPrivate": false,
+          "_type": "request"
+        },
+        {
+          "_id": "req_transactions",
+          "parentId": "members-service",
+          "modified": 1672531200000,
+          "created": 1672531200000,
+          "url": "http://localhost:3002/api/members/finances/transactions?limit=10&offset=0",
+          "name": "Get Transactions",
+          "description": "Listar transações financeiras",
+          "method": "GET",
+          "body": {},
+          "parameters": [],
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+          ],
+          "authentication": {},
+          "metaSortKey": 400000,
+          "isPrivate": false,
+          "_type": "request"
+        },
+        {
+          "_id": "req_refresh",
+          "parentId": "members-service",
+          "modified": 1672531200000,
+          "created": 1672531200000,
+          "url": "http://localhost:3002/api/members/refresh",
+          "name": "Refresh Token",
+          "description": "Renovar token usando refresh token",
+          "method": "POST",
+          "body": {
+            "mimeType": "application/json",
+            "text": "{\n  \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}"
+          },
+          "parameters": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "authentication": {},
+          "metaSortKey": 500000,
+          "isPrivate": false,
+          "_type": "request"
+        },
+        {
+          "_id": "req_logout",
+          "parentId": "members-service",
+          "modified": 1672531200000,
+          "created": 1672531200000,
+          "url": "http://localhost:3002/api/members/logout",
+          "name": "Logout",
+          "description": "Fazer logout e revogar token",
+          "method": "POST",
+          "body": {},
+          "parameters": [],
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+          ],
+          "authentication": {},
+          "metaSortKey": 600000,
+          "isPrivate": false,
+          "_type": "request"
+        }
+      ]
+    }
+  ]
+}

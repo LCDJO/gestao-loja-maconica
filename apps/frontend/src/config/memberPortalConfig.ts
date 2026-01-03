@@ -32,7 +32,7 @@ export const memberPortalConfig: MemberPortalConfig = {
   name: "Portal do Irmão",
   version: "1.0.0",
   description: "Portal de auto-atendimento para membros da Loja Maçônica",
-  apiBaseUrl: process.env.REACT_APP_API_URL || "http://localhost:3000/api",
+  apiBaseUrl: process.env.REACT_APP_API_URL || "http://localhost:3002/api",
 
   menuItems: [
     {

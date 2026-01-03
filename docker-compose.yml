@@ -44,9 +44,9 @@ services:
       dockerfile: apps/frontend/Dockerfile
     container_name: gestao_loja_frontend
     ports:
-      - "${FRONTEND_PORT:-3000}:3000"
+      - "${FRONTEND_PORT:-3001}:3001"
     environment:
-      VITE_API_URL: http://localhost:3001
+      VITE_API_URL: http://localhost:3002
     networks:
       - app_network
     depends_on:

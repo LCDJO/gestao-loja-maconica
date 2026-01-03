@@ -9,13 +9,13 @@ const pool = new Pool({
   database: process.env.DB_NAME || 'gestao_loja_maconica',
 });
 
-pool.on('error', (err) => {
+pool.on('error', (err: Error) => {
   console.error('Unexpected error on idle client', err);
 });
 
 export const db = pool;
 
-export async function query(text: string, params?: any[]) {
+export async function query(text: string, params?: unknown[]) {
   const start = Date.now();
   try {
     const result = await pool.query(text, params);

@@ -1,7 +1,5 @@
 // Script de seed (dados iniciais)
 
-import { db } from '../client';
-
 async function seedDatabase() {
   try {
     console.log('Starting database seed...');

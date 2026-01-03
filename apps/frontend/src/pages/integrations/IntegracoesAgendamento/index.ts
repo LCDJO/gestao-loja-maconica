@@ -1,1 +1,1 @@
-export { default as GoogleCalendarIntegracao } from './GoogleCalendar';
+// export { default as GoogleCalendarIntegracao } from './GoogleCalendar';

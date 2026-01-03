@@ -30,7 +30,7 @@ export async function login(
     if (!validation.success) {
       res.status(400).json({
         success: false,
-        error: validation.error.errors[0].message,
+        error: validation.error.issues[0].message,
       });
       return;
     }
@@ -58,8 +58,8 @@ export async function login(
     }
 
     // Gerar tokens
-    const token = generateToken(member.id, member.email);
-    const refreshToken = generateRefreshToken(member.id);
+    const token = await generateToken(member.id, member.email);
+    const refreshToken = await generateRefreshToken(member.id);
     const profile = getProfileWithoutPassword(member);
 
     res.json({
@@ -121,7 +121,7 @@ export async function refresh(
     const { refreshToken } = validation.data as RefreshTokenRequest;
 
     // Verificar refresh token
-    const decoded = verifyRefreshToken(refreshToken);
+    const decoded = await verifyRefreshToken(refreshToken);
 
     if (!decoded) {
       res.status(403).json({
@@ -143,8 +143,8 @@ export async function refresh(
     }
 
     // Gerar novo token
-    const newToken = generateToken(member.id, member.email);
-    const newRefreshToken = generateRefreshToken(member.id);
+    const newToken = await generateToken(member.id, member.email);
+    const newRefreshToken = await generateRefreshToken(member.id);
     const profile = getProfileWithoutPassword(member);
 
     res.json({

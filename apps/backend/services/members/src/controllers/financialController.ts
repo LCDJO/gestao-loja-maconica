@@ -24,16 +24,17 @@ const transactions: Map<string, Transaction[]> = new Map();
 
 // Seed financial data
 function seedFinancialData() {
-  const memberId = Array.from(require('../database')).find(() => true)?.[0] || 'default';
+  // Usar um ID padrão para testes - será atualizado quando conectar com banco de dados real
+  const defaultMemberId = 'test-member-id';
   
-  financialData.set(memberId, {
+  financialData.set(defaultMemberId, {
     balance: 1250.75,
     totalIncome: 5000.00,
     totalExpense: 3749.25,
     lastUpdated: new Date().toISOString(),
   });
 
-  transactions.set(memberId, [
+  transactions.set(defaultMemberId, [
     {
       id: '1',
       date: '2026-01-01',

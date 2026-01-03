@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'wouter';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,6 +25,7 @@ import {
   Calendar,
   AlertCircle,
   CheckCircle,
+  LogOut,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -60,6 +62,7 @@ interface FinancialContact {
 }
 
 export default function SuperAdminDashboard() {
+  const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('lojas');
   const [lodges, setLodges] = useState<Lodge[]>([
     {
@@ -211,6 +214,26 @@ export default function SuperAdminDashboard() {
     }
   };
 
+  /**
+   * Função para fazer logout do super administrador
+   * Remove o token do localStorage e redireciona para a página de login
+   */
+  const handleLogout = () => {
+    try {
+      // Remover token do localStorage
+      localStorage.removeItem('superAdminToken');
+
+      // Exibir mensagem de sucesso
+      toast.success('Desconectado com sucesso');
+
+      // Redirecionar para login
+      setLocation('/super-admin/login');
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+      toast.error('Erro ao desconectar');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -220,8 +243,11 @@ export default function SuperAdminDashboard() {
             <h1 className="text-3xl font-bold text-gray-900">Super Administrador</h1>
             <p className="text-gray-600 text-sm mt-1">Gerencie todas as lojas e mensalidades do SaaS</p>
           </div>
-          <Button className="bg-blue-600 text-white hover:bg-blue-700">
-            <Plus className="h-4 w-4 mr-2" />
+          <Button 
+            onClick={handleLogout}
+            className="bg-red-600 text-white hover:bg-red-700"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
             Sair
           </Button>
         </div>

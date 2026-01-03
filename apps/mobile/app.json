@@ -1,0 +1,64 @@
+{
+  "expo": {
+    "name": "Gestão Loja Maçônica",
+    "slug": "gestao-loja",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1a1a1a"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "bundleIdentifier": "com.masonica.gestaoloja",
+      "supportsTabletMode": true,
+      "buildNumber": "1"
+    },
+    "android": {
+      "package": "com.masonica.gestaoloja",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1a1a1a"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.INTERNET"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Gestão Loja to access your camera"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icons": ["./assets/notification-icon.png"],
+          "color": "#1a1a1a"
+        }
+      ]
+    ],
+    "scheme": "gestao-loja",
+    "extra": {
+      "eas": {
+        "projectId": "seu-project-id-aqui"
+      }
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/seu-project-id-aqui"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    }
+  }
+}

@@ -34,6 +34,7 @@ import { cn } from "@/lib/utils";
 import NotificationCenter from "@/components/NotificationCenter";
 import { userPermissionsStore, integrationStatusStore } from "@/lib/store";
 import { Lock, Circle } from "lucide-react";
+import { menuModules, MenuItem, MenuModule } from "@/config/menuStructure";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -87,6 +88,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     }));
   };
 
+  // Converter menuModules para navSections
   const navSections: NavSection[] = [
     {
       id: "dashboards",
@@ -94,271 +96,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       items: [
         { label: "Painel Geral", icon: LayoutDashboard, href: "/" },
         { label: "Dashboard Executivo", icon: BarChart3, href: "/dashboard-executivo" },
-        { label: "Dashboard do Membro", icon: Users, href: "/membro/dashboard" },
       ]
     },
-    {
-      id: "domains",
-      label: "Domínios",
-      items: [
-        // Financeiro
-        { 
-          label: "Financeiro", 
-          icon: Banknote, 
-          href: "#financeiro",
-          submenu: [
-            { label: "Minhas Finanças", icon: Banknote, href: "/financeiro" },
-            { label: "Tesouraria", icon: Landmark, href: "/tesouraria" },
-            { label: "Conciliação", icon: FileText, href: "/conciliacao" },
-          ]
-        },
-        // Irmãos (Membros)
-        { 
-          label: "Irmãos", 
-          icon: Users, 
-          href: "#irmaos",
-          submenu: [
-            { label: "Lista de Irmãos", icon: Users, href: "/irmaos" },
-            { label: "Pendências", icon: Clock, href: "/membro/pendencias" },
-            { label: "Histórico", icon: FileText, href: "/membro/historico" },
-            { label: "Notificações", icon: Bell, href: "/membro/notificacoes" },
-          ]
-        },
-        // Vida Maçônica
-        { 
-          label: "Vida Maçônica", 
-          icon: Trophy, 
-          href: "#vida-maconica",
-          submenu: [
-            { label: "Vida Maçônica", icon: Trophy, href: "/vida-maconica" },
-            { label: "Cronograma", icon: Calendar, href: "/cronograma" },
-          ]
-        },
-        // Aniversariantes
-        { 
-          label: "Aniversariantes", 
-          icon: Gift, 
-          href: "/aniversariantes",
-        },
-        // Caridade
-        { 
-          label: "Caridade", 
-          icon: Heart, 
-          href: "#caridade",
-          submenu: [
-            { label: "Registros de Caridade", icon: Heart, href: "/caridade" },
-          ]
-        },
-        // Biblioteca
-        { 
-          label: "Biblioteca", 
-          icon: BookOpen, 
-          href: "#biblioteca",
-          submenu: [
-            { label: "Catálogo", icon: BookOpen, href: "/biblioteca" },
-          ]
-        },
-        // Comissões
-        { 
-          label: "Comissões", 
-          icon: Users, 
-          href: "#comissoes",
-          submenu: [
-            { label: "Lista de Comissões", icon: Users, href: "/comissoes" },
-          ]
-        },
-        // Pranchas
-        { 
-          label: "Pranchas", 
-          icon: FileText, 
-          href: "#pranchas",
-          submenu: [
-            { label: "Lista de Pranchas", icon: FileText, href: "/pranchas" },
-          ]
-        },
-        // Administração
-        { 
-          label: "Administração", 
-          icon: Shield, 
-          href: "#admin",
-          submenu: [
-            { label: "Painel Admin", icon: Shield, href: "/administracao" },
-            { label: "Gerenciamento de Usuários", icon: Users, href: "/gerenciamento-usuarios" },
-            { label: "Auditoria de Acesso", icon: BarChart3, href: "/auditoria-acesso" },
-            { label: "Permissões", icon: Lock, href: "/permissoes" },
-            { label: "Auditoria Geral", icon: BarChart3, href: "/auditoria" },
-          ]
-        },
-        // Secretaria
-        { 
-          label: "Secretaria", 
-          icon: ScrollText, 
-          href: "#secretaria",
-          submenu: [
-            { label: "Secretaria", icon: ScrollText, href: "/secretaria" },
-            { label: "Comunicados", icon: Mail, href: "/comunicados" },
-          ]
-        },
-        // Chancelaria
-        { 
-          label: "Chancelaria", 
-          icon: Users, 
-          href: "#chancelaria",
-          submenu: [
-            { label: "Chancelaria", icon: Users, href: "/chancelaria" },
-          ]
-        },
-        // Sistema
-        { 
-          label: "Sistema", 
-          icon: Settings, 
-          href: "#sistema",
-          submenu: [
-            { label: "Dados da Loja", icon: Settings, href: "/sistema" },
-          ]
-        },
-      ]
-    },
-    {
-      id: "communications",
-      label: "Comunicação & Campanhas",
-      items: [
-        { 
-          label: "Campanhas", 
-          icon: Mail, 
-          href: "#campanhas",
-          submenu: [
-            { label: "Agendamento de Campanhas", icon: Clock, href: "/agendamento-campanhas" },
-            { label: "Automação de Campanhas", icon: Clock, href: "/automacao-campanhas" },
-          ]
-        },
-        { 
-          label: "Notificações", 
-          icon: Bell, 
-          href: "#notificacoes",
-          submenu: [
-            { label: "Notificações Email", icon: Mail, href: "/notificacoes-email" },
-            { label: "Analytics de Notificações", icon: BarChart3, href: "/analytics-notificacoes" },
-            { label: "Analytics de Push", icon: BarChart3, href: "/analytics-push" },
-            { label: "Templates de Notificação", icon: FileText, href: "/templates-notificacao" },
-            { label: "Agendamento de Relatórios", icon: Clock, href: "/agendamento-relatorios" },
-          ]
-        },
-      ]
-    },
-    {
-      id: "analytics",
-      label: "Relatórios & Análises",
-      items: [
-        { label: "Relatórios Geral", icon: PieChart, href: "/relatorios" },
-        { label: "Análise ROI", icon: TrendingUp, href: "/relatorio-roi" },
-        { label: "Análise de Churn", icon: TrendingUp, href: "/relatorio-churn" },
-        { label: "Histórico de Testes", icon: BarChart3, href: "/historico-testes-evolution" },
-      ]
-    },
-    {
-      id: "config",
-      label: "Configurações da Loja",
-      items: [
-        { label: "Dashboard Config", icon: Settings, href: "/config" },
-        { label: "Dados da Loja", icon: Settings, href: "/config/loja" },
-        { label: "Usuários", icon: Users, href: "/config/usuarios" },
-        { label: "Permissões", icon: Lock, href: "/config/permissoes" },
-        { label: "Email", icon: Mail, href: "/config/email" },
-        { label: "Push Notifications", icon: Bell, href: "/config/push" },
-        { label: "Parametrização", icon: Settings, href: "/config/parametrizacao" },
-        { label: "Backup", icon: HardDrive, href: "/config/backup" },
-        { label: "Comunicados", icon: Mail, href: "/config/comunicados" },
-        { label: "Auditoria", icon: BarChart3, href: "/config/auditoria" },
-        { label: "Auditoria de Acesso", icon: Shield, href: "/config/acesso" },
-        { label: "Changelog", icon: FileText, href: "/config/changelog" },
-      ]
-    },
-    {
-      id: "integrations",
-      label: "Integrações de Sistema",
-      items: [
-        { label: "Dashboard Integrações", icon: Settings, href: "/integracao" },
-        { 
-          label: "Pagamentos", 
-          icon: Banknote, 
-          href: "#integracao-pagamentos",
-          submenu: [
-            { label: "Stripe", icon: Banknote, href: "/integracao/pagamentos" },
-            { label: "PagSeguro", icon: Banknote, href: "/integracao/pagamentos#pagseguro" },
-            { label: "Pix", icon: Banknote, href: "/integracao/pagamentos#pix" },
-          ]
-        },
-        { 
-          label: "Notificações", 
-          icon: Bell, 
-          href: "#integracao-notificacoes",
-          submenu: [
-            { label: "OneSignal", icon: Bell, href: "/integracao/notificacoes/onesignal" },
-            { label: "Firebase", icon: Bell, href: "/integracao/notificacoes/firebase" },
-            { label: "AWS SNS", icon: Bell, href: "/integracao/notificacoes/sns" },
-          ]
-        },
-        { 
-          label: "Agendamento", 
-          icon: Calendar, 
-          href: "#integracao-agendamento",
-          submenu: [
-            { label: "Google Calendar", icon: Calendar, href: "/integracao/agendamento/google" },
-            { label: "Outlook", icon: Calendar, href: "/integracao/agendamento/outlook" },
-          ]
-        },
-        { 
-          label: "Armazenamento", 
-          icon: HardDrive, 
-          href: "#integracao-armazenamento",
-          submenu: [
-            { label: "Google Drive", icon: HardDrive, href: "/integracao/armazenamento/google" },
-            { label: "AWS S3", icon: HardDrive, href: "/integracao/armazenamento/s3" },
-            { label: "Azure", icon: HardDrive, href: "/integracao/armazenamento/azure" },
-          ]
-        },
-        { 
-          label: "Analytics", 
-          icon: BarChart3, 
-          href: "#integracao-analytics",
-          submenu: [
-            { label: "Google Analytics", icon: BarChart3, href: "/integracao/analytics/google" },
-            { label: "Umami", icon: BarChart3, href: "/integracao/analytics/umami" },
-            { label: "Hotjar", icon: BarChart3, href: "/integracao/analytics/hotjar" },
-          ]
-        },
-        { 
-          label: "RH", 
-          icon: Users, 
-          href: "#integracao-rh",
-          submenu: [
-            { label: "Guia de Pontos", icon: Users, href: "/integracao/rh/guia" },
-            { label: "Zoho", icon: Users, href: "/integracao/rh/zoho" },
-          ]
-        },
-        { 
-          label: "ERP", 
-          icon: Shield, 
-          href: "#integracao-erp",
-          submenu: [
-            { label: "SAP", icon: Shield, href: "/integracao/erp/sap" },
-            { label: "TOTVS", icon: Shield, href: "/integracao/erp/totvs" },
-            { label: "OpenERP", icon: Shield, href: "/integracao/erp/openerp" },
-          ]
-        },
-        { 
-          label: "Comunicação", 
-          icon: MessageCircle, 
-          href: "#integracao-comunicacao",
-          submenu: [
-            { label: "WhatsApp", icon: MessageCircle, href: "/integracao/comunicacao/whatsapp" },
-            { label: "Telegram", icon: MessageCircle, href: "/integracao/comunicacao/telegram" },
-            { label: "Email", icon: Mail, href: "/integracao/comunicacao/email" },
-          ]
-        },
-      ]
-    },
+    ...menuModules.map((module) => ({
+      id: module.id,
+      label: module.label,
+      items: module.items
+    })) as NavSection[]
   ];
 
   return (
@@ -545,7 +289,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
 
             {/* Portal do Membro Link */}
-            <Link href="/membro/login">
+            <Link href="/member-portal/auth/login">
               <div className="text-xs text-blue-600 hover:text-blue-700 font-medium px-3 py-2 rounded-md hover:bg-blue-50 transition-colors cursor-pointer">
                 Portal do Membro
               </div>

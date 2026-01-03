@@ -72,7 +72,7 @@ export async function updateProfile(
     if (!validation.success) {
       res.status(400).json({
         success: false,
-        error: validation.error.errors[0].message,
+        error: validation.error.issues[0].message,
       });
       return;
     }
@@ -120,7 +120,7 @@ export async function changePassword(
     if (!validation.success) {
       res.status(400).json({
         success: false,
-        error: validation.error.errors[0].message,
+        error: validation.error.issues[0].message,
       });
       return;
     }

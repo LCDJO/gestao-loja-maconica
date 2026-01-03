@@ -42,89 +42,89 @@ export default function FinancialHistory() {
 
   return (
     <MemberPortalLayout currentPage="financial">
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
               Histórico Financeiro
             </h1>
-            <p className="text-gray-600 mt-1">
+            <p className="text-gray-600 text-sm sm:text-base mt-1">
               Acompanhe suas transações e saldo
             </p>
           </div>
-          <Button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700">
+          <Button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 w-full sm:w-auto justify-center">
             <Download className="w-4 h-4" />
             Exportar
           </Button>
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
           {/* Saldo Atual */}
-          <Card className="p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-            <p className="text-blue-100">Saldo Atual</p>
-            <p className="text-3xl font-bold mt-2">R$ --,--</p>
-            <p className="text-sm text-blue-200 mt-1">Atualizado hoje</p>
+          <Card className="p-4 sm:p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+            <p className="text-blue-100 text-xs sm:text-sm">Saldo Atual</p>
+            <p className="text-2xl sm:text-3xl font-bold mt-2">R$ --,--</p>
+            <p className="text-xs sm:text-sm text-blue-200 mt-1">Atualizado hoje</p>
           </Card>
 
           {/* Entradas */}
-          <Card className="p-6">
+          <Card className="p-4 sm:p-6">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-gray-600 text-sm font-medium">Entradas</p>
-                <p className="text-2xl font-bold text-green-600 mt-2">
+                <p className="text-gray-600 text-xs sm:text-sm font-medium">Entradas</p>
+                <p className="text-xl sm:text-2xl font-bold text-green-600 mt-2">
                   R$ {totalIncome.toFixed(2)}
                 </p>
               </div>
-              <div className="p-3 bg-green-100 rounded-lg">
-                <ArrowDownLeft className="w-6 h-6 text-green-600" />
+              <div className="p-2 sm:p-3 bg-green-100 rounded-lg flex-shrink-0">
+                <ArrowDownLeft className="w-5 sm:w-6 h-5 sm:h-6 text-green-600" />
               </div>
             </div>
           </Card>
 
           {/* Saídas */}
-          <Card className="p-6">
+          <Card className="p-4 sm:p-6">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-gray-600 text-sm font-medium">Saídas</p>
-                <p className="text-2xl font-bold text-red-600 mt-2">
+                <p className="text-gray-600 text-xs sm:text-sm font-medium">Saídas</p>
+                <p className="text-xl sm:text-2xl font-bold text-red-600 mt-2">
                   R$ {totalExpense.toFixed(2)}
                 </p>
               </div>
-              <div className="p-3 bg-red-100 rounded-lg">
-                <ArrowUpRight className="w-6 h-6 text-red-600" />
+              <div className="p-2 sm:p-3 bg-red-100 rounded-lg flex-shrink-0">
+                <ArrowUpRight className="w-5 sm:w-6 h-5 sm:h-6 text-red-600" />
               </div>
             </div>
           </Card>
         </div>
 
         {/* Filter & List */}
-        <Card className="p-6">
+        <Card className="p-4 sm:p-6">
           {/* Filter Bar */}
-          <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-200">
-            <Button variant="outline" className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-gray-200">
+            <Button variant="outline" className="flex items-center gap-2 whitespace-nowrap">
               <Filter className="w-4 h-4" />
               Filtros
             </Button>
             <input
               type="search"
               placeholder="Buscar transação..."
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           {/* Transaction List */}
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3 overflow-x-auto">
             {transactions.length > 0 ? (
               transactions.map((transaction) => (
                 <div
                   key={transaction.id}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition gap-3 sm:gap-4"
                 >
-                  <div className="flex items-center gap-4 flex-1">
+                  <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
                     <div
-                      className={`p-3 rounded-lg ${
+                      className={`p-2 sm:p-3 rounded-lg flex-shrink-0 ${
                         transaction.type === "income"
                           ? "bg-green-100"
                           : "bg-red-100"
@@ -132,46 +132,36 @@ export default function FinancialHistory() {
                     >
                       {transaction.type === "income" ? (
                         <ArrowDownLeft
-                          className={`w-5 h-5 ${
+                          className={`w-4 sm:w-5 h-4 sm:h-5 ${
                             transaction.type === "income"
                               ? "text-green-600"
                               : "text-red-600"
                           }`}
                         />
                       ) : (
-                        <ArrowUpRight className="w-5 h-5 text-red-600" />
+                        <ArrowUpRight className="w-4 sm:w-5 h-4 sm:h-5 text-red-600" />
                       )}
                     </div>
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-900">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900 text-sm sm:text-base truncate">
                         {transaction.description}
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-xs sm:text-sm text-gray-500">
                         {new Date(transaction.date).toLocaleDateString(
                           "pt-BR"
-                        )}{" "}
-                        • {transaction.category}
+                        )}
                       </p>
                     </div>
                   </div>
-                  <p
-                    className={`text-lg font-bold ${
-                      transaction.type === "income"
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {transaction.type === "income" ? "+" : "-"}R${" "}
-                    {transaction.amount.toFixed(2)}
+                  <p className="font-bold text-gray-900 text-sm sm:text-base text-right sm:text-left">
+                    R$ {transaction.amount.toFixed(2)}
                   </p>
                 </div>
               ))
             ) : (
-              <div className="text-center py-12">
-                <p className="text-gray-500">
-                  Nenhuma transação encontrada
-                </p>
-              </div>
+              <p className="text-center text-gray-500 py-4 text-sm">
+                Nenhuma transação encontrada
+              </p>
             )}
           </div>
         </Card>

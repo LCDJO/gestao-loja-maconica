@@ -1,0 +1,42 @@
+{
+  "cli": {
+    "version": ">= 5.0.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "ios": {
+        "resourceClass": "m-1"
+      }
+    },
+    "production": {
+      "ios": {
+        "image": "latest"
+      },
+      "android": {
+        "image": "latest"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "asciiAppId": "seu-app-id-aqui",
+        "appleId": "seu-email@apple.com",
+        "appleTeamId": "seu-team-id",
+        "itmTransporter": {
+          "itmsPath": "/Applications/Transporter.app/Contents/MacOS/itms"
+        }
+      },
+      "android": {
+        "serviceAccount": "./google-play-service-account.json",
+        "androidPackage": "com.masonica.gestaoloja",
+        "track": "internal"
+      }
+    }
+  }
+}

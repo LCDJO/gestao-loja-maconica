@@ -1,10 +1,13 @@
 import express from "express";
 import { createServer } from "http";
+import { generateSwaggerConfig, setupSwaggerUI } from "shared/swagger/swaggerConfig";
 import membersRoutes from "./routes";
 
 async function startServer() {
   const app = express();
   const server = createServer(app);
+
+  const port = process.env.PORT || 3002;
 
   // Middlewares
   app.use(express.json());
@@ -21,6 +24,17 @@ async function startServer() {
       next();
     }
   });
+
+  // Setup Swagger Documentation
+  const swaggerSpec = generateSwaggerConfig({
+    title: "Members Service API",
+    description: "API para gerenciamento de membros da loja maçônica",
+    version: "1.0.0",
+    port: port as number,
+    basePath: "/api/members",
+    serviceName: "Members Service",
+  });
+  setupSwaggerUI(app, swaggerSpec, "/api-docs");
 
   // Health check
   app.get("/health", (_req, res) => {
@@ -52,6 +66,7 @@ async function startServer() {
   server.listen(port, () => {
     console.log(`✅ Members Service running on http://localhost:${port}/`);
     console.log(`📝 API Base: http://localhost:${port}/api/members`);
+    console.log(`📚 Swagger Docs: http://localhost:${port}/api-docs`);
   });
 }
 

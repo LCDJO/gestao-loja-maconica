@@ -99,10 +99,10 @@ jspm_packages/
 # Temporary folders
 tmp/
 
-# Planning and documentation (local planning)
-planejamento/
+# GitHub workflows and configuration (local only)
+.github/
 
-# Planning and documentation (local only)
+# Planning and documentation (local planning)
 planejamento/
 temp/
 

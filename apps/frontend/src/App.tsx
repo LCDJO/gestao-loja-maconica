@@ -1,15 +1,24 @@
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "sonner";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import SuperAdminProtectedRoute from "./components/SuperAdminProtectedRoute";
 import { MemberAuthProvider } from "./contexts/MemberAuthContext";
 
 // Auth
-import MemberLogin from "./pages/auth/MemberLogin";
 import SuperAdminLogin from "./pages/auth/SuperAdminLogin";
+
+// Admin - Novo módulo reorganizado
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import SecretariaDashboard from "./pages/admin/secretaria/SecretariaDashboard";
+import ChancelariaDashboard from "./pages/admin/chancelaria/ChancelariaDashboard";
+import TesouariaDashboard from "./pages/admin/tesouraria/TesouariaDashboard";
+import PresidenciaDashboard from "./pages/admin/presidencia/PresidenciaDashboard";
+import RelatoriosDashboard from "./pages/admin/relatorios/RelatoriosDashboard";
+import ConfiguracoesDashboard from "./pages/admin/configuracoes/ConfiguracoesDashboard";
+import IntegracoesDashboard from "./pages/admin/integracoes/IntegracoesDashboard";
 
 // Portal do Irmão
 import MemberPortalLogin from "./pages/member-portal/auth/MemberLogin";
@@ -21,24 +30,21 @@ import Attendance from "./pages/member-portal/attendance/Attendance";
 
 // Dashboards
 import Home from "./pages/dashboards/Home";
-import MemberDashboard from "./pages/dashboards/MemberDashboard";
+
 import SuperAdminDashboard from "./pages/dashboards/SuperAdminDashboard";
 import DashboardExecutivo from "./pages/dashboards/DashboardExecutivo";
 
 // MÓDULO SECRETARIA
-import SecretariaDashboard from "./pages/modules/secretaria/Secretaria";
 import IrmaosList from "./pages/modules/secretaria/members/IrmaosList";
 import Aniversariantes from "./pages/modules/secretaria/members/Aniversariantes";
 import Cronograma from "./pages/modules/secretaria/schedule/Cronograma";
 
 // MÓDULO CHANCELARIA
-import ChancelariaDashboard from "./pages/modules/chancelaria/Chancelaria";
 import VidaMaconica from "./pages/modules/chancelaria/records/VidaMaconica";
 import ComissoesList from "./pages/modules/chancelaria/commissions/ComissoesList";
 import Caridade from "./pages/modules/chancelaria/charity/Caridade";
 
 // MÓDULO TESOURARIA
-import TesourariaDashboard from "./pages/modules/tesouraria/Tesouraria";
 import MinhasFinancas from "./pages/modules/tesouraria/flow/MinhasFinancas";
 import Conciliacao from "./pages/modules/tesouraria/accounts/Conciliacao";
 import DashboardFinanceiro from "./pages/modules/tesouraria/reports/DashboardFinanceiro";
@@ -52,17 +58,13 @@ import HistoricoTestesEvolution from "./pages/reports/HistoricoTestesEvolution";
 
 // Config - Configurações da Loja
 import Configuracoes from "./pages/config/Configuracoes";
-import ConfiguracoesPush from "./pages/config/ConfiguracoesPush";
-import ConfiguracoesLoja from "./pages/config/ConfiguracoesLoja";
-import ConfiguracaoEmail from "./pages/config/ConfiguracaoEmail";
-import Parametrizacao from "./pages/config/Parametrizacao";
-import Auditoria from "./pages/config/Auditoria";
-import AuditoriaAcesso from "./pages/config/AuditoriaAcesso";
-import Permissoes from "./pages/config/Permissoes";
-import GerenciamentoUsuarios from "./pages/config/GerenciamentoUsuarios";
-import Backup from "./pages/config/Backup";
-import Comunicados from "./pages/config/Comunicados";
-import Changelog from "./pages/config/Changelog";
+import GerenciamentoUsuarios from "./pages/admin/GerenciamentoUsuarios";
+import Permissoes from "./pages/admin/Permissoes";
+import Auditoria from "./pages/admin/Auditoria";
+import AuditoriaAcesso from "./pages/admin/AuditoriaAcesso";
+import Backup from "./pages/admin/Backup";
+import Comunicados from "./pages/admin/Comunicados";
+import Changelog from "./pages/admin/Changelog";
 
 // Pages antigas não movidas ainda
 import Sistema from "./pages/domains/Sistema";
@@ -89,11 +91,10 @@ function Router() {
     <Switch>
       {/* Auth Routes */}
       <Route path={"/"} component={Home} />
-      <Route path={"/membro/login"} component={MemberLogin} />
       <Route path={"/super-admin/login"} component={SuperAdminLogin} />
 
       {/* ===== PORTAL DO IRMÃO ===== */}
-      <Route path={"/member/login"} component={MemberPortalLogin} />
+      <Route path={"/member-portal/auth/login"} component={MemberPortalLogin} />
       <Route path={"/member-portal/dashboard"} component={MemberPortalDashboard} />
       <Route path={"/member-portal/personal-data"} component={PersonalData} />
       <Route path={"/member-portal/financial-history"} component={FinancialHistory} />
@@ -101,27 +102,134 @@ function Router() {
       <Route path={"/member-portal/attendance"} component={Attendance} />
 
       {/* Dashboards */}
-      <Route path={"/membro/dashboard"} component={MemberDashboard} />
-      <Route path={"/super-admin"} component={SuperAdminDashboard} />
+      <Route path={"/super-admin"}>
+        {() => (
+          <SuperAdminProtectedRoute>
+            <AdminDashboard />
+          </SuperAdminProtectedRoute>
+        )}
+      </Route>
       <Route path={"/dashboard-executivo"} component={DashboardExecutivo} />
 
+      {/* ===== ADMIN - Super Admin Dashboard ===== */}
+      <Route path={"/admin"}>
+        {() => (
+          <SuperAdminProtectedRoute>
+            <AdminDashboard />
+          </SuperAdminProtectedRoute>
+        )}
+      </Route>
+
+      {/* ===== ADMIN - Secretaria ===== */}
+      <Route path={"/admin/secretaria"}>
+        {() => (
+          <SuperAdminProtectedRoute>
+            <SecretariaDashboard />
+          </SuperAdminProtectedRoute>
+        )}
+      </Route>
+      <Route path={"/admin/secretaria/membros"}>
+        {() => (
+          <SuperAdminProtectedRoute>
+            <SecretariaDashboard />
+          </SuperAdminProtectedRoute>
+        )}
+      </Route>
+
+      {/* ===== ADMIN - Chancelaria ===== */}
+      <Route path={"/admin/chancelaria"}>
+        {() => (
+          <SuperAdminProtectedRoute>
+            <ChancelariaDashboard />
+          </SuperAdminProtectedRoute>
+        )}
+      </Route>
+      <Route path={"/admin/chancelaria/frequencias"}>
+        {() => (
+          <SuperAdminProtectedRoute>
+            <ChancelariaDashboard />
+          </SuperAdminProtectedRoute>
+        )}
+      </Route>
+
+      {/* ===== ADMIN - Tesouraria ===== */}
+      <Route path={"/admin/tesouraria"}>
+        {() => (
+          <SuperAdminProtectedRoute>
+            <TesouariaDashboard />
+          </SuperAdminProtectedRoute>
+        )}
+      </Route>
+      <Route path={"/admin/tesouraria/receitas"}>
+        {() => (
+          <SuperAdminProtectedRoute>
+            <TesouariaDashboard />
+          </SuperAdminProtectedRoute>
+        )}
+      </Route>
+
+      {/* ===== ADMIN - Presidência ===== */}
+      <Route path={"/admin/presidencia"}>
+        {() => (
+          <SuperAdminProtectedRoute>
+            <PresidenciaDashboard />
+          </SuperAdminProtectedRoute>
+        )}
+      </Route>
+      <Route path={"/admin/presidencia/administracoes"}>
+        {() => (
+          <SuperAdminProtectedRoute>
+            <PresidenciaDashboard />
+          </SuperAdminProtectedRoute>
+        )}
+      </Route>
+
+      {/* ===== ADMIN - Relatórios ===== */}
+      <Route path={"/admin/relatorios"}>
+        {() => (
+          <SuperAdminProtectedRoute>
+            <RelatoriosDashboard />
+          </SuperAdminProtectedRoute>
+        )}
+      </Route>
+
+      {/* ===== ADMIN - Configurações ===== */}
+      <Route path={"/admin/configuracoes"}>
+        {() => (
+          <SuperAdminProtectedRoute>
+            <ConfiguracoesDashboard />
+          </SuperAdminProtectedRoute>
+        )}
+      </Route>
+      <Route path={"/admin/configuracoes/geral"}>
+        {() => (
+          <SuperAdminProtectedRoute>
+            <ConfiguracoesDashboard />
+          </SuperAdminProtectedRoute>
+        )}
+      </Route>
+
+      {/* ===== ADMIN - Integrações ===== */}
+      <Route path={"/admin/integracoes"}>
+        {() => (
+          <SuperAdminProtectedRoute>
+            <IntegracoesDashboard />
+          </SuperAdminProtectedRoute>
+        )}
+      </Route>
+      <Route path={"/admin/integracoes/email"}>
+        {() => (
+          <SuperAdminProtectedRoute>
+            <IntegracoesDashboard />
+          </SuperAdminProtectedRoute>
+        )}
+      </Route>
+
       {/* ===== MÓDULO SECRETARIA ===== */}
-      <Route path={"/secretaria"} component={SecretariaDashboard} />
-      <Route path={"/secretaria/irmaos"} component={IrmaosList} />
-      <Route path={"/secretaria/aniversariantes"} component={Aniversariantes} />
-      <Route path={"/secretaria/cronograma"} component={Cronograma} />
 
       {/* ===== MÓDULO CHANCELARIA ===== */}
-      <Route path={"/chancelaria"} component={ChancelariaDashboard} />
-      <Route path={"/chancelaria/vida-maconica"} component={VidaMaconica} />
-      <Route path={"/chancelaria/comissoes"} component={ComissoesList} />
-      <Route path={"/chancelaria/caridade"} component={Caridade} />
 
       {/* ===== MÓDULO TESOURARIA ===== */}
-      <Route path={"/tesouraria"} component={TesourariaDashboard} />
-      <Route path={"/tesouraria/minhas-financas"} component={MinhasFinancas} />
-      <Route path={"/tesouraria/conciliacao"} component={Conciliacao} />
-      <Route path={"/tesouraria/dashboard"} component={DashboardFinanceiro} />
 
       {/* Reports - TODO: Mover para tesouraria/reports */}
       <Route path={"/relatorios"} component={Relatorios} />
@@ -131,17 +239,8 @@ function Router() {
 
       {/* ===== CONFIGURAÇÕES DA LOJA ===== */}
       <Route path={"/config"} component={Configuracoes} />
-      <Route path={"/config/loja"} component={ConfiguracoesLoja} />
-      <Route path={"/config/usuarios"} component={GerenciamentoUsuarios} />
-      <Route path={"/config/permissoes"} component={Permissoes} />
-      <Route path={"/config/auditoria"} component={Auditoria} />
-      <Route path={"/config/acesso"} component={AuditoriaAcesso} />
-      <Route path={"/config/email"} component={ConfiguracaoEmail} />
-      <Route path={"/config/push"} component={ConfiguracoesPush} />
-      <Route path={"/config/parametrizacao"} component={Parametrizacao} />
-      <Route path={"/config/backup"} component={Backup} />
-      <Route path={"/config/comunicados"} component={Comunicados} />
-      <Route path={"/config/changelog"} component={Changelog} />
+
+      {/* ===== ADMINISTRAÇÃO (deprecated - moved to /admin/*) ===== */}
 
       {/* ===== INTEGRAÇÕES DE SISTEMA ===== */}
       <Route path={"/integracao"} component={IntegracoesSystemaDashboard} />
@@ -182,12 +281,10 @@ function App() {
         defaultTheme="light"
         // switchable
       >
-        <TooltipProvider>
-          <MemberAuthProvider>
-            <Toaster />
-            <Router />
-          </MemberAuthProvider>
-        </TooltipProvider>
+        <MemberAuthProvider>
+          <Toaster />
+          <Router />
+        </MemberAuthProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

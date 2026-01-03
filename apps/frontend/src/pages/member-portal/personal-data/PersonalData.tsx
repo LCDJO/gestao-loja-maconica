@@ -46,19 +46,19 @@ export default function PersonalData() {
 
   return (
     <MemberPortalLayout currentPage="personal-data">
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Meus Dados</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Meus Dados</h1>
+            <p className="text-gray-600 text-sm sm:text-base mt-1">
               Mantenha suas informações pessoais atualizadas
             </p>
           </div>
           {!isEditing && (
             <Button
               onClick={() => setIsEditing(true)}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 w-full sm:w-auto justify-center sm:justify-start"
             >
               <Edit2 className="w-4 h-4" />
               Editar
@@ -67,11 +67,11 @@ export default function PersonalData() {
         </div>
 
         {/* Personal Data Form */}
-        <Card className="p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card className="p-4 sm:p-6 md:p-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             {/* Nome */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                 Nome Completo
               </label>
               <input
@@ -80,7 +80,7 @@ export default function PersonalData() {
                 value={formData.name}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className={`w-full px-4 py-2 border border-gray-300 rounded-lg outline-none transition ${
+                className={`w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg outline-none transition ${
                   isEditing
                     ? "focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     : "bg-gray-50 text-gray-600 cursor-not-allowed"
@@ -90,7 +90,7 @@ export default function PersonalData() {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                 Email
               </label>
               <input
@@ -99,7 +99,7 @@ export default function PersonalData() {
                 value={formData.email}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className={`w-full px-4 py-2 border border-gray-300 rounded-lg outline-none transition ${
+                className={`w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg outline-none transition ${
                   isEditing
                     ? "focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     : "bg-gray-50 text-gray-600 cursor-not-allowed"
@@ -109,7 +109,7 @@ export default function PersonalData() {
 
             {/* Telefone */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                 Telefone
               </label>
               <input
@@ -118,7 +118,7 @@ export default function PersonalData() {
                 value={formData.phone}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className={`w-full px-4 py-2 border border-gray-300 rounded-lg outline-none transition ${
+                className={`w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg outline-none transition ${
                   isEditing
                     ? "focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     : "bg-gray-50 text-gray-600 cursor-not-allowed"
@@ -128,7 +128,7 @@ export default function PersonalData() {
 
             {/* Data de Nascimento */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                 Data de Nascimento
               </label>
               <input
@@ -137,7 +137,7 @@ export default function PersonalData() {
                 value={formData.birthDate}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className={`w-full px-4 py-2 border border-gray-300 rounded-lg outline-none transition ${
+                className={`w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg outline-none transition ${
                   isEditing
                     ? "focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     : "bg-gray-50 text-gray-600 cursor-not-allowed"
@@ -147,7 +147,7 @@ export default function PersonalData() {
 
             {/* CPF */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                 CPF
               </label>
               <input
@@ -156,7 +156,7 @@ export default function PersonalData() {
                 value={formData.cpf}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className={`w-full px-4 py-2 border border-gray-300 rounded-lg outline-none transition ${
+                className={`w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg outline-none transition ${
                   isEditing
                     ? "focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     : "bg-gray-50 text-gray-600 cursor-not-allowed"
@@ -165,8 +165,8 @@ export default function PersonalData() {
             </div>
 
             {/* Endereço - Full width */}
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="sm:col-span-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                 Endereço
               </label>
               <input
@@ -175,7 +175,7 @@ export default function PersonalData() {
                 value={formData.address}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className={`w-full px-4 py-2 border border-gray-300 rounded-lg outline-none transition ${
+                className={`w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg outline-none transition ${
                   isEditing
                     ? "focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     : "bg-gray-50 text-gray-600 cursor-not-allowed"
@@ -185,7 +185,7 @@ export default function PersonalData() {
 
             {/* Cidade */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                 Cidade
               </label>
               <input
@@ -194,7 +194,7 @@ export default function PersonalData() {
                 value={formData.city}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className={`w-full px-4 py-2 border border-gray-300 rounded-lg outline-none transition ${
+                className={`w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg outline-none transition ${
                   isEditing
                     ? "focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     : "bg-gray-50 text-gray-600 cursor-not-allowed"
@@ -204,7 +204,7 @@ export default function PersonalData() {
 
             {/* Estado */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                 Estado
               </label>
               <input
@@ -213,7 +213,7 @@ export default function PersonalData() {
                 value={formData.state}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className={`w-full px-4 py-2 border border-gray-300 rounded-lg outline-none transition ${
+                className={`w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg outline-none transition ${
                   isEditing
                     ? "focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     : "bg-gray-50 text-gray-600 cursor-not-allowed"
@@ -223,7 +223,7 @@ export default function PersonalData() {
 
             {/* CEP */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                 CEP
               </label>
               <input
@@ -232,7 +232,7 @@ export default function PersonalData() {
                 value={formData.zipCode}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className={`w-full px-4 py-2 border border-gray-300 rounded-lg outline-none transition ${
+                className={`w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg outline-none transition ${
                   isEditing
                     ? "focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     : "bg-gray-50 text-gray-600 cursor-not-allowed"
@@ -243,18 +243,18 @@ export default function PersonalData() {
 
           {/* Action Buttons */}
           {isEditing && (
-            <div className="mt-8 flex gap-4 justify-end">
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 sm:justify-end">
               <Button
                 onClick={() => setIsEditing(false)}
                 variant="outline"
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 w-full sm:w-auto justify-center"
               >
                 <X className="w-4 h-4" />
                 Cancelar
               </Button>
               <Button
                 onClick={handleSave}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 w-full sm:w-auto justify-center"
               >
                 <Save className="w-4 h-4" />
                 Salvar Alterações
@@ -264,8 +264,8 @@ export default function PersonalData() {
         </Card>
 
         {/* Info Box */}
-        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800">
+        <div className="p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-xs sm:text-sm text-blue-800">
             <strong>Nota:</strong> Alguns campos como CPF não podem ser
             alterados por razões de segurança.
           </p>

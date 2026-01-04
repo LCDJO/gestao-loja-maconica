@@ -99,6 +99,9 @@ jspm_packages/
 # Temporary folders
 tmp/
 
+# Documentation (internal)
+*.md
+
 # GitHub workflows and configuration (local only)
 .github/
 

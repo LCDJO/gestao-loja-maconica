@@ -1,13 +1,16 @@
-# 🎯 RESUMO EXECUTIVO - Reorganização Super Admin
+# 🎯 RESUMO EXECUTIVO - Super Admin (SaaS-Wide)
+
+> **⚠️ IMPORTANTE**: Este é o painel **SUPER-ADMIN** que administra o SaaS por completo  
+> Para o painel **ADMIN** que administra uma loja específica, veja `ADMIN_VS_SUPERADMIN.md`
 
 ## O que foi feito em 1 hora
 
 ### ✅ 18 Diretórios Criados
 ```
 admin/
-├── secretaria/ (5 subdirs)
-├── chancelaria/ (4 subdirs)
-├── tesouraria/ (4 subdirs)
+├── secretaria/ (5 subdirs)      ← Super-Admin vê TODAS as lojas
+├── chancelaria/ (4 subdirs)     ← Super-Admin vê TODAS as lojas
+├── tesouraria/ (4 subdirs)      ← Super-Admin vê TODAS as lojas
 ├── presidencia/ (2 subdirs)
 ├── relatorios/ (1 subdir)
 ├── configuracoes/ (4 subdirs)
@@ -15,19 +18,26 @@ admin/
 ```
 
 ### ✅ 8 Dashboards Implementados
-- AdminDashboard (principal com 7 depts)
-- SecretariaDashboard
-- ChancelariaDashboard
-- TesouariaDashboard
+- AdminDashboard (SaaS - 7 depts com dados globais)
+- SecretariaDashboard (Visão SaaS de todas as lojas)
+- ChancelariaDashboard (Visão SaaS de todas as lojas)
+- TesouariaDashboard (Visão SaaS de todas as lojas)
 - PresidenciaDashboard
-- RelatoriosDashboard
-- ConfiguracoesDashboard
+- RelatoriosDashboard (Relatórios cross-loja)
+- ConfiguracoesDashboard (SaaS config)
 - IntegracoesDashboard
 
 ### ✅ 50+ Rotas Adicionadas
 ```
-/admin (principal)
-/admin/secretaria/* (5 rotas)
+/admin (principal SaaS)
+/admin/secretaria/* (5 rotas - dados de TODAS as lojas)
+/admin/chancelaria/* (4 rotas - dados de TODAS as lojas)
+/admin/tesouraria/* (4 rotas - dados de TODAS as lojas)
+/admin/presidencia/* (2 rotas)
+/admin/relatorios/* (2 rotas - cruzados entre lojas)
+/admin/configuracoes/* (4 rotas - SaaS config)
+/admin/integracoes/* (4 rotas - SaaS integrations)
+```
 /admin/chancelaria/* (4 rotas)
 /admin/tesouraria/* (4 rotas)
 /admin/presidencia/* (2 rotas)

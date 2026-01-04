@@ -1,0 +1,37 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="#1a1a2e"/>
+  
+  <!-- Gradient overlay -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6c63ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a29bfe;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Circle background -->
+  <circle cx="512" cy="512" r="450" fill="url(#grad)"/>
+  
+  <!-- App icon - Maçônica symbol (stylized compass/lodge) -->
+  <g transform="translate(512, 512)">
+    <!-- Outer circle -->
+    <circle cx="0" cy="0" r="350" fill="none" stroke="white" stroke-width="20"/>
+    
+    <!-- Inner geometric pattern -->
+    <circle cx="0" cy="0" r="280" fill="none" stroke="white" stroke-width="15" opacity="0.8"/>
+    
+    <!-- Square (lodge symbol) -->
+    <rect x="-200" y="-200" width="400" height="400" fill="none" stroke="white" stroke-width="15" transform="rotate(45)"/>
+    
+    <!-- Triangle (compass/direction) -->
+    <polygon points="0,-180 156,90 -156,90" fill="none" stroke="white" stroke-width="15"/>
+    
+    <!-- Center dot -->
+    <circle cx="0" cy="0" r="30" fill="white"/>
+  </g>
+  
+  <!-- Badge corner -->
+  <rect x="850" y="850" width="140" height="140" rx="20" fill="#ffd700" opacity="0.9"/>
+  <text x="920" y="930" font-size="60" font-weight="bold" text-anchor="middle" fill="#1a1a2e">M</text>
+</svg>

@@ -112,7 +112,7 @@ function Router() {
       <Route path={"/dashboard-executivo"} component={DashboardExecutivo} />
 
       {/* ===== ADMIN - Super Admin Dashboard ===== */}
-      <Route path={"/admin"}>
+      <Route path={"/super-admin/dashboard"}>
         {() => (
           <SuperAdminProtectedRoute>
             <AdminDashboard />
@@ -121,14 +121,14 @@ function Router() {
       </Route>
 
       {/* ===== ADMIN - Secretaria ===== */}
-      <Route path={"/admin/secretaria"}>
+      <Route path={"/super-admin/secretaria"}>
         {() => (
           <SuperAdminProtectedRoute>
             <SecretariaDashboard />
           </SuperAdminProtectedRoute>
         )}
       </Route>
-      <Route path={"/admin/secretaria/membros"}>
+      <Route path={"/super-admin/secretaria/membros"}>
         {() => (
           <SuperAdminProtectedRoute>
             <SecretariaDashboard />
@@ -137,14 +137,14 @@ function Router() {
       </Route>
 
       {/* ===== ADMIN - Chancelaria ===== */}
-      <Route path={"/admin/chancelaria"}>
+      <Route path={"/super-admin/chancelaria"}>
         {() => (
           <SuperAdminProtectedRoute>
             <ChancelariaDashboard />
           </SuperAdminProtectedRoute>
         )}
       </Route>
-      <Route path={"/admin/chancelaria/frequencias"}>
+      <Route path={"/super-admin/chancelaria/frequencias"}>
         {() => (
           <SuperAdminProtectedRoute>
             <ChancelariaDashboard />
@@ -153,14 +153,14 @@ function Router() {
       </Route>
 
       {/* ===== ADMIN - Tesouraria ===== */}
-      <Route path={"/admin/tesouraria"}>
+      <Route path={"/super-admin/tesouraria"}>
         {() => (
           <SuperAdminProtectedRoute>
             <TesouariaDashboard />
           </SuperAdminProtectedRoute>
         )}
       </Route>
-      <Route path={"/admin/tesouraria/receitas"}>
+      <Route path={"/super-admin/tesouraria/receitas"}>
         {() => (
           <SuperAdminProtectedRoute>
             <TesouariaDashboard />
@@ -169,14 +169,14 @@ function Router() {
       </Route>
 
       {/* ===== ADMIN - Presidência ===== */}
-      <Route path={"/admin/presidencia"}>
+      <Route path={"/super-admin/presidencia"}>
         {() => (
           <SuperAdminProtectedRoute>
             <PresidenciaDashboard />
           </SuperAdminProtectedRoute>
         )}
       </Route>
-      <Route path={"/admin/presidencia/administracoes"}>
+      <Route path={"/super-admin/presidencia/administracoes"}>
         {() => (
           <SuperAdminProtectedRoute>
             <PresidenciaDashboard />
@@ -185,7 +185,7 @@ function Router() {
       </Route>
 
       {/* ===== ADMIN - Relatórios ===== */}
-      <Route path={"/admin/relatorios"}>
+      <Route path={"/super-admin/relatorios"}>
         {() => (
           <SuperAdminProtectedRoute>
             <RelatoriosDashboard />
@@ -194,14 +194,14 @@ function Router() {
       </Route>
 
       {/* ===== ADMIN - Configurações ===== */}
-      <Route path={"/admin/configuracoes"}>
+      <Route path={"/super-admin/configuracoes"}>
         {() => (
           <SuperAdminProtectedRoute>
             <ConfiguracoesDashboard />
           </SuperAdminProtectedRoute>
         )}
       </Route>
-      <Route path={"/admin/configuracoes/geral"}>
+      <Route path={"/super-admin/configuracoes/geral"}>
         {() => (
           <SuperAdminProtectedRoute>
             <ConfiguracoesDashboard />
@@ -210,14 +210,14 @@ function Router() {
       </Route>
 
       {/* ===== ADMIN - Integrações ===== */}
-      <Route path={"/admin/integracoes"}>
+      <Route path={"/super-admin/integracoes"}>
         {() => (
           <SuperAdminProtectedRoute>
             <IntegracoesDashboard />
           </SuperAdminProtectedRoute>
         )}
       </Route>
-      <Route path={"/admin/integracoes/email"}>
+      <Route path={"/super-admin/integracoes/email"}>
         {() => (
           <SuperAdminProtectedRoute>
             <IntegracoesDashboard />

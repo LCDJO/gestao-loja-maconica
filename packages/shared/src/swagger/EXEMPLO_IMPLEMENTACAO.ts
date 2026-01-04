@@ -11,10 +11,11 @@
 
 import express from "express";
 import { createServer } from "http";
-import { generateSwaggerConfig, setupSwaggerUI } from "shared/swagger/swaggerConfig";
+import { generateSwaggerConfig, setupSwaggerUI } from "./swaggerConfig";
 // import authRoutes from "./routes"; // Quando routes estiverem prontas
 
-async function startServerExample() {
+// EXEMPLO: Como implementar em um serviço
+export async function startServerExample() {
   const app = express();
   const server = createServer(app);
 

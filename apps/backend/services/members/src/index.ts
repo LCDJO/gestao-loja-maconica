@@ -1,6 +1,6 @@
 import express from "express";
 import { createServer } from "http";
-import { generateSwaggerConfig, setupSwaggerUI } from "shared/swagger/swaggerConfig";
+import { generateSwaggerConfig, setupSwaggerUI } from "../../../../../../packages/shared/dist/swagger/swaggerConfig.js";
 import membersRoutes from "./routes";
 
 async function startServer() {
@@ -60,8 +60,6 @@ async function startServer() {
       error: "Erro interno do servidor",
     });
   });
-
-  const port = process.env.PORT || 3002;
 
   server.listen(port, () => {
     console.log(`✅ Members Service running on http://localhost:${port}/`);

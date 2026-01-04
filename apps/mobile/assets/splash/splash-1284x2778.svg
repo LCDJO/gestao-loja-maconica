@@ -1,0 +1,52 @@
+<svg width="1284" height="2778" viewBox="0 0 1284 2778" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6c63ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a29bfe;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="1284" height="2778" fill="url(#bgGrad)"/>
+  
+  <!-- Top accent wave -->
+  <path d="M 0 0 Q 321 200 642 100 T 1284 200 L 1284 0 Z" fill="url(#accentGrad)" opacity="0.1"/>
+  
+  <!-- Center content -->
+  <g transform="translate(642, 1200)">
+    <!-- Logo circle -->
+    <circle cx="0" cy="0" r="300" fill="none" stroke="url(#accentGrad)" stroke-width="8" opacity="0.3"/>
+    
+    <!-- Icon -->
+    <g transform="scale(2)">
+      <circle cx="0" cy="0" r="80" fill="none" stroke="white" stroke-width="8"/>
+      <rect x="-60" y="-60" width="120" height="120" fill="none" stroke="white" stroke-width="8" transform="rotate(45)"/>
+      <circle cx="0" cy="0" r="12" fill="white"/>
+    </g>
+  </g>
+  
+  <!-- App name -->
+  <text x="642" y="1600" font-size="80" font-weight="bold" text-anchor="middle" fill="white" font-family="Arial">
+    Gestão Maçônica
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="642" y="1720" font-size="48" text-anchor="middle" fill="white" opacity="0.7" font-family="Arial">
+    Portal do Irmão
+  </text>
+  
+  <!-- Bottom accent -->
+  <path d="M 0 2578 Q 321 2400 642 2500 T 1284 2378 L 1284 2778 Z" fill="url(#accentGrad)" opacity="0.1"/>
+  
+  <!-- Loading indicator -->
+  <g transform="translate(642, 2200)">
+    <circle cx="0" cy="0" r="40" fill="none" stroke="white" stroke-width="6" opacity="0.3"/>
+    <circle cx="0" cy="0" r="40" fill="none" stroke="url(#accentGrad)" stroke-width="6" stroke-dasharray="251 251" opacity="0.8">
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>

@@ -170,18 +170,6 @@ const SuperAdminLogin: FC = () => {
     setLoading(true);
 
     try {
-      // ✅ VALIDAR INPUT COM ZOD
-      const validation = superAdminLoginSchema.safeParse({ email, password });
-      
-      if (!validation.success) {
-        const error = validation.error.issues[0];
-        toast.error(error.message);
-        setLoading(false);
-        return;
-      }
-
-      const { email: validEmail, password: validPassword } = validation.data;
-
       // Em desenvolvimento (localhost), permitir login sem validação
       if (isLocalhost) {
         localStorage.setItem('superAdminToken', JSON.stringify({
@@ -193,6 +181,18 @@ const SuperAdminLogin: FC = () => {
         setLocation('/super-admin/dashboard');
         return;
       }
+
+      // ✅ VALIDAR INPUT COM ZOD (apenas em produção)
+      const validation = superAdminLoginSchema.safeParse({ email, password });
+      
+      if (!validation.success) {
+        const error = validation.error.issues[0];
+        toast.error(error.message);
+        setLoading(false);
+        return;
+      }
+
+      const { email: validEmail, password: validPassword } = validation.data;
 
       // Em produção, validar credenciais
       if (validEmail === 'admin@sistema.com' && validPassword === 'admin123') {

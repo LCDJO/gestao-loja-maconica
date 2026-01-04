@@ -109,7 +109,6 @@ tmp/
 !.github/workflows/**
 
 # Planning and documentation (local planning)
-planejamento/
 temp/
 
 # Database

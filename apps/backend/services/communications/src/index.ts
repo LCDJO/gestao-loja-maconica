@@ -1,6 +1,15 @@
 import express from "express";
 import { createServer } from "http";
-import { generateSwaggerConfig, setupSwaggerUI } from "../../../../../../packages/shared/dist/swagger/swaggerConfig.js";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+import {
+  communicationsServicePaths,
+  communicationsServiceSchemas,
+  communicationsServiceComponents,
+  communicationsServiceServers,
+  communicationsServiceInfo,
+  apiTags,
+} from "./swagger/index.js";
 
 async function startServer() {
   const app = express();
@@ -24,21 +33,24 @@ async function startServer() {
     }
   });
 
-  // Setup Swagger Documentation
-  const swaggerSpec = generateSwaggerConfig({
-    title: "Communications Service API",
-    description: "API para emails, notificações push, mensagens WhatsApp e SMS",
-    version: "1.0.0",
-    port: port as number,
-    basePath: "/api/communications",
-    serviceName: "Communications Service",
-  });
-  setupSwaggerUI(app, swaggerSpec, "/api-docs");
-
   // Health check
   app.get("/health", (_req, res) => {
     res.json({ status: "Communications Service is running" });
   });
+
+  // Setup Swagger Documentation
+  const swaggerSpec = swaggerJsdoc({
+    definition: {
+      openapi: "3.0.0",
+      info: communicationsServiceInfo,
+      servers: communicationsServiceServers,
+      paths: communicationsServicePaths,
+      components: communicationsServiceComponents,
+      tags: apiTags,
+    },
+    apis: [],
+  });
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
   // Routes will be added here
   // app.use("/api/emails", emailRoutes);

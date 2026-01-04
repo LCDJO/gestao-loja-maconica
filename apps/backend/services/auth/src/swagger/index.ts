@@ -4,6 +4,8 @@
  * Copie e adapte este arquivo para cada novo serviço
  */
 
+import { authServiceComponents, authServiceSchemas } from './components.js';
+
 export const authServicePaths = {
   '/api/auth/oauth/authorize': {
     post: {
@@ -73,20 +75,7 @@ export const authServicePaths = {
   },
 };
 
-export const authServiceSchemas = {
-  // TODO: Adicionar schemas específicos do Auth Service
-};
-
-export const authServiceComponents = {
-  schemas: authServiceSchemas,
-  securitySchemes: {
-    bearerAuth: {
-      type: 'http',
-      scheme: 'bearer',
-      bearerFormat: 'JWT',
-    },
-  },
-};
+export { authServiceComponents, authServiceSchemas };
 
 export const authServiceInfo = {
   title: 'Auth Service API',
@@ -97,3 +86,25 @@ export const authServiceInfo = {
     email: 'api@masonica.org',
   },
 };
+
+export const authServiceServers = [
+  {
+    url: 'http://localhost:3001',
+    description: 'Servidor de desenvolvimento',
+  },
+  {
+    url: 'https://api.masonica.org',
+    description: 'Servidor de produção',
+  },
+];
+
+export const apiTags = [
+  {
+    name: 'OAuth2',
+    description: 'Operações de autorização OAuth2',
+  },
+  {
+    name: 'Tokens',
+    description: 'Validação e gerenciamento de tokens JWT',
+  },
+];

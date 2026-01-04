@@ -1,7 +1,16 @@
 import express from "express";
 import { createServer } from "http";
-import { generateSwaggerConfig, setupSwaggerUI } from "../../../../../../packages/shared/dist/swagger/swaggerConfig.js";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 import membersRoutes from "./routes";
+import {
+  membersServicePaths,
+  membersServiceSchemas,
+  membersServiceComponents,
+  membersServiceServers,
+  membersServiceInfo,
+  apiTags,
+} from "./swagger/index.js";
 
 async function startServer() {
   const app = express();
@@ -25,39 +34,42 @@ async function startServer() {
     }
   });
 
-  // Setup Swagger Documentation
-  const swaggerSpec = generateSwaggerConfig({
-    title: "Members Service API",
-    description: "API para gerenciamento de membros da loja maçônica",
-    version: "1.0.0",
-    port: port as number,
-    basePath: "/api/members",
-    serviceName: "Members Service",
-  });
-  setupSwaggerUI(app, swaggerSpec, "/api-docs");
-
-  // Health check
+  // Health check (antes do swagger)
   app.get("/health", (_req, res) => {
     res.json({ status: "Members Service is running" });
   });
 
+  // Setup Swagger Documentation (antes das rotas de API)
+  const swaggerSpec = swaggerJsdoc({
+    definition: {
+      openapi: "3.0.0",
+      info: membersServiceInfo,
+      servers: membersServiceServers,
+      paths: membersServicePaths,
+      components: membersServiceComponents,
+      tags: apiTags,
+    },
+    apis: [],
+  });
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
   // Members API routes
   app.use("/api/members", membersRoutes);
 
-  // 404 handler
-  app.use((_req, res) => {
-    res.status(404).json({
-      success: false,
-      error: "Rota não encontrada",
-    });
-  });
-
-  // Error handler
+  // Error handler (antes do 404)
   app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     console.error(err);
     res.status(500).json({
       success: false,
       error: "Erro interno do servidor",
+    });
+  });
+
+  // 404 handler (SEMPRE por último!)
+  app.use((_req, res) => {
+    res.status(404).json({
+      success: false,
+      error: "Rota não encontrada",
     });
   });
 

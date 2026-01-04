@@ -39,4 +39,84 @@ export interface Meeting {
   attendanceCount: number;
 }
 
+// =====================================================================
+// NOVO: TIPOS DE AUTENTICAÇÃO (Admin vs Super-Admin)
+// =====================================================================
+export { 
+  RoleType, 
+  JWTPayload, 
+  AdminAuthContext, 
+  SuperAdminAuthContext, 
+  MemberAuthContext,
+
+// =====================================================================
+// SUPER ADMIN - Tipos para Painel Executivo
+// =====================================================================
+export type {
+  DashboardExecutivo,
+  DashboardKPI,
+  SystemStatus,
+  HealthStatus,
+  EventoSistema,
+  MapaGeo,
+  TelemetriaAplicação,
+  EndpointMetric,
+  LogAplicação,
+  MicroserviçoMetrics,
+  InfraestruturaMetrics,
+  BancoDadosMetrics,
+  QueryLenta,
+  LockAtivo,
+  BackupInfo,
+  FilasMetrics,
+  Tenant,
+  TenantSumário,
+  LimitesTenant,
+  ModuloTenant,
+  ConfiguraçãoTenant,
+  SuperAdmin,
+  SessãoUsuário,
+  PlanoSaaS,
+  Assinatura,
+  Fatura,
+  ItemFatura,
+  CupomDesconto,
+  MétricasFinanceiras,
+  IntegracaoExterna,
+  LogIntegração,
+  ChaveAPI,
+  LogAuditoria,
+  TentativaLogin,
+  AcessoSuspeito,
+  CertificadoSSL,
+  RegraAlerta,
+  Incidente,
+  EscalaçãoIncidente,
+  VersãoProdução,
+  Deploy,
+  VariávelAmbiente,
+  FeatureToggle,
+  TemplateEmail,
+  TemplateWhatsApp,
+  Campanha,
+  LogEnvioNotificação,
+  RelatórioUso,
+  RelatórioFinanceiro,
+  ConfigExportação,
+  BackupAutomático,
+  SessãoRestore,
+  PaginaçãoParams,
+  RespuestaLista,
+  NavegacaoContexto,
+} from './superadmin'; 
+  AnyAuthContext, 
+  LoginRequest, 
+  LoginResponse, 
+  ApiResponse, 
+  isAdminContext, 
+  isSuperAdminContext, 
+  isMemberContext, 
+  isLoggedIn 
+} from './auth';
+
 // TODO: Adicionar mais tipos conforme necessário

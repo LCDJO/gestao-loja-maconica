@@ -1,0 +1,614 @@
+/**
+ * SuperAdminDashboard.module.css
+ * Estilos para o painel executivo SuperAdmin
+ */
+
+:root {
+  --sa-bg-primary: #ffffff;
+  --sa-bg-secondary: #f8f9fa;
+  --sa-bg-tertiary: #f0f2f5;
+  --sa-text-primary: #1a1a1a;
+  --sa-text-secondary: #666666;
+  --sa-text-tertiary: #999999;
+  --sa-border: #e0e0e0;
+  --sa-accent: #2563eb;
+  --sa-accent-hover: #1d4ed8;
+  --sa-danger: #dc2626;
+  --sa-warning: #f59e0b;
+  --sa-success: #10b981;
+  --sa-info: #3b82f6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sa-bg-primary: #1a1a2e;
+    --sa-bg-secondary: #16213e;
+    --sa-bg-tertiary: #0f3460;
+    --sa-text-primary: #ffffff;
+    --sa-text-secondary: #b0b0b0;
+    --sa-text-tertiary: #707070;
+    --sa-border: #2d3748;
+  }
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ============================================================================
+   LOADING & SPINNER
+   ============================================================================ */
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 400px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--sa-border);
+  border-top: 4px solid var(--sa-accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================================
+   TIMEFRAME SELECTOR
+   ============================================================================ */
+
+.timeframeSelector {
+  display: flex;
+  gap: 8px;
+}
+
+.tfButton {
+  padding: 6px 12px;
+  border: 1px solid var(--sa-border);
+  border-radius: 6px;
+  background-color: var(--sa-bg-primary);
+  color: var(--sa-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tfButton:hover {
+  border-color: var(--sa-accent);
+  color: var(--sa-accent);
+}
+
+.tfButton.tfActive {
+  background-color: var(--sa-accent);
+  color: white;
+  border-color: var(--sa-accent);
+}
+
+/* ============================================================================
+   SEÇÕES
+   ============================================================================ */
+
+.sectionTitle {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--sa-text-primary);
+}
+
+.kpiSection,
+.statusSection,
+.mapaSection,
+.eventosSection,
+.lojasSection {
+  background-color: var(--sa-bg-primary);
+  border: 1px solid var(--sa-border);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+/* ============================================================================
+   KPI GRID
+   ============================================================================ */
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.kpiCard {
+  background-color: var(--sa-bg-secondary);
+  border: 1px solid var(--sa-border);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.3s ease;
+}
+
+.kpiCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: var(--sa-accent);
+  transform: translateY(-2px);
+}
+
+.kpiHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.kpiIcon {
+  width: 24px;
+  height: 24px;
+  color: var(--sa-accent);
+}
+
+.kpiHeader h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sa-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.kpiValue {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--sa-text-primary);
+}
+
+.kpiFooter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--sa-text-secondary);
+}
+
+.kpiFooter svg {
+  color: var(--sa-success);
+}
+
+.trend {
+  color: var(--sa-success);
+  font-weight: 500;
+}
+
+.secondary {
+  color: var(--sa-text-tertiary);
+}
+
+/* ============================================================================
+   STATUS GRID
+   ============================================================================ */
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.statusCard {
+  background-color: var(--sa-bg-secondary);
+  border: 1px solid var(--sa-border);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.statusHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.statusDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.statusHeader h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--sa-text-primary);
+}
+
+.statusValue {
+  margin: 0;
+  font-size: 12px;
+  color: var(--sa-text-secondary);
+}
+
+.statusDetails {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.statusMetric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statusMetric .label {
+  font-size: 11px;
+  color: var(--sa-text-tertiary);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.statusMetric .value {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--sa-text-primary);
+}
+
+.statusMessage {
+  padding: 8px 12px;
+  background-color: rgba(245, 158, 11, 0.1);
+  border-left: 3px solid #f59e0b;
+  font-size: 12px;
+  color: var(--sa-text-secondary);
+  border-radius: 4px;
+}
+
+/* ============================================================================
+   CHARTS
+   ============================================================================ */
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.chartCard {
+  background-color: var(--sa-bg-primary);
+  border: 1px solid var(--sa-border);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.chartTitle {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--sa-text-primary);
+}
+
+/* ============================================================================
+   MAPA GEOGRÁFICO
+   ============================================================================ */
+
+.mapaGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.mapaCard {
+  background-color: var(--sa-bg-secondary);
+  border: 1px solid var(--sa-border);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.mapaCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: var(--sa-accent);
+}
+
+.mapaHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mapaHeader svg {
+  color: var(--sa-accent);
+}
+
+.mapaHeader h4 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sa-text-primary);
+}
+
+.mapaStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.mapaStat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+.mapaStat .label {
+  font-size: 10px;
+  color: var(--sa-text-tertiary);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.mapaStat .valor {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--sa-text-primary);
+}
+
+/* ============================================================================
+   EVENTOS
+   ============================================================================ */
+
+.eventosList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.eventoItem {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border-left: 3px solid var(--sa-border);
+  border-radius: 4px;
+  background-color: var(--sa-bg-secondary);
+}
+
+.eventoItem.evento-info {
+  border-left-color: var(--sa-info);
+}
+
+.eventoItem.evento-warning {
+  border-left-color: var(--sa-warning);
+}
+
+.eventoItem.evento-critical {
+  border-left-color: var(--sa-danger);
+}
+
+.eventoIcon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.eventoConteudo {
+  flex: 1;
+  min-width: 0;
+}
+
+.eventoConteudo h4 {
+  margin: 0 0 4px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sa-text-primary);
+}
+
+.eventoTempo {
+  margin: 0;
+  font-size: 11px;
+  color: var(--sa-text-tertiary);
+}
+
+/* ============================================================================
+   TABELA DE LOJAS
+   ============================================================================ */
+
+.lojasTable {
+  overflow-x: auto;
+}
+
+.lojasTable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.lojasTable thead {
+  background-color: var(--sa-bg-secondary);
+  border-bottom: 2px solid var(--sa-border);
+}
+
+.lojasTable th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--sa-text-secondary);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.lojasTable td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--sa-border);
+  color: var(--sa-text-primary);
+}
+
+.lojasTable tbody tr:hover {
+  background-color: var(--sa-bg-secondary);
+}
+
+.lojaNome {
+  font-weight: 600;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-ativa {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.badge-suspensa {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+.valor {
+  font-weight: 600;
+  color: var(--sa-success);
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================ */
+
+@media (max-width: 1024px) {
+  .kpiGrid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+
+  .chartsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .statusGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .mapaGrid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+
+  .lojasTable {
+    font-size: 12px;
+  }
+
+  .lojasTable th,
+  .lojasTable td {
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    gap: 16px;
+  }
+
+  .kpiSection,
+  .statusSection,
+  .mapaSection,
+  .eventosSection,
+  .lojasSection,
+  .chartCard {
+    padding: 16px;
+  }
+
+  .kpiGrid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+
+  .sectionTitle {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .kpiCard {
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .kpiValue {
+    font-size: 24px;
+  }
+
+  .mapaGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lojasTable table {
+    font-size: 12px;
+  }
+
+  .lojasTable th {
+    padding: 8px 8px;
+  }
+
+  .lojasTable td {
+    padding: 8px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .kpiGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .statusGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .mapaGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpiCard {
+    padding: 12px;
+  }
+
+  .sectionTitle {
+    font-size: 14px;
+  }
+
+  .lojasTable {
+    overflow-x: auto;
+  }
+
+  .lojasTable table {
+    font-size: 11px;
+    min-width: 600px;
+  }
+}

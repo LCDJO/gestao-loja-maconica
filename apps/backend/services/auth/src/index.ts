@@ -1,6 +1,15 @@
 import express from "express";
 import { createServer } from "http";
-import { generateSwaggerConfig, setupSwaggerUI } from "../../../../../../packages/shared/dist/swagger/swaggerConfig.js";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+import {
+  authServicePaths,
+  authServiceSchemas,
+  authServiceComponents,
+  authServiceServers,
+  authServiceInfo,
+  apiTags,
+} from "./swagger/index.js";
 
 async function startServer() {
   const app = express();
@@ -24,21 +33,24 @@ async function startServer() {
     }
   });
 
-  // Setup Swagger Documentation
-  const swaggerSpec = generateSwaggerConfig({
-    title: "Auth Service API",
-    description: "API para autenticação, tokens JWT e verificação de credenciais",
-    version: "1.0.0",
-    port: port as number,
-    basePath: "/api/auth",
-    serviceName: "Auth Service",
-  });
-  setupSwaggerUI(app, swaggerSpec, "/api-docs");
-
   // Health check
   app.get("/health", (_req, res) => {
     res.json({ status: "Auth Service is running" });
   });
+
+  // Setup Swagger Documentation
+  const swaggerSpec = swaggerJsdoc({
+    definition: {
+      openapi: "3.0.0",
+      info: authServiceInfo,
+      servers: authServiceServers,
+      paths: authServicePaths,
+      components: authServiceComponents,
+      tags: apiTags,
+    },
+    apis: [],
+  });
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
   // Routes will be added here
   // app.use("/api/auth", authRoutes);

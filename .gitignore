@@ -99,11 +99,14 @@ jspm_packages/
 # Temporary folders
 tmp/
 
-# Documentation (internal)
+# Documentation (ALL markdown files - internal documentation only)
 *.md
 
-# GitHub workflows and configuration (local only)
+# GitHub configuration (local only - docs, guides, deployment)
 .github/
+# BUT allow workflows for CI/CD
+!.github/workflows/
+!.github/workflows/**
 
 # Planning and documentation (local planning)
 planejamento/

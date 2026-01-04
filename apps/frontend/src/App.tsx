@@ -5,13 +5,18 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SuperAdminProtectedRoute from "./components/SuperAdminProtectedRoute";
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
 import { MemberAuthProvider } from "./contexts/MemberAuthContext";
+import { SuperAdminProvider } from "./contexts/SuperAdminContext";
+import { AdminProvider } from "./contexts/AdminContext";
 
 // Auth
 import SuperAdminLogin from "./pages/auth/SuperAdminLogin";
+import AdminLogin from "./pages/auth/AdminLogin";
 
 // Admin - Novo módulo reorganizado
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminLodgeDashboard from "./pages/admin/dashboard/AdminLodgeDashboard";
 import SecretariaDashboard from "./pages/admin/secretaria/SecretariaDashboard";
 import ChancelariaDashboard from "./pages/admin/chancelaria/ChancelariaDashboard";
 import TesouariaDashboard from "./pages/admin/tesouraria/TesouariaDashboard";
@@ -31,7 +36,7 @@ import Attendance from "./pages/member-portal/attendance/Attendance";
 // Dashboards
 import Home from "./pages/dashboards/Home";
 
-import SuperAdminDashboard from "./pages/dashboards/SuperAdminDashboard";
+import SuperAdminDashboard from "./pages/super-admin/dashboard/SuperAdminDashboard";
 import DashboardExecutivo from "./pages/dashboards/DashboardExecutivo";
 
 // MÓDULO SECRETARIA
@@ -92,6 +97,16 @@ function Router() {
       {/* Auth Routes */}
       <Route path={"/"} component={Home} />
       <Route path={"/super-admin/login"} component={SuperAdminLogin} />
+      <Route path={"/admin/login"} component={AdminLogin} />
+
+      {/* ===== ADMIN LOJA (Lodge-specific Admin) ===== */}
+      <Route path={"/admin/dashboard"}>
+        {() => (
+          <AdminProtectedRoute>
+            <AdminLodgeDashboard />
+          </AdminProtectedRoute>
+        )}
+      </Route>
 
       {/* ===== PORTAL DO IRMÃO ===== */}
       <Route path={"/member-portal/auth/login"} component={MemberPortalLogin} />
@@ -115,7 +130,7 @@ function Router() {
       <Route path={"/super-admin/dashboard"}>
         {() => (
           <SuperAdminProtectedRoute>
-            <AdminDashboard />
+            <SuperAdminDashboard />
           </SuperAdminProtectedRoute>
         )}
       </Route>
@@ -281,10 +296,14 @@ function App() {
         defaultTheme="light"
         // switchable
       >
-        <MemberAuthProvider>
-          <Toaster />
-          <Router />
-        </MemberAuthProvider>
+        <SuperAdminProvider>
+          <AdminProvider>
+            <MemberAuthProvider>
+              <Toaster />
+              <Router />
+            </MemberAuthProvider>
+          </AdminProvider>
+        </SuperAdminProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

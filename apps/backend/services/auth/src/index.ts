@@ -10,12 +10,13 @@ import {
   authServiceInfo,
   apiTags,
 } from "./swagger/index.js";
+import authRoutes from "./routes.js";
 
 async function startServer() {
   const app = express();
   const server = createServer(app);
 
-  const port = process.env.PORT || 3001;
+  const port = process.env.PORT || 3002;
 
   // Middlewares
   app.use(express.json());
@@ -52,8 +53,8 @@ async function startServer() {
   });
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-  // Routes will be added here
-  // app.use("/api/auth", authRoutes);
+  // Routes
+  app.use("/api/auth", authRoutes);
 
   server.listen(port, () => {
     console.log(`✅ Auth Service running on http://localhost:${port}/`);

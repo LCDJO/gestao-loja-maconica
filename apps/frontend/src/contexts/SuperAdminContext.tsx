@@ -10,6 +10,8 @@ interface SuperAdminContextType {
   user: SuperAdminUser | null;
   token: string | null;
   isLoggedIn: boolean;
+  isInitialized: boolean;
+  error: string | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 }
@@ -22,25 +24,58 @@ export function SuperAdminProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<SuperAdminUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Validar token com backend
+  const validateTokenWithBackend = async (storedToken: string) => {
+    try {
+      const response = await fetch(
+        "http://localhost:3002/api/auth/super-admin/profile",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Token inválido ou expirado");
+      }
+
+      const data = await response.json();
+      
+      if (data.success && data.data) {
+        setUser(data.data);
+        setToken(storedToken);
+        setError(null);
+        return true;
+      } else {
+        throw new Error(data.error || "Erro ao validar token");
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Erro ao validar token";
+      setError(errorMessage);
+      localStorage.removeItem("superAdminToken");
+      localStorage.removeItem("superAdminRefreshToken");
+      return false;
+    }
+  };
 
   // Restaurar sessão ao inicializar
   useEffect(() => {
     const storedToken = localStorage.getItem("superAdminToken");
+    
     if (storedToken) {
-      setToken(storedToken);
-      // TODO: Validar token com backend
-      // Por enquanto, assumimos que o token é válido
-      setUser({
-        id: "super-admin-1",
-        email: localStorage.getItem("superAdminEmail") || "master@masonica.org",
-        role: "SUPER_ADMIN",
-      });
+      validateTokenWithBackend(storedToken);
     }
+    
     setIsInitialized(true);
   }, []);
 
   const login = async (email: string, password: string) => {
     try {
+      setError(null);
       const response = await fetch(
         "http://localhost:3002/api/auth/super-admin/login",
         {
@@ -58,10 +93,11 @@ export function SuperAdminProvider({ children }: { children: ReactNode }) {
 
       localStorage.setItem("superAdminToken", data.data.token);
       localStorage.setItem("superAdminRefreshToken", data.data.refreshToken);
-      localStorage.setItem("superAdminEmail", email);
       setToken(data.data.token);
       setUser(data.data.user);
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Erro ao fazer login";
+      setError(errorMessage);
       throw error;
     }
   };
@@ -69,14 +105,22 @@ export function SuperAdminProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     localStorage.removeItem("superAdminToken");
     localStorage.removeItem("superAdminRefreshToken");
-    localStorage.removeItem("superAdminEmail");
     setToken(null);
     setUser(null);
+    setError(null);
   };
 
   return (
     <SuperAdminContext.Provider
-      value={{ user, token, isLoggedIn: !!token, login, logout }}
+      value={{
+        user,
+        token,
+        isLoggedIn: !!token,
+        isInitialized,
+        error,
+        login,
+        logout,
+      }}
     >
       {children}
     </SuperAdminContext.Provider>

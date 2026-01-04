@@ -67,6 +67,7 @@
 
 import { Router } from 'express';
 import { authenticateToken } from './middleware/auth';
+import { authenticateSuperAdmin, authenticateAdmin } from '../../auth/src/middleware/auth';
 import {
   login,
   logout,
@@ -83,6 +84,11 @@ import {
   getTransactions,
   addTransaction,
 } from './controllers/financialController';
+import {
+  getAllMembersGlobal,
+  getMembersByLodgeSuperAdmin,
+  getGlobalStatistics,
+} from './controllers/superAdminController';
 
 // Helper para envolver funções async em rotas Express
 const asyncHandler = (fn: any) => (req: any, res: any, next: any) => 
@@ -559,5 +565,88 @@ router.get('/finances/transactions', authenticateToken, asyncHandler(getTransact
  *         description: Dados inválidos
  */
 router.post('/finances/transactions', authenticateToken, asyncHandler(addTransaction));
+
+// ============= SUPER-ADMIN ENDPOINTS =============
+// Apenas Super-Admin pode acessar estes endpoints
+// Fornecem visibilidade global de todas as lojas
+
+/**
+ * @swagger
+ * /api/members/super-admin/all-members:
+ *   get:
+ *     summary: Obter TODOS os membros (Super-Admin)
+ *     description: Retorna lista de todos os membros de todas as lojas (apenas Super-Admin)
+ *     tags:
+ *       - Super-Admin
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de todos os membros
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     totalMembers:
+ *                       type: number
+ *                     totalLojas:
+ *                       type: number
+ *                     members:
+ *                       type: array
+ *       403:
+ *         description: Acesso restrito a Super-Admin
+ */
+router.get('/super-admin/all-members', authenticateSuperAdmin, asyncHandler(getAllMembersGlobal));
+
+/**
+ * @swagger
+ * /api/members/super-admin/by-lodge/{lodgeId}:
+ *   get:
+ *     summary: Obter membros de uma loja (Super-Admin)
+ *     description: Retorna membros de uma loja específica (Super-Admin pode acessar qualquer loja)
+ *     tags:
+ *       - Super-Admin
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: lodgeId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID da loja
+ *     responses:
+ *       200:
+ *         description: Membros da loja
+ *       403:
+ *         description: Acesso restrito a Super-Admin
+ *       404:
+ *         description: Loja não encontrada
+ */
+router.get('/super-admin/by-lodge/:lodgeId', authenticateSuperAdmin, asyncHandler(getMembersByLodgeSuperAdmin));
+
+/**
+ * @swagger
+ * /api/members/super-admin/statistics:
+ *   get:
+ *     summary: Obter estatísticas globais (Super-Admin)
+ *     description: Retorna estatísticas consolidadas de todas as lojas
+ *     tags:
+ *       - Super-Admin
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Estatísticas globais
+ *       403:
+ *         description: Acesso restrito a Super-Admin
+ */
+router.get('/super-admin/statistics', authenticateSuperAdmin, asyncHandler(getGlobalStatistics));
 
 export default router;

@@ -2,6 +2,7 @@ import express from "express";
 import { createServer } from "http";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import financesRoutes from "./routes";
 import {
   financesServicePaths,
   financesServiceSchemas,
@@ -52,10 +53,25 @@ async function startServer() {
   });
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-  // Routes will be added here
-  // app.use("/api/finances", financesRoutes);
-  // app.use("/api/transactions", transactionsRoutes);
-  // app.use("/api/bills", billsRoutes);
+  // Finances API routes
+  app.use("/api/finances", financesRoutes);
+
+  // Error handler
+  app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      error: "Erro interno do servidor",
+    });
+  });
+
+  // 404 handler
+  app.use((_req, res) => {
+    res.status(404).json({
+      success: false,
+      error: "Rota não encontrada",
+    });
+  });
 
   server.listen(port, () => {
     console.log(`✅ Finances Service running on http://localhost:${port}/`);

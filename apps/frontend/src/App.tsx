@@ -136,107 +136,107 @@ function Router() {
       </Route>
 
       {/* ===== ADMIN - Secretaria ===== */}
-      <Route path={"/super-admin/secretaria"}>
+      <Route path={"/admin/secretaria"}>
         {() => (
-          <SuperAdminProtectedRoute>
+          <AdminProtectedRoute>
             <SecretariaDashboard />
-          </SuperAdminProtectedRoute>
+          </AdminProtectedRoute>
         )}
       </Route>
-      <Route path={"/super-admin/secretaria/membros"}>
+      <Route path={"/admin/secretaria/membros"}>
         {() => (
-          <SuperAdminProtectedRoute>
+          <AdminProtectedRoute>
             <SecretariaDashboard />
-          </SuperAdminProtectedRoute>
+          </AdminProtectedRoute>
         )}
       </Route>
 
       {/* ===== ADMIN - Chancelaria ===== */}
-      <Route path={"/super-admin/chancelaria"}>
+      <Route path={"/admin/chancelaria"}>
         {() => (
-          <SuperAdminProtectedRoute>
+          <AdminProtectedRoute>
             <ChancelariaDashboard />
-          </SuperAdminProtectedRoute>
+          </AdminProtectedRoute>
         )}
       </Route>
-      <Route path={"/super-admin/chancelaria/frequencias"}>
+      <Route path={"/admin/chancelaria/frequencias"}>
         {() => (
-          <SuperAdminProtectedRoute>
+          <AdminProtectedRoute>
             <ChancelariaDashboard />
-          </SuperAdminProtectedRoute>
+          </AdminProtectedRoute>
         )}
       </Route>
 
       {/* ===== ADMIN - Tesouraria ===== */}
-      <Route path={"/super-admin/tesouraria"}>
+      <Route path={"/admin/tesouraria"}>
         {() => (
-          <SuperAdminProtectedRoute>
+          <AdminProtectedRoute>
             <TesouariaDashboard />
-          </SuperAdminProtectedRoute>
+          </AdminProtectedRoute>
         )}
       </Route>
-      <Route path={"/super-admin/tesouraria/receitas"}>
+      <Route path={"/admin/tesouraria/receitas"}>
         {() => (
-          <SuperAdminProtectedRoute>
+          <AdminProtectedRoute>
             <TesouariaDashboard />
-          </SuperAdminProtectedRoute>
+          </AdminProtectedRoute>
         )}
       </Route>
 
       {/* ===== ADMIN - Presidência ===== */}
-      <Route path={"/super-admin/presidencia"}>
+      <Route path={"/admin/presidencia"}>
         {() => (
-          <SuperAdminProtectedRoute>
+          <AdminProtectedRoute>
             <PresidenciaDashboard />
-          </SuperAdminProtectedRoute>
+          </AdminProtectedRoute>
         )}
       </Route>
-      <Route path={"/super-admin/presidencia/administracoes"}>
+      <Route path={"/admin/presidencia/administracoes"}>
         {() => (
-          <SuperAdminProtectedRoute>
+          <AdminProtectedRoute>
             <PresidenciaDashboard />
-          </SuperAdminProtectedRoute>
+          </AdminProtectedRoute>
         )}
       </Route>
 
       {/* ===== ADMIN - Relatórios ===== */}
-      <Route path={"/super-admin/relatorios"}>
+      <Route path={"/admin/relatorios"}>
         {() => (
-          <SuperAdminProtectedRoute>
+          <AdminProtectedRoute>
             <RelatoriosDashboard />
-          </SuperAdminProtectedRoute>
+          </AdminProtectedRoute>
         )}
       </Route>
 
       {/* ===== ADMIN - Configurações ===== */}
-      <Route path={"/super-admin/configuracoes"}>
+      <Route path={"/admin/configuracoes"}>
         {() => (
-          <SuperAdminProtectedRoute>
+          <AdminProtectedRoute>
             <ConfiguracoesDashboard />
-          </SuperAdminProtectedRoute>
+          </AdminProtectedRoute>
         )}
       </Route>
-      <Route path={"/super-admin/configuracoes/geral"}>
+      <Route path={"/admin/configuracoes/geral"}>
         {() => (
-          <SuperAdminProtectedRoute>
+          <AdminProtectedRoute>
             <ConfiguracoesDashboard />
-          </SuperAdminProtectedRoute>
+          </AdminProtectedRoute>
         )}
       </Route>
 
       {/* ===== ADMIN - Integrações ===== */}
-      <Route path={"/super-admin/integracoes"}>
+      <Route path={"/admin/integracoes"}>
         {() => (
-          <SuperAdminProtectedRoute>
+          <AdminProtectedRoute>
             <IntegracoesDashboard />
-          </SuperAdminProtectedRoute>
+          </AdminProtectedRoute>
         )}
       </Route>
-      <Route path={"/super-admin/integracoes/email"}>
+      <Route path={"/admin/integracoes/email"}>
         {() => (
-          <SuperAdminProtectedRoute>
+          <AdminProtectedRoute>
             <IntegracoesDashboard />
-          </SuperAdminProtectedRoute>
+          </AdminProtectedRoute>
         )}
       </Route>
 

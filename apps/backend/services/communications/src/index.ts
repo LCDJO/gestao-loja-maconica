@@ -2,6 +2,7 @@ import express from "express";
 import { createServer } from "http";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import communicationsRoutes from "./routes";
 import {
   communicationsServicePaths,
   communicationsServiceSchemas,
@@ -52,10 +53,25 @@ async function startServer() {
   });
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-  // Routes will be added here
-  // app.use("/api/emails", emailRoutes);
-  // app.use("/api/notifications", notificationsRoutes);
-  // app.use("/api/templates", templatesRoutes);
+  // Communications API routes
+  app.use("/api/communications", communicationsRoutes);
+
+  // Error handler
+  app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      error: "Erro interno do servidor",
+    });
+  });
+
+  // 404 handler
+  app.use((_req, res) => {
+    res.status(404).json({
+      success: false,
+      error: "Rota não encontrada",
+    });
+  });
 
   server.listen(port, () => {
     console.log(`✅ Communications Service running on http://localhost:${port}/`);

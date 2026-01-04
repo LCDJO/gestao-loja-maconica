@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Micro serviço de autenticação",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "cross-env PORT=5001 tsx watch src/index.ts",
     "build": "tsc",
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc --noEmit",

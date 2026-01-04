@@ -30,7 +30,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const validateTokenWithBackend = async (storedToken: string, lodgeId: string) => {
     try {
       const response = await fetch(
-        "http://localhost:3002/api/auth/admin/profile",
+        "/api/auth/admin/profile",
         {
           method: "GET",
           headers: {
@@ -40,10 +40,18 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       );
 
       if (!response.ok) {
-        throw new Error("Token inválido ou expirado");
+        throw new Error(`Erro ${response.status}: ${response.statusText}`);
       }
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseErr) {
+        console.error("Erro ao fazer parse do JSON:", parseErr);
+        const text = await response.text();
+        console.error("Resposta do servidor:", text);
+        throw new Error("Resposta inválida do servidor");
+      }
       
       if (data.success && data.data) {
         // Validar que o lodgeId no token corresponde ao armazenado
@@ -59,6 +67,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Erro ao validar token";
+      console.error("Erro na validação:", errorMessage);
       setError(errorMessage);
       localStorage.removeItem("adminToken");
       localStorage.removeItem("adminRefreshToken");
@@ -85,7 +94,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     try {
       setError(null);
       const response = await fetch(
-        "http://localhost:3002/api/auth/admin/login",
+        "/api/auth/admin/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -93,7 +102,19 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         }
       );
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`Erro ${response.status}: ${response.statusText}`);
+      }
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseErr) {
+        console.error("Erro ao fazer parse do JSON:", parseErr);
+        const text = await response.text();
+        console.error("Resposta do servidor:", text);
+        throw new Error("Resposta inválida do servidor");
+      }
 
       if (!data.success) {
         throw new Error(data.error || "Erro ao fazer login");
@@ -108,6 +129,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       setUser(data.data.user);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Erro ao fazer login";
+      console.error("Erro no login:", errorMessage);
       setError(errorMessage);
       throw error;
     }

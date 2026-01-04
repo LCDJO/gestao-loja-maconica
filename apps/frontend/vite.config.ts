@@ -1,6 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-import fs from "node:fs";
 import path from "path";
 import { defineConfig } from "vite";
 import { vitePluginManusRuntime } from "vite-plugin-manus-runtime";
@@ -11,16 +10,11 @@ export default defineConfig({
   plugins,
   resolve: {
     alias: {
-      "@": path.resolve(import.meta.dirname, "apps/frontend/src"),
-      "@shared": path.resolve(import.meta.dirname, "packages/shared"),
+      "@": path.resolve(__dirname, "src"),
+      "@shared": path.resolve(__dirname, "../../packages/shared"),
     },
   },
-  envDir: path.resolve(import.meta.dirname),
-  root: path.resolve(import.meta.dirname, "apps/frontend"),
-  build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
-    emptyOutDir: true,
-  },
+  envDir: path.resolve(__dirname, "../../"),
   server: {
     port: 3001,
     strictPort: true,
@@ -45,5 +39,9 @@ export default defineConfig({
         rewrite: (path) => path,
       },
     },
+  },
+  build: {
+    outDir: path.resolve(__dirname, "../../dist/public"),
+    emptyOutDir: true,
   },
 });

@@ -101,3 +101,5 @@ export function getProfileWithoutPassword(
   const { password, ...profile } = member;
   return profile;
 }
+
+export { membersDatabase };

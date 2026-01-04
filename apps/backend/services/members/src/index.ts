@@ -16,7 +16,7 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
 
-  const port = process.env.PORT || 3002;
+  const port = 5002;
 
   // Middlewares
   app.use(express.json());

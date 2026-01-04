@@ -43,9 +43,4 @@ router.post("/admin/login", adminLogin);
  */
 router.get("/admin/profile", authenticateAdmin, adminProfile);
 
-// ========== HEALTH CHECK ==========
-router.get("/health", (_req, res) => {
-  res.json({ status: "Auth Service is running" });
-});
-
 export default router;
